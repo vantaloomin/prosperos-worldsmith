@@ -184,3 +184,5 @@ label.check { display: flex; align-items: center; gap: 0.4rem; font-size: 0.85re
 .interior-list { display: grid; gap: 0.4rem; }
 .wizard { margin: 0.8rem 0; padding: 0.8rem; border: 1px solid var(--line); border-radius: 8px; }
 .wizard .choices li.row { justify-content: space-between; align-items: center; gap: 0.6rem; }
+.names-mix input { max-width: 6rem; }
+.samples { columns: 2; padding-left: 1.1rem; }

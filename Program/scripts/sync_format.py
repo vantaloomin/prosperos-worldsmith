@@ -1,7 +1,7 @@
 """Copy Dungeon's world format into worldsmith/dungeon_format: `python scripts/sync_format.py DUNGEON_CHECKOUT`.
 
 Worldsmith writes worlds Dungeon must load unchanged, so it uses Dungeon's own package code and city schema rather
-than a rewrite. This script copies those files from a Dungeon checkout, points their `dungeon.` imports at the
+than a rewrite, and Dungeon's own name tables (names.json, given_names.json) so towns draw names from the same banks. This script copies those files from a Dungeon checkout, points their `dungeon.` imports at the
 vendored copies, and stamps SOURCE.json with the commit they came from.
 
 `--check` changes nothing and exits 1 when the vendored files differ from the checkout's (CI runs it against
@@ -21,6 +21,11 @@ FILES = {
     'Program/dungeon/errors.py': 'errors.py',
     'Program/dungeon/packages.py': 'packages.py',
     'Program/dungeon/world/schema.py': 'schema.py',
+}
+# Dungeon data files copied as they are, into data/: the name tables Dungeon draws townsfolk and NPC names from.
+DATA = {
+    'Program/dungeon/world/data/names.json': 'data/names.json',
+    'Program/dungeon/world/data/given_names.json': 'data/given_names.json',
 }
 # Dungeon module -> vendored module, for imports inside the copied files.
 MODULES = {'dungeon.errors': 'errors', 'dungeon.packages': 'packages', 'dungeon.world.schema': 'schema'}
@@ -53,6 +58,11 @@ def wanted(checkout: Path) -> dict[str, str]:
         if not path.is_file():
             raise SystemExit(f'{path} is missing. Is {checkout} a prosperos-dungeon checkout?')
         found[name] = vendored(path.read_text(encoding='utf-8'), source)
+    for source, name in DATA.items():
+        path = checkout / source
+        if not path.is_file():
+            raise SystemExit(f'{path} is missing. Is {checkout} a prosperos-dungeon checkout?')
+        found[name] = path.read_text(encoding='utf-8')
     return found
 
 
@@ -76,8 +86,9 @@ def main(argv: list[str] | None = None, target: Path = TARGET) -> int:
         return 0
     target.mkdir(parents=True, exist_ok=True)
     for name, text in found.items():
+        (target / name).parent.mkdir(parents=True, exist_ok=True)
         (target / name).write_text(text, encoding='utf-8', newline='\n')
-    source = {'repo': 'vantaloomin/prosperos-dungeon', 'commit': commit_of(args.checkout), 'files': FILES}
+    source = {'repo': 'vantaloomin/prosperos-dungeon', 'commit': commit_of(args.checkout), 'files': FILES | DATA}
     (target / 'SOURCE.json').write_text(json.dumps(source, indent=2) + '\n', encoding='utf-8', newline='\n')
     print(f'Synced {len(found)} files ({", ".join(changed) or "no changes"}).')
     return 0

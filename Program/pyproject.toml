@@ -13,7 +13,7 @@ dev = ["pytest>=8,<10", "ruff>=0.11,<1"]
 include = ["worldsmith*"]
 
 [tool.setuptools.package-data]
-worldsmith = ["dungeon_format/SOURCE.json"]
+worldsmith = ["dungeon_format/SOURCE.json", "dungeon_format/data/*.json"]
 
 [tool.ruff]
 target-version = "py312"

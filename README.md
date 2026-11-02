@@ -28,6 +28,16 @@ Every town starts as a stop on the Road. "Towns to build" drafts each one into a
 keeps the stop's id and place on the map, and takes the world's money, era, name banks and careers from the Road.
 Install into Dungeon when you want to play it.
 
+## Names
+
+Townsfolk and NPC names come from Dungeon's own name tables, synced into `worldsmith/dungeon_format/data` with the
+format: ten banks (modern, victorian, medieval, frontier, storybook, Edo Japan, Qing China, Ottoman, ancient Rome,
+Mughal India) of heritages with about 200 given and 100 family names each, and 26 cultures' names by birth year.
+A town's Names tab picks its bank, weighs each heritage, and shows sample townsfolk and how many names it draws on.
+The world wizard picks a bank and mix rather than inventing a handful of names (a group of a world's own only for a
+people no bank fits, and then at least 30 given and 20 family names), and both wizards refuse names that read as
+made up by a model (Elara, Voss, Ravencrest), using Dungeon's own list.
+
 ## Checking with Dungeon, street maps and packages
 
 - **Check with Dungeon** (a town's Town tab) runs the saved city file through Dungeon's own strict loader, and

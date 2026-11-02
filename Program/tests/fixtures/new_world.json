@@ -108,21 +108,11 @@
  },
  "people": {
   "names": {
-   "groups": {
-    "pan-folk": {
-     "feminine": [
-      "Ysolde",
-      "Brin"
-     ],
-     "masculine": [
-      "Odo",
-      "Tam"
-     ],
-     "family": [
-      "Saltar",
-      "Weir"
-     ]
-    }
+   "bank": "medieval",
+   "mix": {
+    "english": 6,
+    "norman": 2,
+    "welsh": 1
    }
   },
   "careers": [

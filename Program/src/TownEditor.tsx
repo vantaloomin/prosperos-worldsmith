@@ -5,6 +5,7 @@ import { getJson, sendJson, type TownFiles, type WorldRef } from './api'
 import { DraftButton } from './DraftButton'
 import { DungeonCheck } from './DungeonCheck'
 import { MapEditor } from './MapEditor'
+import { NamesTab } from './NamesTab'
 import { RecordForm } from './RecordForm'
 import { blankFor, CITY_SECTIONS, REFERENCES, type JsonSchema } from './schema'
 
@@ -104,7 +105,7 @@ export function TownEditor({ world, town }: { world: WorldRef; town: string }) {
   if (files.isError) return <p className="error">{files.error.message}</p>
   if (!files.data || !schema.data) return <p className="muted">Loading the town…</p>
   const root = schema.data
-  const kindOf = tab === 'town' || CITY_SECTIONS.some((section) => section.key === tab) ? 'cities' : tab
+  const kindOf = tab === 'town' || tab === 'names' || CITY_SECTIONS.some((section) => section.key === tab) ? 'cities' : tab
   const part = PARTS.find((item) => item.kind === kindOf)
   const current = (drafts[kindOf] ?? files.data.parts[kindOf]) as Value | null
   const dirty = Object.keys(drafts)
@@ -124,7 +125,7 @@ export function TownEditor({ world, town }: { world: WorldRef; town: string }) {
         </div>
       </div>
       <nav className="tabs" aria-label="Town parts">
-        {[{ key: 'town', name: 'Town' }, ...CITY_SECTIONS, ...PARTS.map((item) => ({ key: item.kind, name: item.name })), { key: 'diagram', name: 'Map' }, { key: 'map', name: 'Street map' }].map((item) => (
+        {[{ key: 'town', name: 'Town' }, ...CITY_SECTIONS, ...PARTS.map((item) => ({ key: item.kind, name: item.name })), { key: 'names', name: 'Names' }, { key: 'diagram', name: 'Map' }, { key: 'map', name: 'Street map' }].map((item) => (
           <button key={item.key} type="button" aria-pressed={tab === item.key} onClick={() => setTab(item.key)}>{item.name}</button>
         ))}
       </nav>
@@ -132,6 +133,7 @@ export function TownEditor({ world, town }: { world: WorldRef; town: string }) {
       {problems.length > 0 && !drafts[kindOf] && (
         <div className="problems" role="alert"><ul>{problems.slice(0, 12).map((problem) => <li key={problem}>{problem}</li>)}</ul></div>
       )}
+      {tab === 'names' && <NamesTab city={city} onChange={(next) => setDraft('cities', next)} />}
       {tab === 'diagram' && (dirty.length ? <p className="muted">Save or undo your form changes first: the map edits the saved town.</p>
         : <MapEditor world={world} kind="town" town={town} />)}
       {tab === 'map' && <DungeonCheck world={world} town={town} withMap unsaved={dirty.length > 0} />}

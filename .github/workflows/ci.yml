@@ -75,6 +75,8 @@ jobs:
             Program/dungeon/errors.py
             Program/dungeon/packages.py
             Program/dungeon/world/schema.py
+            Program/dungeon/world/data/names.json
+            Program/dungeon/world/data/given_names.json
           sparse-checkout-cone-mode: false
       - uses: actions/setup-python@v5
         with:
