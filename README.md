@@ -63,7 +63,16 @@ made up by a model (Elara, Voss, Ravencrest), using Dungeon's own list.
   way). Draw passages, drag rooms, add rooms and levels, pick the way in, or start a new interior at a travel-map
   stop. A save is checked with Dungeon's own interior schema first, so a room no passage reaches is refused. A
   room's summary, foes, hazard, loot and lore, and a passage's trap, are written in the file and kept by the map.
-- Under each map is the same thing as **Mermaid text**, kept in step: paste it into any Mermaid viewer, or edit it
+- **World map** (left pane) is a hex-map painter for the world's land (Dungeon's hexes file). Paint sea, plains,
+  forest, hills, mountains, marsh or waste with a brush, or paint nothing for a whole continent from the seed, and
+  the rest is worked out the way land and water work: land rises from the coast and around painted mountains, the
+  wind (west by default) carries rain off the sea and leaves a rain shadow behind the ranges, water runs downhill
+  into rivers that join and grow on their way to the sea, and basins fill into lakes. Suggested town sites are marked
+  with why (a river mouth, where two rivers meet, a lake's outlet, a hill above water, water in dry country); pick one
+  and name it to make it a stop on the travel map, waiting in Towns to build. The paint and settings are saved with
+  the map, so it can be painted and generated again. Dungeon's hex crawl uses the rivers: crossing one off the road
+  takes time, and a road over one is a bridge or a ford.
+- Under the travel, town and interior maps is the same thing as **Mermaid text**, kept in step: paste it into any Mermaid viewer, or edit it
   and apply it back to the map.
 - Saves keep the layout of Dungeon's files (the travel files keep one stop or road per line), so a Dungeon pull
   request shows only what changed.
