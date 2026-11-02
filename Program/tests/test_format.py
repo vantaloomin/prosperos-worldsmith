@@ -1,34 +1,12 @@
 """The vendored Dungeon format reads, checks and writes worlds the way Dungeon does."""
 import json
-from pathlib import Path
 
 import pytest
 
+from tests.conftest import FIXTURES, make_world
 from worldsmith.dungeon_format import packages
 from worldsmith.dungeon_format.errors import DomainError
 from worldsmith.dungeon_format.schema import City
-
-FIXTURES = Path(__file__).parent / 'fixtures'
-
-
-def make_world(folder: Path) -> Path:
-    """A small world folder with one region, settlement, faction and person, and a town's engine file."""
-    files = {
-        'world.json': {'schema_version': 1, 'id': 'testland', 'name': 'Testland', 'default_ruleset': 'marvel'},
-        'regions.json': {'regions': [{'id': 'the-vale', 'name': 'The Vale'}]},
-        'settlements.json': {'settlements': [{'id': 'kingswood', 'name': 'Kingswood', 'region': 'the-vale'}]},
-        'factions.json': {'factions': [{'id': 'timber-guild', 'name': 'The Timber Guild'}]},
-        'cast.json': {'cast': [{'id': 'aldous-marr', 'name': 'Aldous Marr', 'faction': 'timber-guild',
-                                'settlement': 'kingswood', 'secret': 'In debt to the Guild.'}]},
-        'engine/cities/kingswood.json': json.loads((FIXTURES / 'kingswood.json').read_text(encoding='utf-8')),
-    }
-    for name, data in files.items():
-        path = folder / name
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(json.dumps(data), encoding='utf-8')
-    (folder / 'canon').mkdir()
-    (folder / 'canon' / 'overview.md').write_text('# Testland\n', encoding='utf-8')
-    return folder
 
 
 def test_a_world_folder_reads_and_validates(tmp_path):
