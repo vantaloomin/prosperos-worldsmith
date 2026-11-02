@@ -1,0 +1,2041 @@
+{
+ "schema_version": 1,
+ "id": "kingswood",
+ "name": "Kingswood",
+ "setting": "original",
+ "era": "fantasy",
+ "category": "fictional",
+ "basis": "Vanta's own world of Vallarith (the kingdom of Cyrel, the elves of Brynwyr, the Ley, the New Gods); the town, its places and its people are written for Prospero's Dungeon. Set Post-Reform, about 300 RFM.",
+ "region": "the kingdom of Cyrel",
+ "country": "Cyrel",
+ "timezone": "Europe/London",
+ "aliases": [
+  "Kingswood village"
+ ],
+ "summary": "A logging town on the edge of Brynwyr forest, one of Cyrel's three sister towns. It lives on the sawmill and the Timber Guild, sits uneasily against the High Elves across the border stones, and stands on a rumoured convergence of the Ley that nobody in charge will talk about.",
+ "lat": 52.012,
+ "lon": -2.004,
+ "intensity": {
+  "preset": "unflinching",
+  "voice": "grim and earthy: a hard frontier where kindness costs something, power is bought, and nobody is safe because they deserve to be",
+  "drama": "eventful"
+ },
+ "currency": {
+  "code": "crown",
+  "symbol": "cr.",
+  "name": "silver crowns"
+ },
+ "rent_period": "week",
+ "speeds": {
+  "walk": 4.5,
+  "horse": 10,
+  "boat": 5
+ },
+ "sources": {
+  "curated-2026-10": {
+   "kind": "curated",
+   "title": "Kingswood written for Prospero's Dungeon from Vanta's Vallarith lore",
+   "license": "Vanta's own setting; all rights reserved",
+   "retrieved": "2026-10-21",
+   "note": "Drawn from Vallarith's existing lore (Kingswood, Cyrel, Brynwyr, Tidum, the Ley). Places, trades, prices and people are new."
+  }
+ },
+ "neighborhoods": [
+  {
+   "id": "the-crossroads",
+   "name": "the Crossroads",
+   "summary": "Where the Cyrel road meets the timber track: the muddy green, the shrine, the Felled Oak and the market stalls, with the notice post everyone reads and nobody trusts.",
+   "vibe": [
+    "central",
+    "market",
+    "busy"
+   ],
+   "lat": 52.012,
+   "lon": -2.004,
+   "rent_tier": "mid",
+   "rent": {
+    "studio": [
+     2,
+     3
+    ],
+    "one_bedroom": [
+     4,
+     6
+    ],
+    "two_bedroom": [
+     7,
+     10
+    ]
+   },
+   "housing": [
+    "room-over-shop",
+    "timber-frame-house"
+   ],
+   "walkability": "high",
+   "transit": [
+    "on-foot",
+    "carters"
+   ],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "mill-row",
+   "name": "Mill Row",
+   "summary": "The sawmill on the Kingsbrook and the timber yards around it: the scream of the blade, sawdust in every crack, and the barge that floats the cut wood down to Cyrel.",
+   "vibe": [
+    "industrial",
+    "loud",
+    "working"
+   ],
+   "lat": 52.009,
+   "lon": -2.012,
+   "rent_tier": "low",
+   "rent": {
+    "studio": [
+     1,
+     2
+    ],
+    "one_bedroom": [
+     3,
+     4
+    ],
+    "two_bedroom": [
+     5,
+     7
+    ]
+   },
+   "housing": [
+    "workers-cottage",
+    "room-over-shop"
+   ],
+   "walkability": "high",
+   "transit": [
+    "on-foot",
+    "river-barge"
+   ],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "cutters-camp",
+   "name": "Cutters' Camp",
+   "summary": "Bunkhouses, cook fires and axe-sheds on the east side, nearest the forest: hired crews from all over Cyrel who drink hard, fight harder and leave when the pay does.",
+   "vibe": [
+    "rough",
+    "transient",
+    "loud"
+   ],
+   "lat": 52.014,
+   "lon": -1.992,
+   "rent_tier": "low",
+   "rent": {
+    "studio": [
+     1,
+     1
+    ],
+    "one_bedroom": [
+     2,
+     3
+    ],
+    "two_bedroom": [
+     3,
+     5
+    ]
+   },
+   "housing": [
+    "bunkhouse",
+    "lean-to"
+   ],
+   "walkability": "medium",
+   "transit": [
+    "on-foot"
+   ],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "reeve-hill",
+   "name": "Reeve Hill",
+   "summary": "The rise above the green with the reeve's hall, the watch post and the stone houses of the guild factor, the reeve and the few families with money.",
+   "vibe": [
+    "quiet",
+    "wealthy",
+    "watched"
+   ],
+   "lat": 52.016,
+   "lon": -2.008,
+   "rent_tier": "high",
+   "rent": {
+    "studio": [
+     4,
+     6
+    ],
+    "one_bedroom": [
+     7,
+     10
+    ],
+    "two_bedroom": [
+     11,
+     16
+    ]
+   },
+   "housing": [
+    "stone-house",
+    "timber-frame-house"
+   ],
+   "walkability": "high",
+   "transit": [
+    "on-foot",
+    "horse"
+   ],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "low-ford",
+   "name": "Low Ford",
+   "summary": "The poor end by the ford: the tannery, the charcoal kilns, the paupers' field and the families nobody else will rent to, half-elves and widows among them.",
+   "vibe": [
+    "poor",
+    "smoky",
+    "close-knit"
+   ],
+   "lat": 52.006,
+   "lon": -2.0,
+   "rent_tier": "low",
+   "rent": {
+    "studio": [
+     1,
+     1
+    ],
+    "one_bedroom": [
+     1,
+     2
+    ],
+    "two_bedroom": [
+     2,
+     4
+    ]
+   },
+   "housing": [
+    "hovel",
+    "workers-cottage"
+   ],
+   "walkability": "medium",
+   "transit": [
+    "on-foot"
+   ],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "the-cutting-line",
+   "name": "the Cutting Line",
+   "summary": "The stumps, skid trails and the row of old border stones where Kingswood ends and Brynwyr begins. Past the stones the trees are older than the kingdom.",
+   "vibe": [
+    "wild",
+    "dangerous",
+    "border"
+   ],
+   "lat": 52.02,
+   "lon": -1.982,
+   "rent_tier": "low",
+   "housing": [
+    "lean-to"
+   ],
+   "walkability": "low",
+   "transit": [
+    "on-foot"
+   ],
+   "source": "curated-2026-10"
+  }
+ ],
+ "places": [
+  {
+   "id": "the-green",
+   "name": "the Green",
+   "kind": "square",
+   "neighborhood": "the-crossroads",
+   "summary": "A trampled common of mud and grass where the roads meet, with the notice post, the stocks and the well. Hiring is shouted here at dawn.",
+   "tags": [
+    "central",
+    "news",
+    "hiring"
+   ],
+   "cost": "free",
+   "setting": "outdoor",
+   "good_for": [
+    "solo",
+    "friends",
+    "family"
+   ],
+   "day_parts": [
+    "morning",
+    "afternoon",
+    "evening"
+   ],
+   "seasons": [],
+   "cuisine": "",
+   "spots": [
+    "the notice post",
+    "the stocks",
+    "the well"
+   ],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "felled-oak",
+   "name": "the Felled Oak",
+   "kind": "tavern",
+   "neighborhood": "the-crossroads",
+   "summary": "Kingswood's tavern: a long low room built round the stump of the oak it is named for, dark ale, mutton stew, dice at the back and a cellar the watch pretends not to know about.",
+   "tags": [
+    "ale",
+    "dice",
+    "rumours",
+    "rooms"
+   ],
+   "cost": "$",
+   "setting": "indoor",
+   "good_for": [
+    "solo",
+    "friends",
+    "coworkers"
+   ],
+   "day_parts": [
+    "afternoon",
+    "evening",
+    "late"
+   ],
+   "seasons": [],
+   "cuisine": "tavern",
+   "spots": [
+    "the stump bar",
+    "the dice table at the back",
+    "the fireside settle",
+    "the cellar door"
+   ],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "shrine-of-tidum",
+   "name": "the Shrine of Tidum",
+   "kind": "temple",
+   "neighborhood": "the-crossroads",
+   "summary": "A small stone shrine to Tidum, the New God of the Wild, ringed by yews. Loggers leave a chip of every first-felled tree on the altar, and some of them mean it.",
+   "tags": [
+    "shrine",
+    "new-gods",
+    "quiet",
+    "healing"
+   ],
+   "cost": "free",
+   "setting": "mixed",
+   "good_for": [
+    "solo",
+    "family"
+   ],
+   "day_parts": [
+    "morning",
+    "afternoon",
+    "evening"
+   ],
+   "seasons": [],
+   "cuisine": "",
+   "spots": [
+    "the altar of chips",
+    "the yew ring",
+    "the sickroom"
+   ],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "crossroads-market",
+   "name": "the Crossroads market",
+   "kind": "market",
+   "neighborhood": "the-crossroads",
+   "summary": "Stalls on the green on market days: bread from Eriane, salt, pots, rope, cheap blades and whatever the barge brought up from Cyrel.",
+   "tags": [
+    "market",
+    "bargains",
+    "gossip"
+   ],
+   "cost": "$",
+   "setting": "outdoor",
+   "good_for": [
+    "solo",
+    "friends",
+    "family"
+   ],
+   "day_parts": [
+    "morning",
+    "afternoon"
+   ],
+   "seasons": [],
+   "cuisine": "",
+   "spots": [
+    "the bread cart",
+    "the salt stall",
+    "the herb seller"
+   ],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "pell-provisions",
+   "name": "Pell's Provisions",
+   "kind": "shopping",
+   "neighborhood": "the-crossroads",
+   "summary": "The general store: rope, lamp oil, boots, tinned meat at Cyrel prices plus Pell's cut, and a ledger of what half the town owes.",
+   "tags": [
+    "general-store",
+    "supplies",
+    "credit"
+   ],
+   "cost": "$$",
+   "setting": "indoor",
+   "good_for": [
+    "solo"
+   ],
+   "day_parts": [
+    "morning",
+    "afternoon"
+   ],
+   "seasons": [],
+   "cuisine": "",
+   "spots": [],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "the-wayhouse",
+   "name": "the Wayhouse",
+   "kind": "inn",
+   "neighborhood": "the-crossroads",
+   "summary": "Clean beds for guild men and travellers on the Cyrel road, with a stable yard and a landlady who asks no questions she cannot sell the answers to.",
+   "tags": [
+    "rooms",
+    "stable",
+    "travellers"
+   ],
+   "cost": "$$",
+   "setting": "indoor",
+   "good_for": [
+    "solo",
+    "coworkers"
+   ],
+   "day_parts": [
+    "evening",
+    "late"
+   ],
+   "seasons": [],
+   "cuisine": "",
+   "spots": [],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "varro-mill",
+   "name": "Varro's Mill",
+   "kind": "workshop",
+   "neighborhood": "mill-row",
+   "summary": "The water-driven sawmill on the Kingsbrook, the reason Kingswood exists. The great blade runs dawn to dusk; men lose fingers to it every season.",
+   "tags": [
+    "sawmill",
+    "work",
+    "danger"
+   ],
+   "cost": "free",
+   "setting": "mixed",
+   "good_for": [
+    "coworkers"
+   ],
+   "day_parts": [
+    "morning",
+    "afternoon"
+   ],
+   "seasons": [],
+   "cuisine": "",
+   "spots": [
+    "the blade floor",
+    "the log pond",
+    "the tally shed"
+   ],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "timber-yards",
+   "name": "the timber yards",
+   "kind": "workshop",
+   "neighborhood": "mill-row",
+   "summary": "Stacked lumber drying under rough roofs, guarded at night, waiting for the barge. The guild mark is branded on every board.",
+   "tags": [
+    "timber",
+    "guild",
+    "storage"
+   ],
+   "cost": "free",
+   "setting": "outdoor",
+   "good_for": [
+    "coworkers"
+   ],
+   "day_parts": [
+    "morning",
+    "afternoon",
+    "evening"
+   ],
+   "seasons": [],
+   "cuisine": "",
+   "spots": [],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "barge-landing",
+   "name": "the barge landing",
+   "kind": "docks",
+   "neighborhood": "mill-row",
+   "summary": "The plank quay where the Cyrel barge ties up twice a week to load timber and unload everything else, including news, soldiers and strangers.",
+   "tags": [
+    "river",
+    "arrivals",
+    "trade"
+   ],
+   "cost": "free",
+   "setting": "outdoor",
+   "good_for": [
+    "solo",
+    "coworkers"
+   ],
+   "day_parts": [
+    "morning",
+    "afternoon"
+   ],
+   "seasons": [],
+   "cuisine": "",
+   "spots": [],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "guild-factor",
+   "name": "the guild factor's office",
+   "kind": "guildhall",
+   "neighborhood": "mill-row",
+   "summary": "The Cyrel Timber Guild's office, all ledgers and locked chests, where the cutting rights are bought, sold and quietly rewritten.",
+   "tags": [
+    "guild",
+    "contracts",
+    "money"
+   ],
+   "cost": "free",
+   "setting": "indoor",
+   "good_for": [
+    "solo",
+    "coworkers"
+   ],
+   "day_parts": [
+    "morning",
+    "afternoon"
+   ],
+   "seasons": [],
+   "cuisine": "",
+   "spots": [],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "blackwood-smithy",
+   "name": "the Blackwood smithy",
+   "kind": "workshop",
+   "neighborhood": "mill-row",
+   "summary": "Axes, saw-teeth, hinges and, for the right price, blades that are not for trees. Hot, loud, and the smith listens more than she talks.",
+   "tags": [
+    "smith",
+    "weapons",
+    "tools"
+   ],
+   "cost": "$$",
+   "setting": "indoor",
+   "good_for": [
+    "solo"
+   ],
+   "day_parts": [
+    "morning",
+    "afternoon"
+   ],
+   "seasons": [],
+   "cuisine": "",
+   "spots": [],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "the-sawpit",
+   "name": "the Sawpit",
+   "kind": "bar",
+   "neighborhood": "mill-row",
+   "summary": "An alehouse dug into an old saw pit below the mill, so the drinkers sit lower than the street. Mill hands at noon, guild clerks after dark, sawdust in the beer.",
+   "tags": [
+    "ale",
+    "mill-hands",
+    "gossip"
+   ],
+   "cost": "$",
+   "setting": "indoor",
+   "good_for": [
+    "coworkers",
+    "friends"
+   ],
+   "day_parts": [
+    "afternoon",
+    "evening"
+   ],
+   "seasons": [],
+   "cuisine": "tavern",
+   "spots": [
+    "the pit floor",
+    "the clerks' bench"
+   ],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "bunkhouses",
+   "name": "the bunkhouses",
+   "kind": "inn",
+   "neighborhood": "cutters-camp",
+   "summary": "Long timber bunkhouses where the hired crews sleep twenty to a room, with a cook fire out front and a strongbox nobody trusts.",
+   "tags": [
+    "crews",
+    "rough",
+    "cheap"
+   ],
+   "cost": "$",
+   "setting": "indoor",
+   "good_for": [
+    "coworkers"
+   ],
+   "day_parts": [
+    "evening",
+    "late"
+   ],
+   "seasons": [],
+   "cuisine": "",
+   "spots": [],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "axe-sheds",
+   "name": "the axe sheds",
+   "kind": "workshop",
+   "neighborhood": "cutters-camp",
+   "summary": "Open sheds where the crews grind their axes, mend harness and argue over tallies before the walk out to the line.",
+   "tags": [
+    "tools",
+    "crews",
+    "work"
+   ],
+   "cost": "free",
+   "setting": "mixed",
+   "good_for": [
+    "coworkers"
+   ],
+   "day_parts": [
+    "morning"
+   ],
+   "seasons": [],
+   "cuisine": "",
+   "spots": [],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "stump-pit",
+   "name": "the stump pit",
+   "kind": "venue",
+   "neighborhood": "cutters-camp",
+   "summary": "A ring of stumps behind the bunkhouses where the crews fight for coin on rest days and the camp bets on it. The watch takes a cut to stay away.",
+   "tags": [
+    "fights",
+    "gambling",
+    "crowd"
+   ],
+   "cost": "$",
+   "setting": "outdoor",
+   "good_for": [
+    "friends"
+   ],
+   "day_parts": [
+    "evening",
+    "late"
+   ],
+   "seasons": [],
+   "cuisine": "",
+   "spots": [],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "cook-fire",
+   "name": "Old Wenna's cook fire",
+   "kind": "restaurant",
+   "neighborhood": "cutters-camp",
+   "summary": "One pot, one ladle, one price: barley, whatever meat came in, and bread hard enough to hammer nails. Wenna feeds anyone who pays and some who cannot.",
+   "tags": [
+    "cheap",
+    "stew",
+    "crews"
+   ],
+   "cost": "$",
+   "setting": "outdoor",
+   "good_for": [
+    "solo",
+    "coworkers"
+   ],
+   "day_parts": [
+    "morning",
+    "evening"
+   ],
+   "seasons": [],
+   "cuisine": "camp",
+   "spots": [],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "reeves-hall",
+   "name": "the Reeve's Hall",
+   "kind": "landmark",
+   "neighborhood": "reeve-hill",
+   "summary": "A stone hall with a timber gallery where the reeve hears disputes, collects the King's tithe and keeps the map of the cutting rights on the wall.",
+   "tags": [
+    "law",
+    "tithe",
+    "records"
+   ],
+   "cost": "free",
+   "setting": "indoor",
+   "good_for": [
+    "solo"
+   ],
+   "day_parts": [
+    "morning",
+    "afternoon"
+   ],
+   "seasons": [],
+   "cuisine": "",
+   "spots": [
+    "the hearing floor",
+    "the map wall",
+    "the reeve's study"
+   ],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "watch-post",
+   "name": "the watch post",
+   "kind": "landmark",
+   "neighborhood": "reeve-hill",
+   "summary": "A squat garrison house with a dozen Cyrel soldiers, a lock-up and a signal horn. They are here for the elves, and the town knows it.",
+   "tags": [
+    "soldiers",
+    "lock-up",
+    "law"
+   ],
+   "cost": "free",
+   "setting": "indoor",
+   "good_for": [
+    "solo"
+   ],
+   "day_parts": [
+    "morning",
+    "afternoon",
+    "evening",
+    "late"
+   ],
+   "seasons": [],
+   "cuisine": "",
+   "spots": [
+    "the lock-up",
+    "the horn platform",
+    "the mess"
+   ],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "stone-houses",
+   "name": "the stone houses",
+   "kind": "landmark",
+   "neighborhood": "reeve-hill",
+   "summary": "Four stone houses with glass windows and walled gardens: the reeve, the guild factor, the mill family and an empty one with its shutters nailed shut.",
+   "tags": [
+    "wealth",
+    "quiet",
+    "walls"
+   ],
+   "cost": "free",
+   "setting": "outdoor",
+   "good_for": [
+    "solo"
+   ],
+   "day_parts": [
+    "morning",
+    "afternoon",
+    "evening"
+   ],
+   "seasons": [],
+   "cuisine": "",
+   "spots": [],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "dunmore-kitchen",
+   "name": "Dunmore's kitchen",
+   "kind": "restaurant",
+   "neighborhood": "reeve-hill",
+   "summary": "A cookshop by the reeve's hall that feeds the clerks, the watch and anyone waiting on a hearing: pies, pottage and very weak tea.",
+   "tags": [
+    "pies",
+    "watch",
+    "waiting"
+   ],
+   "cost": "$",
+   "setting": "indoor",
+   "good_for": [
+    "solo",
+    "coworkers"
+   ],
+   "day_parts": [
+    "morning",
+    "afternoon"
+   ],
+   "seasons": [],
+   "cuisine": "cookshop",
+   "spots": [
+    "the window table",
+    "the bench by the hall door"
+   ],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "the-ford",
+   "name": "the ford",
+   "kind": "trail",
+   "neighborhood": "low-ford",
+   "summary": "The shallow crossing of the Kingsbrook, slick stones and cold water. Children dare each other to cross at night, when the water talks.",
+   "tags": [
+    "river",
+    "crossing",
+    "stories"
+   ],
+   "cost": "free",
+   "setting": "outdoor",
+   "good_for": [
+    "solo",
+    "friends"
+   ],
+   "day_parts": [
+    "morning",
+    "afternoon",
+    "evening"
+   ],
+   "seasons": [],
+   "cuisine": "",
+   "spots": [],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "tannery",
+   "name": "the tannery",
+   "kind": "workshop",
+   "neighborhood": "low-ford",
+   "summary": "Pits of lime and bark and worse. The smell sets the rent in Low Ford, and the tanner buys hides without asking whose.",
+   "tags": [
+    "work",
+    "stink",
+    "hides"
+   ],
+   "cost": "free",
+   "setting": "mixed",
+   "good_for": [
+    "coworkers"
+   ],
+   "day_parts": [
+    "morning",
+    "afternoon"
+   ],
+   "seasons": [],
+   "cuisine": "",
+   "spots": [],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "paupers-field",
+   "name": "the paupers' field",
+   "kind": "garden",
+   "neighborhood": "low-ford",
+   "summary": "A flood-prone burial ground by the river where the town buries its poor, its strangers and anyone the shrine would not take. Some markers are elvish.",
+   "tags": [
+    "graves",
+    "quiet",
+    "grief"
+   ],
+   "cost": "free",
+   "setting": "outdoor",
+   "good_for": [
+    "solo"
+   ],
+   "day_parts": [
+    "morning",
+    "afternoon",
+    "evening"
+   ],
+   "seasons": [],
+   "cuisine": "",
+   "spots": [],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "the-kilns",
+   "name": "the charcoal kilns",
+   "kind": "workshop",
+   "neighborhood": "low-ford",
+   "summary": "Earth-banked kilns that smoke day and night. The burners sleep beside them in shifts and see who comes and goes along the river path after dark.",
+   "tags": [
+    "smoke",
+    "night",
+    "work"
+   ],
+   "cost": "free",
+   "setting": "outdoor",
+   "good_for": [
+    "coworkers"
+   ],
+   "day_parts": [
+    "evening",
+    "late"
+   ],
+   "seasons": [],
+   "cuisine": "",
+   "spots": [],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "mother-mags",
+   "name": "Mother Mag's",
+   "kind": "bar",
+   "neighborhood": "low-ford",
+   "summary": "A front room with a barrel of plum spirit, three stools and Mag, who will sell you a drink, a cure, a curse or a girl's name in Brynwyr, in that order of honesty.",
+   "tags": [
+    "spirits",
+    "cures",
+    "secrets"
+   ],
+   "cost": "$",
+   "setting": "indoor",
+   "good_for": [
+    "solo",
+    "friends"
+   ],
+   "day_parts": [
+    "evening",
+    "late"
+   ],
+   "seasons": [],
+   "cuisine": "",
+   "spots": [],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "stump-fields",
+   "name": "the stump fields",
+   "kind": "trail",
+   "neighborhood": "the-cutting-line",
+   "summary": "Acres of raw stumps and skid trails between the camp and the border stones, where the crews work and the wardens watch.",
+   "tags": [
+    "logging",
+    "open",
+    "watched"
+   ],
+   "cost": "free",
+   "setting": "outdoor",
+   "good_for": [
+    "coworkers"
+   ],
+   "day_parts": [
+    "morning",
+    "afternoon"
+   ],
+   "seasons": [],
+   "cuisine": "",
+   "spots": [],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "tally-hut",
+   "name": "the tally hut",
+   "kind": "bar",
+   "neighborhood": "the-cutting-line",
+   "summary": "A plank hut at the edge of the stumps where the tally men count the day's logs and sell small beer to the crews coming off shift.",
+   "tags": [
+    "crews",
+    "tally",
+    "small-beer"
+   ],
+   "cost": "$",
+   "setting": "indoor",
+   "good_for": [
+    "coworkers"
+   ],
+   "day_parts": [
+    "afternoon",
+    "evening"
+   ],
+   "seasons": [],
+   "cuisine": "",
+   "spots": [
+    "the tally board",
+    "the beer barrel"
+   ],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "border-stones",
+   "name": "the border stones",
+   "kind": "landmark",
+   "neighborhood": "the-cutting-line",
+   "summary": "A line of mossed standing stones older than Cyrel, each cut with a leaf sign. By treaty no axe crosses them. Arrows have.",
+   "tags": [
+    "border",
+    "treaty",
+    "danger"
+   ],
+   "cost": "free",
+   "setting": "outdoor",
+   "good_for": [
+    "solo"
+   ],
+   "day_parts": [
+    "morning",
+    "afternoon",
+    "evening"
+   ],
+   "seasons": [],
+   "cuisine": "",
+   "spots": [
+    "the split stone",
+    "the arrow-scarred stone",
+    "the path between"
+   ],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "the-heartwood",
+   "name": "the Heartwood",
+   "kind": "trail",
+   "neighborhood": "the-cutting-line",
+   "summary": "The old grove past the border stones: trees thirty men could not ring, ground that hums underfoot, and Brynwyr wardens who kill trespassers. Something under it makes compasses spin and wounds close wrong.",
+   "tags": [
+    "wild",
+    "danger",
+    "ley",
+    "elves",
+    "forbidden"
+   ],
+   "cost": "free",
+   "setting": "outdoor",
+   "good_for": [
+    "solo"
+   ],
+   "day_parts": [
+    "morning",
+    "afternoon",
+    "evening"
+   ],
+   "seasons": [],
+   "cuisine": "",
+   "spots": [
+    "the hollow oak",
+    "the humming stones",
+    "the warden path"
+   ],
+   "source": "curated-2026-10"
+  }
+ ],
+ "transit": [
+  {
+   "id": "on-foot",
+   "name": "On foot",
+   "kind": "walk",
+   "summary": "Kingswood is a half hour end to end; the line is another half hour past the camp.",
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "carters",
+   "name": "Carters",
+   "kind": "stagecoach",
+   "summary": "Carts on the Cyrel road, a day and a half to the capital.",
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "river-barge",
+   "name": "The timber barge",
+   "kind": "boat",
+   "summary": "Down the Kingsbrook to Cyrel twice a week; passengers ride on the timber for a crown.",
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "horse",
+   "name": "Horse",
+   "kind": "horse",
+   "summary": "The watch, the reeve and the factor ride.",
+   "source": "curated-2026-10"
+  }
+ ],
+ "careers": [
+  {
+   "id": "logger",
+   "name": "Logger",
+   "sector": "forest",
+   "schedule": "early",
+   "employment": "staff",
+   "pay": "$",
+   "summary": "Felling and limbing at the cutting line with a crew, paid by the tree.",
+   "themes": [
+    "the axe",
+    "falling timber",
+    "the crew",
+    "elf arrows"
+   ],
+   "eras": [
+    "fantasy"
+   ],
+   "worked_by": "men"
+  },
+  {
+   "id": "sawyer",
+   "name": "Sawyer",
+   "sector": "timber",
+   "schedule": "shift-day",
+   "employment": "staff",
+   "pay": "$",
+   "summary": "Feeding logs to the great blade at the mill and keeping all ten fingers.",
+   "themes": [
+    "the blade",
+    "sawdust",
+    "noise"
+   ],
+   "eras": [
+    "fantasy"
+   ],
+   "worked_by": "men"
+  },
+  {
+   "id": "teamster",
+   "name": "Teamster",
+   "sector": "timber",
+   "schedule": "early",
+   "employment": "staff",
+   "pay": "$",
+   "summary": "Driving the ox teams that skid logs from the line to the mill pond.",
+   "themes": [
+    "oxen",
+    "mud",
+    "the skid trail"
+   ],
+   "eras": [
+    "fantasy"
+   ]
+  },
+  {
+   "id": "bargeman",
+   "name": "Bargeman",
+   "sector": "river",
+   "schedule": "rotating",
+   "employment": "staff",
+   "pay": "$",
+   "summary": "Poling the timber barge down the Kingsbrook to Cyrel and back.",
+   "themes": [
+    "the river",
+    "Cyrel",
+    "smuggling"
+   ],
+   "eras": [
+    "fantasy"
+   ],
+   "worked_by": "men"
+  },
+  {
+   "id": "tally-clerk",
+   "name": "Tally clerk",
+   "sector": "guild",
+   "schedule": "office",
+   "employment": "staff",
+   "pay": "$$",
+   "summary": "Counting every board for the guild factor, and being paid to count some twice.",
+   "themes": [
+    "ledgers",
+    "the guild",
+    "skimming"
+   ],
+   "eras": [
+    "fantasy"
+   ]
+  },
+  {
+   "id": "watch-soldier",
+   "name": "Watch soldier",
+   "sector": "watch",
+   "schedule": "rotating",
+   "employment": "rota",
+   "pay": "$",
+   "summary": "Standing a Cyrel soldier's watch at the post or the border stones.",
+   "themes": [
+    "the border",
+    "boredom",
+    "fear",
+    "orders"
+   ],
+   "eras": [
+    "fantasy"
+   ],
+   "worked_by": "men"
+  },
+  {
+   "id": "tanner",
+   "name": "Tanner",
+   "sector": "craft",
+   "schedule": "shift-day",
+   "employment": "staff",
+   "pay": "$",
+   "summary": "Working hides in the lime pits at Low Ford.",
+   "themes": [
+    "the stink",
+    "hides",
+    "cheap work"
+   ],
+   "eras": [
+    "fantasy"
+   ]
+  },
+  {
+   "id": "charcoal-burner",
+   "name": "Charcoal burner",
+   "sector": "forest",
+   "schedule": "rotating",
+   "employment": "staff",
+   "pay": "$",
+   "summary": "Tending the smoking kilns day and night for the smithy and the barge.",
+   "themes": [
+    "the kilns",
+    "night watches",
+    "smoke"
+   ],
+   "eras": [
+    "fantasy"
+   ],
+   "worked_by": "men"
+  },
+  {
+   "id": "camp-cook",
+   "name": "Camp cook",
+   "sector": "food",
+   "schedule": "early",
+   "employment": "staff",
+   "pay": "$",
+   "summary": "Feeding the crews from one pot before dawn and after dark.",
+   "themes": [
+    "the pot",
+    "the crews",
+    "gossip"
+   ],
+   "eras": [
+    "fantasy"
+   ],
+   "worked_by": "women"
+  },
+  {
+   "id": "herb-woman",
+   "name": "Herb seller",
+   "sector": "healing",
+   "schedule": "flexible",
+   "employment": "freelance",
+   "pay": "$",
+   "summary": "Selling remedies, poultices and quieter things from a market stall or a back room.",
+   "themes": [
+    "herbs",
+    "cures",
+    "poisons"
+   ],
+   "eras": [
+    "fantasy"
+   ],
+   "worked_by": "women"
+  },
+  {
+   "id": "shrine-keeper",
+   "name": "Shrine keeper",
+   "sector": "faith",
+   "schedule": "early",
+   "employment": "staff",
+   "pay": "$",
+   "summary": "Keeping Tidum's shrine, nursing the sick and burying the poor.",
+   "themes": [
+    "the shrine",
+    "the sick",
+    "the New Gods"
+   ],
+   "eras": [
+    "fantasy"
+   ]
+  },
+  {
+   "id": "tavern-hand",
+   "name": "Tavern hand",
+   "sector": "food",
+   "schedule": "evening",
+   "employment": "staff",
+   "pay": "$",
+   "summary": "Pouring, carrying and cleaning up after loggers at the Felled Oak.",
+   "themes": [
+    "ale",
+    "fights",
+    "tips"
+   ],
+   "eras": [
+    "fantasy"
+   ]
+  },
+  {
+   "id": "smith",
+   "name": "Smith",
+   "sector": "craft",
+   "schedule": "shift-day",
+   "employment": "staff",
+   "pay": "$$",
+   "summary": "Forging axes, saw-teeth and the odd blade at Blackwood.",
+   "themes": [
+    "the forge",
+    "steel",
+    "customers"
+   ],
+   "eras": [
+    "fantasy"
+   ]
+  },
+  {
+   "id": "fighter",
+   "name": "Pit fighter",
+   "sector": "camp",
+   "schedule": "evening",
+   "employment": "freelance",
+   "pay": "$",
+   "summary": "Fighting in the stump pit for coin and the crowd.",
+   "themes": [
+    "the pit",
+    "bets",
+    "bruises"
+   ],
+   "eras": [
+    "fantasy"
+   ]
+  }
+ ],
+ "work_by_gender": true,
+ "employers": [
+  {
+   "id": "varro-sawmill",
+   "name": "Varro's Mill",
+   "sector": "timber",
+   "neighborhood": "mill-row",
+   "size": "medium",
+   "summary": "The sawmill and its yards, run by the Varro family for three generations.",
+   "careers": [
+    "sawyer",
+    "teamster"
+   ],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "cyrel-timber-guild",
+   "name": "the Cyrel Timber Guild",
+   "sector": "guild",
+   "neighborhood": "mill-row",
+   "size": "medium",
+   "summary": "The guild that owns the cutting rights, hires the crews and ships the timber.",
+   "careers": [
+    "logger",
+    "tally-clerk",
+    "bargeman",
+    "teamster"
+   ],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "kingswood-watch",
+   "name": "the Kingswood watch",
+   "sector": "watch",
+   "neighborhood": "reeve-hill",
+   "size": "small",
+   "summary": "A dozen Cyrel soldiers under a sergeant, posted against the elves.",
+   "careers": [
+    "watch-soldier"
+   ],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "felled-oak-house",
+   "name": "the Felled Oak",
+   "sector": "food",
+   "neighborhood": "the-crossroads",
+   "size": "small",
+   "summary": "The tavern's bar and kitchen.",
+   "careers": [
+    "tavern-hand"
+   ],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "low-ford-tannery",
+   "name": "the tannery",
+   "sector": "craft",
+   "neighborhood": "low-ford",
+   "size": "small",
+   "summary": "The lime pits and drying racks at the ford.",
+   "careers": [
+    "tanner"
+   ],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "kiln-crews",
+   "name": "the kiln crews",
+   "sector": "forest",
+   "neighborhood": "low-ford",
+   "size": "small",
+   "summary": "The charcoal burners who sell to the smithy and the barge.",
+   "careers": [
+    "charcoal-burner"
+   ],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "blackwood",
+   "name": "the Blackwood smithy",
+   "sector": "craft",
+   "neighborhood": "mill-row",
+   "size": "small",
+   "summary": "Axes, saw-teeth and blades.",
+   "careers": [
+    "smith"
+   ],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "cutters-cookhouse",
+   "name": "the camp cook fires",
+   "sector": "food",
+   "neighborhood": "cutters-camp",
+   "size": "small",
+   "summary": "The pots that feed the crews.",
+   "careers": [
+    "camp-cook"
+   ],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "tidum-shrine",
+   "name": "the Shrine of Tidum",
+   "sector": "faith",
+   "neighborhood": "the-crossroads",
+   "size": "small",
+   "summary": "The shrine, its sickroom and its graves.",
+   "careers": [
+    "shrine-keeper"
+   ],
+   "source": "curated-2026-10"
+  }
+ ],
+ "career_hubs": [
+  {
+   "id": "timber",
+   "name": "The mill and the line",
+   "neighborhoods": [
+    "mill-row",
+    "cutters-camp",
+    "the-cutting-line"
+   ],
+   "sectors": [
+    "timber",
+    "forest",
+    "guild",
+    "river"
+   ],
+   "summary": "Almost every wage in Kingswood comes from cutting, hauling, sawing or shipping wood.",
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "green-and-hill",
+   "name": "The Crossroads and Reeve Hill",
+   "neighborhoods": [
+    "the-crossroads",
+    "reeve-hill"
+   ],
+   "sectors": [
+    "food",
+    "faith",
+    "watch",
+    "healing"
+   ],
+   "summary": "The tavern, the shrine, the market and the watch.",
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "ford-trades",
+   "name": "Low Ford",
+   "neighborhoods": [
+    "low-ford"
+   ],
+   "sectors": [
+    "craft",
+    "forest"
+   ],
+   "summary": "The tannery and the kilns: the work nobody else wants.",
+   "source": "curated-2026-10"
+  }
+ ],
+ "climate": {
+  "summary": "Damp and temperate: long wet winters, mud springs, short warm summers, fogs off the brook.",
+  "months": [
+   {
+    "high_f": 40,
+    "low_f": 29,
+    "rain_days": 13,
+    "note": "Cold and wet; the line shuts in hard frost."
+   },
+   {
+    "high_f": 42,
+    "low_f": 30,
+    "rain_days": 11,
+    "note": "Raw; snow lies in the Heartwood."
+   },
+   {
+    "high_f": 49,
+    "low_f": 34,
+    "rain_days": 12,
+    "note": "Mud season; the skid trails turn to soup."
+   },
+   {
+    "high_f": 56,
+    "low_f": 38,
+    "rain_days": 11,
+    "note": "The cutting starts again."
+   },
+   {
+    "high_f": 63,
+    "low_f": 44,
+    "rain_days": 11,
+    "note": "Long days at the line; the barge runs full."
+   },
+   {
+    "high_f": 69,
+    "low_f": 50,
+    "rain_days": 10,
+    "note": "Warm; midges at the ford."
+   },
+   {
+    "high_f": 73,
+    "low_f": 54,
+    "rain_days": 9,
+    "note": "The warmest month; the mill runs late."
+   },
+   {
+    "high_f": 72,
+    "low_f": 53,
+    "rain_days": 10,
+    "note": "Heavy, thundery air."
+   },
+   {
+    "high_f": 66,
+    "low_f": 48,
+    "rain_days": 10,
+    "note": "Harvest in Eriane, wages down in Kingswood."
+   },
+   {
+    "high_f": 57,
+    "low_f": 42,
+    "rain_days": 12,
+    "note": "Leaves turn; fogs off the brook."
+   },
+   {
+    "high_f": 48,
+    "low_f": 35,
+    "rain_days": 13,
+    "note": "Dark early; fewer crews, more drinking."
+   },
+   {
+    "high_f": 42,
+    "low_f": 31,
+    "rain_days": 14,
+    "note": "Bitter; the camp half empty."
+   }
+  ],
+  "source": "curated-2026-10"
+ },
+ "annual_events": [
+  {
+   "id": "first-felling",
+   "name": "First Felling",
+   "months": [
+    4
+   ],
+   "neighborhood": "the-cutting-line",
+   "summary": "The first tree of the season is felled at dawn with the shrine keeper's blessing, and its first chip goes on Tidum's altar.",
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "tithe-day",
+   "name": "Tithe day",
+   "months": [
+    9
+   ],
+   "neighborhood": "reeve-hill",
+   "summary": "The reeve collects the King's tithe in coin and timber; the camp empties and the Felled Oak fills.",
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "night-of-stones",
+   "name": "the Night of Stones",
+   "months": [
+    10
+   ],
+   "neighborhood": "the-cutting-line",
+   "summary": "Once a year the town leaves bread at the border stones. Nobody remembers who started it, and the bread is always gone by morning.",
+   "source": "curated-2026-10"
+  }
+ ],
+ "local_color": [
+  {
+   "id": "chip-for-tidum",
+   "name": "A chip for Tidum",
+   "kind": "custom",
+   "summary": "Loggers keep the first chip of every tree for the shrine. A crew that forgets is a crew that loses a man.",
+   "places": [
+    "shrine-of-tidum"
+   ],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "past-the-stones",
+   "name": "Past the stones",
+   "kind": "saying",
+   "summary": "\"Gone past the stones\" means dead, missing, or ruined, and nobody asks which.",
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "humming-ground",
+   "name": "The humming ground",
+   "kind": "legend",
+   "summary": "Old crews say the ground past the stones hums at night, and that a man who sleeps on it wakes knowing things he should not.",
+   "places": [
+    "the-heartwood"
+   ],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "xiloscients-stand",
+   "name": "Xiloscient's stand",
+   "kind": "legend",
+   "summary": "In 251 AOD Gor'gel, the Old God of War, came to the elf druid Himo Xiloscient wearing another god's face and talked him into opening the first portal. When Ohgnu's gnolls and the demons poured through, Himo held the line here, at Kingswood. The town tells it proudly and leaves out that he was an elf, and that the door was his.",
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "the-apprentice",
+   "name": "Tidum's apprentice",
+   "kind": "legend",
+   "summary": "Before he was a god, Tidum was an archdruid, and his apprentice inherited his deathlessness when he rose. The apprentice died anyway, in the first wave of devils. The keepers say the yews round the shrine grew from that grave.",
+   "places": [
+    "shrine-of-tidum"
+   ],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "the-empty-house",
+   "name": "The empty house",
+   "kind": "rumor",
+   "summary": "The shuttered stone house on Reeve Hill belonged to the last reeve, who went past the stones one night and came back wrong.",
+   "places": [
+    "stone-houses"
+   ],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "oak-stew",
+   "name": "Felled Oak stew",
+   "kind": "dish",
+   "summary": "Mutton, barley and dark ale, cooked until nobody can tell which is which.",
+   "places": [
+    "felled-oak"
+   ],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "plum-spirit",
+   "name": "Mag's plum",
+   "kind": "drink",
+   "summary": "Plum spirit from Low Ford, strong enough to strip pitch off an axe.",
+   "places": [
+    "mother-mags"
+   ],
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "elf-arrows",
+   "name": "Grey-fletched arrows",
+   "kind": "rumor",
+   "summary": "Wardens fletch with grey owl feathers. Finding one on your bunk is a warning; finding one in you is the second.",
+   "places": [
+    "border-stones"
+   ],
+   "source": "curated-2026-10"
+  }
+ ],
+ "names": {
+  "mix": {
+   "cyrel": 0.84,
+   "halfling": 0.1,
+   "half-elf": 0.06
+  },
+  "groups": {
+   "cyrel": {
+    "feminine": [
+     "Hesk",
+     "Wenna",
+     "Maud",
+     "Ilse",
+     "Brannagh",
+     "Edda",
+     "Tamsin",
+     "Garra",
+     "Orla",
+     "Nell",
+     "Sabeth",
+     "Aud",
+     "Rhoswen",
+     "Kettie",
+     "Joss",
+     "Margery",
+     "Elspeth",
+     "Hild",
+     "Cass",
+     "Linnet"
+    ],
+    "masculine": [
+     "Aldous",
+     "Bram",
+     "Corin",
+     "Tobin",
+     "Garrick",
+     "Osric",
+     "Wat",
+     "Hamon",
+     "Dunstan",
+     "Piers",
+     "Rowan",
+     "Edric",
+     "Halden",
+     "Jory",
+     "Matthias",
+     "Colm",
+     "Fenwick",
+     "Ulric",
+     "Brand",
+     "Simkin"
+    ],
+    "neutral": [
+     "Ash",
+     "Wren",
+     "Rook",
+     "Linden"
+    ],
+    "family": [
+     "Marr",
+     "Varro",
+     "Tolley",
+     "Ashby",
+     "Rook",
+     "Pell",
+     "Blacklock",
+     "Hale",
+     "Thorley",
+     "Cutter",
+     "Fenn",
+     "Brook",
+     "Mossley",
+     "Grieve",
+     "Holt",
+     "Sawyer",
+     "Wainwright",
+     "Dunmore",
+     "Carrow",
+     "Stoat"
+    ]
+   },
+   "halfling": {
+    "feminine": [
+     "Pip",
+     "Marigold",
+     "Tansy",
+     "Bree"
+    ],
+    "masculine": [
+     "Dob",
+     "Hobb",
+     "Tam",
+     "Fennick"
+    ],
+    "family": [
+     "Underbough",
+     "Hollyhock",
+     "Tealeaf",
+     "Brambleway"
+    ],
+    "kind": "halfling"
+   },
+   "half-elf": {
+    "feminine": [
+     "Sereth",
+     "Ilvane",
+     "Ailsa"
+    ],
+    "masculine": [
+     "Thalen",
+     "Corvane",
+     "Emrys"
+    ],
+    "neutral": [
+     "Lirien"
+    ],
+    "family": [
+     "of the Ford",
+     "Greenhand",
+     "Mossley"
+    ],
+    "kind": "half-elf"
+   }
+  }
+ },
+ "calendar": "none",
+ "prices": [
+  {
+   "id": "ale",
+   "item": "Mug of ale",
+   "low": 0.1,
+   "high": 0.2,
+   "per": "",
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "stew",
+   "item": "Bowl of stew and bread",
+   "low": 0.2,
+   "high": 0.3,
+   "per": "",
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "room",
+   "item": "Room at the Wayhouse",
+   "low": 1,
+   "high": 2,
+   "per": "night",
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "bunk",
+   "item": "Bunk in the camp",
+   "low": 0.3,
+   "high": 0.5,
+   "per": "night",
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "day-wage",
+   "item": "A logger's day wage",
+   "low": 1,
+   "high": 2,
+   "per": "day",
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "axe",
+   "item": "Felling axe",
+   "low": 4,
+   "high": 6,
+   "per": "",
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "sword",
+   "item": "Plain sword",
+   "low": 15,
+   "high": 25,
+   "per": "",
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "rope",
+   "item": "Rope, fifty feet",
+   "low": 0.5,
+   "high": 1,
+   "per": "",
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "lamp-oil",
+   "item": "Lamp oil",
+   "low": 0.2,
+   "high": 0.4,
+   "per": "flask",
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "remedy",
+   "item": "Poultice or remedy",
+   "low": 0.5,
+   "high": 3,
+   "per": "",
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "barge-passage",
+   "item": "Passage to Cyrel on the barge",
+   "low": 1,
+   "high": 1,
+   "per": "",
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "pit-purse",
+   "item": "Stump-pit purse",
+   "low": 2,
+   "high": 10,
+   "per": "fight",
+   "source": "curated-2026-10"
+  }
+ ],
+ "water": [
+  {
+   "kind": "river",
+   "name": "Kingsbrook",
+   "width_km": 0.03,
+   "points": [
+    [
+     52.018,
+     -2.03
+    ],
+    [
+     52.01,
+     -2.015
+    ],
+    [
+     52.006,
+     -2.0
+    ],
+    [
+     52.0,
+     -1.985
+    ]
+   ]
+  }
+ ],
+ "notables": [
+  {
+   "id": "aldous-marr",
+   "name": "Aldous Marr",
+   "given": "Aldous",
+   "pronouns": "he/him",
+   "age": 54,
+   "place": "reeves-hall",
+   "role": "reeve",
+   "staff": true,
+   "about": "The King's reeve of Kingswood: soft-spoken, well-fed and deep in debt to the Timber Guild. He has quietly sold them the right to fell the Heartwood, past the border stones, and needs the crews in before anyone in Cyrel asks why.",
+   "wants": "to get the first crews past the stones before the week is out, and nobody asking questions",
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "hesk-varro",
+   "name": "Hesk Varro",
+   "given": "Hesk",
+   "pronouns": "she/her",
+   "age": 38,
+   "place": "varro-mill",
+   "role": "mill foreman",
+   "staff": true,
+   "about": "Runs the mill and the toughest crew on the line. Her younger brother died with an elf arrow in his throat two springs ago, and she wants the Heartwood cut more than she wants the money.",
+   "wants": "to sign every axe in town onto the Heartwood contract",
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "ilse-rook",
+   "name": "Ilse Rook",
+   "given": "Mother Rook",
+   "pronouns": "she/her",
+   "age": 67,
+   "place": "shrine-of-tidum",
+   "role": "shrine keeper",
+   "staff": true,
+   "about": "Keeper of Tidum's shrine, healer and gravedigger. She knows the Heartwood stands on a Ley convergence and that cutting it will crack something open under the village. She has told no one, because she once helped hide what is down there.",
+   "wants": "to stop the felling without ever saying why",
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "corin-ashby",
+   "name": "Corin Ashby",
+   "given": "Corin",
+   "pronouns": "he/him",
+   "age": 31,
+   "place": "felled-oak",
+   "role": "tavern keeper",
+   "staff": true,
+   "about": "Keeps the Felled Oak, fences whatever the crews steal and sells what he overhears to whoever pays: the reeve, the watch, and lately an elf.",
+   "wants": "to sell what he hears this week to the highest bidder",
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "mag-hollin",
+   "name": "Mag Hollin",
+   "given": "Mother Mag",
+   "pronouns": "she/her",
+   "age": 63,
+   "place": "mother-mags",
+   "role": "keeper",
+   "staff": true,
+   "days": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "about": "Keeps the front room at Low Ford: plum spirit, cures, the odd curse, and quiet money for whatever the crews bring her that they shouldn't have. She asks no questions and pays a quarter of what a thing is worth.",
+   "wants": "to buy cheap and keep the watch looking the other way",
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "sereth",
+   "name": "Sereth of the Ford",
+   "given": "Sereth",
+   "pronouns": "they/them",
+   "age": 142,
+   "kind": "half-elf",
+   "place": "crossroads-market",
+   "role": "herb seller",
+   "staff": false,
+   "about": "A half-elf who sells herbs at the market and lives at the ford. In truth a Brynwyr warden's eyes in Kingswood. They have been told that if the crews cross the stones, the wardens will burn Cutters' Camp, and they are not sure they will warn anyone first.",
+   "wants": "the name of everyone who signs the contract, without being seen asking",
+   "source": "curated-2026-10"
+  },
+  {
+   "id": "bram-tolley",
+   "name": "Bram Tolley",
+   "given": "Sergeant Tolley",
+   "pronouns": "he/him",
+   "age": 46,
+   "place": "watch-post",
+   "role": "watch sergeant",
+   "staff": true,
+   "about": "Sergeant of the Kingswood watch. Brutal, tired, and honest in the way of a man who has never been offered enough. He takes the stump-pit cut and hangs elves when he can catch them.",
+   "wants": "to catch whoever is talking to the wardens",
+   "source": "curated-2026-10"
+  }
+ ]
+}
