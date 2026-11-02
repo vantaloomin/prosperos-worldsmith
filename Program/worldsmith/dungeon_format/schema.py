@@ -484,6 +484,9 @@ class City(Record):
     # a kind of the city's own (label, lifespan and words). Checked when the city loads (lifespans.clean), which
     # drops a bad entry with a note rather than stopping the city loading.
     kinds: Any = None  # Any shape here: a wrong one is dropped with a note (lifespans.clean), not a failed load.
+    # The town's own politics (dungeon/world/politics.py): {credit, own_factions, factions, questions, issues}.
+    # Checked when the city loads (politics.clean), which drops a bad entry with a note.
+    politics: Any = None
 
     @model_validator(mode='after')
     def check(self):
