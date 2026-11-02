@@ -186,3 +186,14 @@ label.check { display: flex; align-items: center; gap: 0.4rem; font-size: 0.85re
 .wizard .choices li.row { justify-content: space-between; align-items: center; gap: 0.6rem; }
 .names-mix input { max-width: 6rem; }
 .samples { columns: 2; padding-left: 1.1rem; }
+.painter-tools { align-items: center; margin: 0.35rem 0; font-size: 0.9rem; }
+.painter-tools .spacer { flex: 1; }
+.painter-tools button[aria-pressed='true'] { border-color: var(--accent); color: var(--accent); }
+.painter-tools select, .painter-tools input:not([type]) { width: auto; flex: none; }
+label.inline { display: inline-flex; gap: 0.3rem; align-items: center; }
+label.inline input[type='range'], label.inline input[type='checkbox'] { flex: none; }
+.swatch { width: 0.8rem; height: 0.8rem; border-radius: 3px; border: 1px solid rgba(0,0,0,0.25); display: inline-block; }
+.painter-frame { overflow: auto; max-height: 72vh; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); }
+.painter-frame canvas { display: block; touch-action: none; cursor: crosshair; }
+.sites { padding-left: 1.2rem; display: grid; gap: 0.3rem; }
+.sites button.link[aria-pressed='true'] { font-weight: 600; }

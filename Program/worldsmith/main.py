@@ -13,6 +13,7 @@ from worldsmith import (
     chat,
     drafts,
     dungeon_run,
+    hexmap,
     maps,
     mermaid,
     models,
@@ -135,6 +136,26 @@ class NewInteriorBody(OpenBody):
     place: str | None = None
 
 
+class HexReadBody(OpenBody):
+    size: str = 'medium'
+
+
+class HexPaintBody(OpenBody):
+    columns: int
+    rows: int
+    paint: list[str]
+    seed: str = 'worldsmith'
+    wind: str = 'west'
+    rivers: str = 'some'
+
+
+class HexTownBody(OpenBody):
+    q: int
+    r: int
+    name: str
+    summary: str = ''
+
+
 class MapTextBody(BaseModel):
     graph: dict
     direction: str = 'LR'
@@ -214,6 +235,7 @@ def api() -> APIRouter:
     router.include_router(town_api())
     router.include_router(package_api())
     router.include_router(map_api())
+    router.include_router(hex_api())
     router.include_router(draft_api())
     router.include_router(world_api())
     return router
@@ -343,6 +365,33 @@ def map_api() -> APIRouter:
     @router.post('/maps/parse')
     def map_parse(body: MapParseBody):
         return mermaid.parse(body.text, body.graph)
+
+    return router
+
+
+def hex_api() -> APIRouter:
+    """The world map painter (hexmap.py)."""
+    router = APIRouter()
+
+    @router.post('/hexes/read')
+    def read_hexes(body: HexReadBody):
+        return hexmap.read(opened_from(body), body.size)
+
+    @router.post('/hexes/generate')
+    def generate_hexes(body: HexPaintBody):
+        return hexmap.generate(opened_from(body), body.model_dump(exclude={'builtin', 'folder'}))
+
+    @router.put('/hexes/save')
+    def save_hexes(body: HexPaintBody):
+        return hexmap.save(opened_from(body), body.model_dump(exclude={'builtin', 'folder'}))
+
+    @router.post('/hexes/undo')
+    def undo_hexes(body: OpenBody):
+        return hexmap.undo(opened_from(body))
+
+    @router.post('/hexes/town')
+    def town_from_site(body: HexTownBody):
+        return hexmap.add_town(opened_from(body), body.model_dump(exclude={'builtin', 'folder'}))
 
     return router
 
