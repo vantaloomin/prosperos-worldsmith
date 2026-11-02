@@ -44,3 +44,25 @@ form { display: flex; gap: 0.4rem; }
 .counts { border-collapse: collapse; }
 .counts th { text-align: left; font-weight: 400; padding: 0.15rem 1rem 0.15rem 0; }
 .counts td { padding: 0.15rem 0.75rem 0.15rem 0; font-variant-numeric: tabular-nums; }
+select, textarea { font: inherit; color: inherit; background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 0.35rem 0.5rem; width: 100%; }
+textarea.code { font-family: ui-monospace, Consolas, monospace; font-size: 0.82rem; }
+textarea.tall { min-height: 60vh; }
+textarea.bad { border-color: var(--error); }
+.town-head { display: flex; align-items: center; gap: 0.75rem; }
+.town-head .actions { margin-left: auto; display: flex; gap: 0.4rem; align-items: center; }
+.tabs { display: flex; flex-wrap: wrap; gap: 0.25rem; margin: 0.75rem 0; }
+.tabs button { font-size: 0.85rem; padding: 0.25rem 0.55rem; }
+.tabs button[aria-pressed='true'] { border-color: var(--accent); color: var(--accent); }
+.record { display: grid; gap: 0.6rem; max-width: 46rem; }
+.field { display: grid; gap: 0.2rem; }
+.field > span { font-size: 0.85rem; color: var(--muted); }
+.field b { color: var(--accent); }
+.field input[type='checkbox'] { justify-self: start; flex: none; }
+.ticks { display: flex; flex-wrap: wrap; gap: 0.2rem 0.8rem; font-size: 0.9rem; }
+.ticks input { flex: none; }
+.section { display: grid; grid-template-columns: 220px 1fr; gap: 1rem; align-items: start; }
+.entries { display: grid; gap: 0.4rem; max-height: 70vh; overflow: auto; }
+.entry-head { display: flex; align-items: center; gap: 0.5rem; }
+.entry-head h3 { margin: 0; }
+.entry-head button { margin-left: auto; }
+@media (max-width: 1100px) { .section { grid-template-columns: 1fr; } }
