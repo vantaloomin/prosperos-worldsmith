@@ -7,7 +7,7 @@ from fastapi.testclient import TestClient
 from keyring.backend import KeyringBackend
 
 from tests.conftest import make_checkout
-from worldsmith import drafts, models, towns, worlds
+from worldsmith import drafts, models, progress, towns, worlds
 from worldsmith.dungeon_format.errors import DomainError
 from worldsmith.main import create_app
 
@@ -72,6 +72,20 @@ def test_a_refused_draft_is_retried_once_with_its_problems(opened, monkeypatch):
                       json.dumps([place('split-barrel')]))
     drafts.draft(opened, 'kingswood', 'places', '')
     assert len(asked) == 2 and 'nowhere' in asked[1]
+
+
+def test_a_list_drafts_progress_names_its_list_and_steps(opened, monkeypatch):
+    seen = []
+    answers = [json.dumps([place('split-barrel', 'nowhere')]), json.dumps([place('split-barrel')])]
+
+    def complete(system, prompt):
+        now = progress.of(opened, 'draft')
+        seen.append((now['about'], now['step'], now['attempt']))
+        return answers[len(seen) - 1]
+    monkeypatch.setattr(models, 'complete', complete)
+    drafts.draft(opened, 'kingswood', 'places', '')
+    assert seen == [('places', 'write', 1), ('places', 'write', 2)]
+    assert progress.of(opened, 'draft')['running'] is False
 
 
 def test_a_draft_that_stays_wrong_is_refused(opened, monkeypatch):

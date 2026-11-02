@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Sparkles } from 'lucide-react'
 import { sendJson, type Draft, type WorldRef } from './api'
+import { JobProgress } from './JobProgress'
 
 /** "Draft with AI" for one list of a town: an optional ask, then a draft lands in the queue for approval. */
 export function DraftButton({ world, town, target, what }: { world: WorldRef; town: string; target: string; what: string }) {
@@ -18,6 +19,7 @@ export function DraftButton({ world, town, target, what }: { world: WorldRef; to
           value={ask} onChange={(event) => setAsk(event.target.value)} disabled={make.isPending} />
         <button type="submit" disabled={make.isPending}><Sparkles size={14} aria-hidden /> {make.isPending ? 'Drafting…' : 'Draft with AI'}</button>
       </form>
+      {make.isPending && <JobProgress world={world} job="draft" compact />}
       {make.isSuccess && <p className="muted small">Drafted. Review it in the queue on the right.</p>}
       {make.isError && <p className="error small">{make.error.message}</p>}
     </div>

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Sparkles } from 'lucide-react'
 import { sendJson, type Draft, type WorldOverview, type WorldRef } from './api'
+import { JobProgress } from './JobProgress'
 
 /** The new town wizard: a pitch and where the town sits; the whole town is drafted for approval. */
 export function NewTown({ world, overview }: { world: WorldRef; overview: WorldOverview }) {
@@ -53,8 +54,9 @@ export function NewTown({ world, overview }: { world: WorldRef; overview: WorldO
         </fieldset>
       )}
       <div className="row">
-        <button type="submit" disabled={make.isPending || !form.pitch.trim()}><Sparkles size={14} aria-hidden /> {make.isPending ? 'Drafting the town… (a minute or two)' : 'Draft the town'}</button>
+        <button type="submit" disabled={make.isPending || !form.pitch.trim()}><Sparkles size={14} aria-hidden /> {make.isPending ? 'Drafting the town…' : 'Draft the town'}</button>
       </div>
+      {make.isPending && <JobProgress world={world} job="town" />}
       {make.isSuccess && <p className="note">Drafted {make.data.entries[0]?.name as string}. Review it in the queue on the right, then approve to add it.</p>}
       {make.isError && <p className="error">{make.error.message}</p>}
     </form>

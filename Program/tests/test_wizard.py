@@ -5,7 +5,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from tests.conftest import kingswood, make_checkout
-from worldsmith import drafts, models, towns, wizard, worlds
+from worldsmith import drafts, models, progress, settings, towns, wizard, worlds
 from worldsmith.dungeon_format.errors import DomainError
 from worldsmith.main import create_app
 
@@ -77,6 +77,32 @@ def test_a_town_id_that_is_taken_is_retried_then_refused(checkout, monkeypatch):
     monkeypatch.setattr(models, 'complete', lambda system, prompt: json.dumps(written_town('kingswood')))
     with pytest.raises(DomainError, match='already a town'):
         wizard.draft_town(opened, 'another kingswood')
+
+
+def test_a_towns_progress_shows_writing_then_checking_and_the_retry(checkout, monkeypatch):
+    opened = worlds.builtin(checkout, 'testland')
+    answers = [written_town('kingswood'), written_town()]
+    seen = []
+
+    def complete(system, prompt):
+        now = progress.of(opened, 'town')
+        seen.append((now['step'], now['attempt'], now['about'], now['problems'] != []))
+        return json.dumps(answers[len(seen) - 1])
+    monkeypatch.setattr(models, 'complete', complete)
+    assert progress.of(opened, 'town') == {'running': False}
+    wizard.draft_town(opened, 'a charcoal village', name='Oakhollow')
+    assert seen == [('write', 1, 'Oakhollow', False), ('write', 2, 'Oakhollow', True)]
+    done = progress.of(opened, 'town')
+    assert not done['running'] and done['error'] is None and (done['step'], done['of']) == ('check', 2)
+    monkeypatch.setattr(models, 'complete', lambda system, prompt: json.dumps(written_town('kingswood')))
+    with pytest.raises(DomainError):
+        wizard.draft_town(opened, 'another kingswood')
+    assert 'already a town' in progress.of(opened, 'town')['error']
+    settings.save({'dungeon_checkout': str(checkout)})
+    client = TestClient(create_app())
+    shown = client.post('/api/progress', json={'builtin': 'testland', 'job': 'town'}).json()
+    assert shown['running'] is False and shown['label'].startswith('Checking the town')
+    assert client.post('/api/progress', json={'builtin': 'testland', 'job': 'nonsense'}).json() == {'running': False}
 
 
 def test_a_pitch_is_needed(checkout):

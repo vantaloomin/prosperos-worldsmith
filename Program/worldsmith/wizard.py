@@ -19,7 +19,7 @@ import uuid
 from datetime import date
 from pathlib import Path
 
-from worldsmith import drafts, models, names, settings, towns, worlds
+from worldsmith import drafts, models, names, progress, settings, towns, worlds
 from worldsmith.dungeon_format import packages
 from worldsmith.dungeon_format.errors import DomainError, require
 from worldsmith.dungeon_format.schema import City
@@ -170,18 +170,21 @@ def draft_town(opened: worlds.Opened, pitch: str, name: str = '', near: str | No
     # A roadside stop grown into a town keeps the stop's id, so the world's starting place and factions still name it.
     keep_id = replaces if replaces and ('cities', replaces) not in found['engine'] else None
     problems: list[str] = []
-    for _ in range(2):
-        city = assembled(parsed_object(models.complete(SYSTEM, prompt_for(found, sibling, careers, pitch, name,
-                                                                         problems))), sibling, shared, borrowable)
-        if keep_id:
-            city['id'] = keep_id
-        problems = problems_of(city, found)
-        if not problems:
-            break
-    else:
-        raise DomainError('The model\'s town still had problems after a retry: ' + '; '.join(problems[:6]), 422)
-    hookup = {'near': near, 'replaces': replaces, 'hours': hours, 'terrain': terrain, 'danger': danger}
-    return drafts.queue(opened, city['id'], 'town', pitch, [city | {'_travel': hookup}])
+    with progress.tracked(opened, 'town', name.strip()):
+        for attempt in (1, 2):
+            progress.report(opened, 'town', 'write', attempt, problems)
+            city = assembled(parsed_object(models.complete(SYSTEM, prompt_for(found, sibling, careers, pitch, name,
+                                                                             problems))), sibling, shared, borrowable)
+            if keep_id:
+                city['id'] = keep_id
+            progress.report(opened, 'town', 'check', attempt)
+            problems = problems_of(city, found)
+            if not problems:
+                break
+        else:
+            raise DomainError('The model\'s town still had problems after a retry: ' + '; '.join(problems[:6]), 422)
+        hookup = {'near': near, 'replaces': replaces, 'hours': hours, 'terrain': terrain, 'danger': danger}
+        return drafts.queue(opened, city['id'], 'town', pitch, [city | {'_travel': hookup}])
 
 
 def travel_file(opened: worlds.Opened, world_id: str):
