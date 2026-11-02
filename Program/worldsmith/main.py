@@ -7,7 +7,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-from worldsmith import NAME, VERSION, chat, drafts, models, settings, towns, worlds
+from worldsmith import NAME, VERSION, chat, drafts, models, settings, towns, wizard, worlds
 from worldsmith.dungeon_format import packages
 from worldsmith.dungeon_format.errors import DomainError, require
 
@@ -56,6 +56,16 @@ class DraftBody(TownBody):
 class ChatBody(OpenBody):
     message: str
     town: str | None = None
+
+
+class NewTownBody(OpenBody):
+    pitch: str
+    name: str = ''
+    near: str | None = None
+    replaces: str | None = None
+    hours: float = 8
+    terrain: str = 'the road'
+    danger: str = 'low'
 
 
 class DecideBody(OpenBody):
@@ -147,6 +157,11 @@ def draft_api() -> APIRouter:
     @router.post('/drafts/pending')
     def pending_drafts(body: OpenBody):
         return drafts.pending(opened_from(body))
+
+    @router.post('/towns/new')
+    def new_town(body: NewTownBody):
+        return wizard.draft_town(opened_from(body), body.pitch, body.name, body.near, body.replaces, body.hours,
+                                 body.terrain, body.danger)
 
     @router.post('/chat')
     def read_chat(body: OpenBody):

@@ -87,3 +87,10 @@ button.link { border: none; background: none; color: var(--accent); padding: 0 0
 .proposal button { flex: none; }
 .chat form { align-items: flex-end; }
 .chat-buttons { display: grid; gap: 0.3rem; }
+fieldset.field { border: 1px solid var(--line); border-radius: 6px; padding: 0.5rem 0.75rem; display: grid; gap: 0.4rem; }
+fieldset.field legend { font-size: 0.85rem; color: var(--muted); }
+fieldset label { display: flex; gap: 0.4rem; align-items: center; }
+fieldset input[type='radio'] { flex: none; }
+.new-town .row input[type='number'] { max-width: 6rem; }
+.small-field { flex: 1; display: flex; align-items: stretch; text-align: left; flex-direction: column; gap: 0.15rem; font-size: 0.85rem; color: var(--muted, inherit); }
+.small-field input { width: 100%; }

@@ -9,6 +9,7 @@ history lives in Worldsmith's own folder, so nothing extra appears in a Dungeon 
 """
 import json
 import sqlite3
+import uuid
 from contextlib import closing
 from datetime import datetime, timezone
 from pathlib import Path
@@ -23,8 +24,9 @@ from worldsmith.worlds import TOWN_KINDS, Opened
 
 HISTORY = """
 CREATE TABLE IF NOT EXISTS history (
-  id INTEGER PRIMARY KEY AUTOINCREMENT, at TEXT NOT NULL, path TEXT NOT NULL, before TEXT);
+  id INTEGER PRIMARY KEY AUTOINCREMENT, at TEXT NOT NULL, path TEXT NOT NULL, before TEXT, town TEXT, batch TEXT);
 """
+LATER_COLUMNS = ('town', 'batch')
 MOST_HISTORY = 200
 
 
@@ -97,10 +99,19 @@ def history() -> sqlite3.Connection:
     connection = sqlite3.connect(path)
     connection.row_factory = sqlite3.Row
     connection.executescript(HISTORY)
+    have = {row['name'] for row in connection.execute('PRAGMA table_info(history)')}
+    for column in LATER_COLUMNS:
+        if column not in have:
+            try:
+                connection.execute(f'ALTER TABLE history ADD COLUMN {column} TEXT')
+            except sqlite3.OperationalError as error:
+                # Two requests can upgrade an older history at the same moment; the loser finds the column there.
+                if 'duplicate column' not in str(error):
+                    raise
     return connection
 
 
-def save(opened: Opened, town: str, kind: str, data: object) -> dict:
+def save(opened: Opened, town: str, kind: str, data: object, batch: str | None = None) -> dict:
     path = path_of(opened, town, kind)
     found = problems_in(kind, data)
     if found:
@@ -112,39 +123,57 @@ def save(opened: Opened, town: str, kind: str, data: object) -> dict:
     if before:
         data = kept_floats(json.loads(before), data)
     text = dumped(data, indent_of(before) if before else 1 if kind == 'cities' else 2)
-    if text != before:
-        with closing(history()) as connection, connection:
-            connection.execute('INSERT INTO history (at, path, before) VALUES (?, ?, ?)',
-                               (datetime.now(timezone.utc).isoformat(timespec='seconds'), str(path), before))
-            connection.execute('DELETE FROM history WHERE id NOT IN (SELECT id FROM history ORDER BY id DESC LIMIT ?)',
-                               (MOST_HISTORY,))
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(text, encoding='utf-8', newline='\n')
+    write_tracked(path, text, before, town, batch)
     return read(opened, town)
+
+
+def write_tracked(path: Path, text: str, before: str | None, town: str, batch: str | None = None):
+    """Write a file, keeping what it held so the town's undo can put it back. Writes sharing a batch are undone
+    together (a new town's city file and its stop on the travel map)."""
+    if text == before:
+        return
+    with closing(history()) as connection, connection:
+        connection.execute('INSERT INTO history (at, path, before, town, batch) VALUES (?, ?, ?, ?, ?)',
+                           (datetime.now(timezone.utc).isoformat(timespec='seconds'), str(path), before, town,
+                            batch or uuid.uuid4().hex))
+        connection.execute('DELETE FROM history WHERE id NOT IN (SELECT id FROM history ORDER BY id DESC LIMIT ?)',
+                           (MOST_HISTORY,))
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(text, encoding='utf-8', newline='\n')
+
+
+def town_rows(connection: sqlite3.Connection, opened: Opened, town: str, limit: int) -> list[sqlite3.Row]:
+    """The town's saves, newest first: rows tagged with the town, or (from before tagging) of its files."""
+    paths = [str(path_of(opened, town, kind)) for kind in TOWN_KINDS]
+    root = str(opened.data if opened.data else opened.folder)
+    return connection.execute(
+        f"SELECT * FROM history WHERE (town = ? AND path LIKE ?) OR (town IS NULL AND path IN ({','.join('?' * len(paths))})) "
+        'ORDER BY id DESC LIMIT ?', [town, root + '%', *paths, limit]).fetchall()
 
 
 def undoable(opened: Opened, town: str) -> list[dict]:
     """The saves of this town that can be undone, newest first."""
-    paths = {str(path_of(opened, town, kind)): kind for kind in TOWN_KINDS}
     with closing(history()) as connection:
-        rows = connection.execute(f"SELECT id, at, path FROM history WHERE path IN ({','.join('?' * len(paths))}) "
-                                  'ORDER BY id DESC LIMIT 20', list(paths)).fetchall()
-    return [{'id': row['id'], 'at': row['at'], 'kind': paths[row['path']]} for row in rows]
+        rows = town_rows(connection, opened, town, 20)
+    return [{'id': row['id'], 'at': row['at'], 'kind': Path(row['path']).parent.name} for row in rows]
 
 
 def undo(opened: Opened, town: str) -> dict:
-    """Put back the town's last saved file as it was before that save."""
-    paths = [str(path_of(opened, town, kind)) for kind in TOWN_KINDS]
+    """Put back the town's last save as it was before it (every file that save wrote)."""
     with closing(history()) as connection, connection:
-        row = connection.execute(f"SELECT id, path, before FROM history WHERE path IN ({','.join('?' * len(paths))}) "
-                                 'ORDER BY id DESC LIMIT 1', paths).fetchone()
-        require(row is not None, 'There is nothing to undo for this town.', 409)
-        path = Path(row['path'])
-        if row['before'] is None:
-            path.unlink(missing_ok=True)
-        else:
-            path.write_text(row['before'], encoding='utf-8', newline='\n')
-        connection.execute('DELETE FROM history WHERE id = ?', (row['id'],))
+        last = town_rows(connection, opened, town, 1)
+        require(bool(last), 'There is nothing to undo for this town.', 409)
+        rows = connection.execute('SELECT * FROM history WHERE batch = ? ORDER BY id DESC', (last[0]['batch'],)).fetchall() \
+            if last[0]['batch'] else last
+        for row in rows:
+            path = Path(row['path'])
+            if row['before'] is None:
+                path.unlink(missing_ok=True)
+            else:
+                path.write_text(row['before'], encoding='utf-8', newline='\n')
+            connection.execute('DELETE FROM history WHERE id = ?', (row['id'],))
+    if not path_of(opened, town, 'cities').is_file():
+        return {'id': town, 'parts': {kind: None for kind in TOWN_KINDS}, 'problems': {}, 'undo': [], 'gone': True}
     return read(opened, town)
 
 
