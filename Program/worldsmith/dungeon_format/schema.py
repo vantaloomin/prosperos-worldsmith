@@ -36,6 +36,8 @@ TRANSIT_KINDS = ('subway', 'light-rail', 'commuter-rail', 'bus', 'ferry', 'water
 TransitKind = Id
 # What a city is: a real place, a well-known fictional setting, or an original one (built in or the user's own).
 Setting = Literal['real', 'fictional', 'original']
+# A year a decade rule can name (dungeon/world/decades.py).
+CalendarYear = Annotated[int, Field(ge=1800, le=2200)]
 Era = Literal['modern', 'victorian', 'medieval', 'fantasy', 'steampunk', 'frontier', 'jazz-age', 'future', 'other']
 ScheduleKind = Literal['office', 'shift-day', 'shift-night', 'rotating', 'evening', 'early', 'flexible', 'academic']
 # Same days every week, a rota of shifts that changes weekly, or freelance gigs (dungeon/life/shifts.py).
@@ -196,11 +198,16 @@ class Career(Record):
     # The ages (in human terms) someone works it at, [youngest, oldest]: a squire is young, a student 18 to 22.
     # Left out, any working age.
     ages: tuple[Annotated[int, Field(ge=16, le=99)], Annotated[int, Field(ge=16, le=99)]] | None = None
+    # The years the work existed, [from, until], either null for open: a video store clerk until 2010. Read only in
+    # a modern city (dungeon/world/decades.py); left out, any year.
+    years: tuple[CalendarYear | None, CalendarYear | None] | None = None
 
     @model_validator(mode='after')
     def check_ages(self):
         if self.ages and self.ages[0] > self.ages[1]:
             raise ValueError('A career\'s ages run from the youngest to the oldest.')
+        if self.years and None not in self.years and self.years[0] > self.years[1]:
+            raise ValueError('A career\'s years run from the first to the last.')
         return self
 
 

@@ -1,6 +1,6 @@
 {
   "repo": "vantaloomin/prosperos-dungeon",
-  "commit": "308a02e637806d1e02d5bac824a5e8775b627033",
+  "commit": "cfd1de9d3d84d0af5b647b41dfd23047e2ba6bd6",
   "files": {
     "Program/dungeon/errors.py": "errors.py",
     "Program/dungeon/packages.py": "packages.py",
