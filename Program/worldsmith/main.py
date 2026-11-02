@@ -7,7 +7,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-from worldsmith import NAME, VERSION, chat, drafts, models, settings, towns, wizard, worlds
+from worldsmith import NAME, VERSION, chat, drafts, dungeon_run, models, package_files, settings, towns, wizard, worlds
 from worldsmith.dungeon_format import packages
 from worldsmith.dungeon_format.errors import DomainError, require
 
@@ -66,6 +66,20 @@ class NewTownBody(OpenBody):
     hours: float = 8
     terrain: str = 'the road'
     danger: str = 'low'
+
+
+class CheckBody(TownBody):
+    map: bool = False
+    seed: str = 'worldsmith'
+
+
+class ExportBody(OpenBody):
+    to: str | None = None
+
+
+class ImportBody(BaseModel):
+    package: str
+    folder: str
 
 
 class DecideBody(OpenBody):
@@ -135,6 +149,7 @@ def api() -> APIRouter:
         return worlds.overview(opened_from(body))
 
     router.include_router(town_api())
+    router.include_router(package_api())
     router.include_router(draft_api())
     return router
 
@@ -200,6 +215,30 @@ def town_api() -> APIRouter:
     @router.post('/towns/undo')
     def undo_town(body: TownBody):
         return towns.undo(opened_from(body), body.town)
+
+    @router.post('/towns/check')
+    def check_town(body: CheckBody):
+        city = towns.read(opened_from(body), body.town)['parts']['cities']
+        return dungeon_run.check_city(city, body.map, body.seed)
+
+    return router
+
+
+def package_api() -> APIRouter:
+    router = APIRouter()
+
+    @router.post('/worlds/export')
+    def export_world(body: ExportBody):
+        return package_files.export_world(opened_from(body), body.to)
+
+    @router.post('/worlds/install')
+    def install_world(body: OpenBody):
+        return package_files.install_world(opened_from(body))
+
+    @router.post('/worlds/import')
+    def import_world(body: ImportBody):
+        opened = package_files.import_package(body.package, body.folder)
+        return {'folder': str(opened.folder), 'world': worlds.overview(opened)}
 
     return router
 

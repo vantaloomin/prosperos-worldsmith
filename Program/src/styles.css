@@ -94,3 +94,34 @@ fieldset input[type='radio'] { flex: none; }
 .new-town .row input[type='number'] { max-width: 6rem; }
 .small-field { flex: 1; display: flex; align-items: stretch; text-align: left; flex-direction: column; gap: 0.15rem; font-size: 0.85rem; color: var(--muted, inherit); }
 .small-field input { width: 100%; }
+.row.tight { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; margin: 0.4rem 0; }
+.ok { color: #3c7a3a; display: flex; gap: 0.3rem; align-items: center; }
+.dungeon-check { margin: 0.5rem 0 1rem; }
+.package { margin-top: 1.5rem; }
+.package form { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.package input { flex: 1; min-width: 14rem; }
+
+/* The street map, drawn like Dungeon's Town widget (Program/src/styles.css there). */
+.map-view svg.town-map { width: 100%; max-width: 46rem; height: auto; display: block; margin: 6px 0; border: 1px solid var(--line); border-radius: 6px; }
+.map-view [aria-pressed="true"] { font-weight: 600; text-decoration: underline; }
+.town-map { --map-ink: color-mix(in srgb, var(--ink) 80%, #6b4a2b); --paper: color-mix(in srgb, var(--panel) 82%, #d9c49a); }
+.town-map .town-ground { fill: color-mix(in srgb, var(--paper) 90%, #b9a66a); }
+.town-map .town-patch { stroke: color-mix(in srgb, var(--map-ink) 18%, transparent); stroke-width: calc(0.3px * var(--town-scale, 1)); fill: none; }
+.town-map .patch-country { fill: color-mix(in srgb, var(--paper) 80%, #b9a66a); }
+.town-map .patch-town, .town-map .patch-square { fill: var(--paper); }
+.town-map .patch-square { fill: color-mix(in srgb, var(--paper) 85%, var(--panel)); }
+.town-map .patch-open { fill: color-mix(in srgb, #6f9a5a 40%, var(--paper)); cursor: pointer; }
+.town-map .patch-water { fill: color-mix(in srgb, #4f7aa8 50%, var(--paper)); }
+.town-map .town-river { fill: none; stroke: color-mix(in srgb, #4f7aa8 55%, var(--paper)); stroke-linecap: round; stroke-linejoin: round; }
+.town-map .town-road { fill: none; stroke: color-mix(in srgb, var(--map-ink) 30%, var(--paper)); stroke-width: 2.4; stroke-linejoin: round; }
+.town-map .town-wall line { stroke: var(--map-ink); stroke-width: 2.2; stroke-linecap: round; }
+.town-map .town-lot { fill: color-mix(in srgb, var(--map-ink) 30%, var(--paper)); stroke: var(--map-ink); stroke-width: calc(0.35px * var(--town-scale, 1)); cursor: pointer; }
+.town-map .town-lot.named { fill: color-mix(in srgb, var(--accent) 55%, var(--map-ink)); }
+.town-map .town-lot.picked { fill: var(--accent); }
+.town-map.town-street .town-lot { fill: color-mix(in srgb, var(--muted) 40%, var(--panel)); stroke: color-mix(in srgb, var(--muted) 70%, transparent); }
+.town-map.town-street .town-lot.named { fill: color-mix(in srgb, var(--accent) 55%, var(--panel)); }
+.town-map.town-street .town-road { stroke: color-mix(in srgb, #d9b45a 60%, var(--panel)); }
+.town-map .town-district { fill: var(--map-ink); opacity: 0.75; font-size: calc(10px * var(--town-scale, 1)); font-style: italic; pointer-events: none; }
+.town-map .town-label { fill: var(--ink); font-size: 2.6px; pointer-events: none; paint-order: stroke; stroke: var(--paper); stroke-width: 0.6px; }
+.town-map .town-exit { fill: var(--muted); font-size: calc(6px * var(--town-scale, 1)); pointer-events: none; }
+.stack { display: flex; flex-direction: column; gap: 0.4rem; align-items: stretch; }

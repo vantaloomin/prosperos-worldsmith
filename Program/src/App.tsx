@@ -8,6 +8,7 @@ import { ChatPane } from './ChatPane'
 import { DraftsPane } from './DraftsPane'
 import { ModelSettings } from './ModelSettings'
 import { NewTown } from './NewTown'
+import { ExportPackage } from './Packages'
 import { TownEditor } from './TownEditor'
 import { WorldPicker } from './WorldPicker'
 
@@ -32,7 +33,7 @@ function TownList({ towns, chosen, onChoose, onNew }: { towns: Town[]; chosen: s
   )
 }
 
-function Overview({ overview }: { overview: WorldOverview }) {
+function Overview({ overview, world }: { overview: WorldOverview; world: WorldRef }) {
   return (
     <>
       <h2>{overview.world.name}</h2>
@@ -56,6 +57,7 @@ function Overview({ overview }: { overview: WorldOverview }) {
           <tr><th>documents</th><td>{overview.documents}</td><td /></tr>
         </tbody>
       </table>
+      <ExportPackage world={world} />
     </>
   )
 }
@@ -91,7 +93,7 @@ export function App() {
         {open.isError && <p className="error">{open.error.message}</p>}
       </aside>
       <main className="pane work">
-        {town === NEW && ref && overview ? <NewTown world={ref} overview={overview} /> : chosen && ref ? <TownEditor world={ref} town={chosen.id} /> : overview ? <Overview overview={overview} />
+        {town === NEW && ref && overview ? <NewTown world={ref} overview={overview} /> : chosen && ref ? <TownEditor world={ref} town={chosen.id} /> : overview ? <Overview overview={overview} world={ref!} />
           : <><h2>Town builder</h2><p className="muted">Open a built-in world from your Dungeon checkout, or a world folder, to start.</p></>}
       </main>
       <aside className="pane side" aria-label="Brainstorm and drafts">
