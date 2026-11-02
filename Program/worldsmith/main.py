@@ -297,6 +297,10 @@ def world_api() -> APIRouter:
     def draft_world(body: WorldDraftBody):
         return worldgen.draft_world(opened_from(body), body.pitch, body.size)
 
+    @router.post('/worlds/draft/progress')
+    def draft_progress(body: OpenBody):
+        return worldgen.draft_progress(opened_from(body))
+
     @router.post('/worlds/town-stops')
     def town_stops(body: OpenBody):
         return worldgen.town_stops(opened_from(body))
