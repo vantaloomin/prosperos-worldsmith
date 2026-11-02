@@ -43,7 +43,7 @@ SECTIONS = {'lore': 'entries', 'regions': 'regions', 'settlements': 'settlements
 HIDDEN_SECTIONS = ('hidden-truths',)
 HIDDEN_FIELDS = ('secret', 'secrets', 'guise', 'mortal_life', 'truth', 'hidden')
 ENGINE_KINDS = ('adventures', 'arcs', 'art', 'cities', 'factions', 'finds', 'institutions', 'items', 'premades',
-                'tiers', 'travel', 'hexes')
+                'tiers', 'travel', 'hexes', 'interiors')
 ID = re.compile(r'^[a-z0-9]+(?:-[a-z0-9]+)*$')
 # Cross-references that must name an entry of another section: (section, field, the section it names).
 REFERENCES = (('settlements', 'region', 'regions'), ('cast', 'faction', 'factions'), ('cast', 'settlement', 'settlements'),
@@ -241,8 +241,9 @@ def builtin_ids() -> list[str]:
 
 
 def engine_for(world_id: str) -> dict:
-    """The game's own data for a world (dungeon/world/data): its travel map, arcs, factions in play and tiers, and for
-    each town on its map the town's adventure, items, finds, premades and city file."""
+    """The game's own data for a world (dungeon/world/data): its travel map, arcs, factions in play and tiers, for
+    each town on its map the town's adventure, items, finds, premades and city file, and the interiors that name
+    the world."""
     found = {}
     for kind in ('travel', 'arcs', 'factions', 'tiers'):
         path = DATA / kind / f'{world_id}.json'
@@ -254,6 +255,10 @@ def engine_for(world_id: str) -> dict:
             path = DATA / kind / f'{town}.json'
             if path.is_file():
                 found[(kind, town)] = read_json(path)
+    for path in sorted((DATA / 'interiors').glob('*.json')):  # requirements "### Interiors"
+        interior = read_json(path)
+        if isinstance(interior, dict) and interior.get('world') == world_id:
+            found[('interiors', path.stem)] = interior
     return found
 
 
