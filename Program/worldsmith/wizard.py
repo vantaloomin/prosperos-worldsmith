@@ -203,7 +203,7 @@ def place_on_map(opened: worlds.Opened, city: dict, hookup: dict, batch: str | N
                                                     'terrain': hookup.get('terrain', 'the road'),
                                                     'danger': hookup.get('danger', 'low')})
         nodes.append(node)
-    towns.write_tracked(path, towns.dumped(travel, towns.indent_of(before)), before, city['id'], batch)
+    towns.write_tracked(path, towns.dumped(travel, towns.indent_of(before), before), before, city['id'], batch)
 
 
 def approve_town(opened: worlds.Opened, entry: dict) -> dict:

@@ -7,7 +7,21 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-from worldsmith import NAME, VERSION, chat, drafts, dungeon_run, models, package_files, settings, towns, wizard, worlds
+from worldsmith import (
+    NAME,
+    VERSION,
+    chat,
+    drafts,
+    dungeon_run,
+    maps,
+    mermaid,
+    models,
+    package_files,
+    settings,
+    towns,
+    wizard,
+    worlds,
+)
 from worldsmith.dungeon_format import packages
 from worldsmith.dungeon_format.errors import DomainError, require
 
@@ -82,6 +96,25 @@ class ImportBody(BaseModel):
     folder: str
 
 
+class MapBody(OpenBody):
+    map: str
+    town: str | None = None
+
+
+class MapSaveBody(MapBody):
+    graph: dict
+
+
+class MapTextBody(BaseModel):
+    graph: dict
+    direction: str = 'LR'
+
+
+class MapParseBody(BaseModel):
+    text: str
+    graph: dict
+
+
 class DecideBody(OpenBody):
     approve: bool
     entries: list | None = None
@@ -150,6 +183,7 @@ def api() -> APIRouter:
 
     router.include_router(town_api())
     router.include_router(package_api())
+    router.include_router(map_api())
     router.include_router(draft_api())
     return router
 
@@ -220,6 +254,32 @@ def town_api() -> APIRouter:
     def check_town(body: CheckBody):
         city = towns.read(opened_from(body), body.town)['parts']['cities']
         return dungeon_run.check_city(city, body.map, body.seed)
+
+    return router
+
+
+def map_api() -> APIRouter:
+    router = APIRouter()
+
+    @router.post('/maps/read')
+    def read_map(body: MapBody):
+        return maps.read(opened_from(body), body.map, body.town)
+
+    @router.put('/maps/save')
+    def save_map(body: MapSaveBody):
+        return maps.save(opened_from(body), body.map, body.graph, body.town)
+
+    @router.post('/maps/undo')
+    def undo_map(body: MapBody):
+        return maps.undo(opened_from(body), body.map, body.town)
+
+    @router.post('/maps/text')
+    def map_text(body: MapTextBody):
+        return {'mermaid': mermaid.text(body.graph, 'TB' if body.direction == 'TB' else 'LR')}
+
+    @router.post('/maps/parse')
+    def map_parse(body: MapParseBody):
+        return mermaid.parse(body.text, body.graph)
 
     return router
 

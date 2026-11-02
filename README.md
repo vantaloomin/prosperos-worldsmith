@@ -27,6 +27,17 @@ in Windows Credential Manager (the system keyring), not in a file.
 - **Export .sqlite** writes the same package anywhere, to share. **World package** on the start screen unpacks one
   into a folder Worldsmith can open.
 
+## Maps
+
+- **Travel map** (left pane) and a town's **Map** tab are drawn maps you edit by hand. On the travel map, drag stops
+  (this moves them on the world map), draw roads between them, and set each road's hours, terrain and danger. On a
+  town's map, drag places between neighborhoods, and move neighborhoods (their lat/lon, which also anchors Dungeon's
+  street map).
+- Under each map is the same thing as **Mermaid text**, kept in step: paste it into any Mermaid viewer, or edit it
+  and apply it back to the map.
+- Saves keep the layout of Dungeon's files (the travel files keep one stop or road per line), so a Dungeon pull
+  request shows only what changed.
+
 ## Running it on Windows
 
 1. Install Python 3.12+ and Node 22+.
