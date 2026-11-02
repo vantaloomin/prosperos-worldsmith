@@ -5,7 +5,8 @@ the world in four parts, each a JSON object checked here before the next is aske
 
 1. The outline: the world's genre, era, money, voice, tier track and campaign start; its regions; its stops (towns,
    villages, ruins and landmarks, placed on a unit map); and the roads between them, with hours, terrain and danger.
-2. The people: name banks, the careers the world's towns hire for, everyday prices and the climate.
+2. The people: a name bank and heritage mix from Dungeon's own tables (worldsmith/names.py; a group of its own only
+   for a people no bank fits, and a wide one), the careers the world's towns hire for, everyday prices and the climate.
 3. The factions in play: goals, the stops they hold, rivals and allies, clocks, and the jobs they offer.
 4. The story: the director's arcs, road and camp encounters by region, the wild sites a hex crawl rolls, hidden
    truths and lore.
@@ -26,7 +27,7 @@ from typing import Annotated, Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, model_validator
 
-from worldsmith import drafts, models, settings, towns, worlds
+from worldsmith import drafts, models, names, settings, towns, worlds
 from worldsmith.dungeon_format import packages
 from worldsmith.dungeon_format.errors import DomainError, require
 from worldsmith.dungeon_format.schema import Career, CityNames, Currency, Era, Month, Price
@@ -38,6 +39,7 @@ Danger = Literal['none', 'low', 'medium', 'high']
 Difficulty = Literal['easy', 'normal', 'hard', 'very_hard', 'extreme']
 STOP_KINDS = ('town', 'village', 'ruin', 'landmark')
 SITE_KINDS = ('ruin', 'shrine', 'lair', 'camp', 'hamlet', 'cave', 'battlefield', 'grave', 'tower')
+OWN_GIVEN, OWN_FAMILY = 30, 20
 SIZES = {'small': (3, 5), 'medium': (5, 8), 'large': (8, 12)}
 SYSTEM = drafts.SYSTEM.replace(
     'You write new entries for one town, in the\nexact JSON shape asked for, fitting the world\'s tone, era and '
@@ -164,8 +166,6 @@ class People(Shape):
 
     @model_validator(mode='after')
     def check(self):
-        if not self.names.groups:
-            raise ValueError('names needs at least one group of given and family names under "groups".')
         ids = [career.id for career in self.careers]
         if len(ids) != len(set(ids)):
             raise ValueError('Career ids must be unique.')
@@ -367,8 +367,13 @@ def ask_for(part: str, pitch: str, done: dict, size: str, problems: list[str]) -
                   '"speeds" are km/h by way of getting around (walk at least).']
     elif part == 'people':
         lines += ['\nWrite the people of the world as one JSON object matching this schema:', schema_of(part),
-                  '\nGive 2 to 4 name groups (given and family names that go together, one group per people or '
-                  'heritage), 10 to 16 careers the towns hire for (common trades and the world\'s own; "eras" holds '
+                  '\nNames come from Dungeon\'s name banks, so towns get a wide spread: set "names.bank" to the bank '
+                  'that fits best and "names.mix" to the weights of its groups (the commonest heritage heaviest). Only '
+                  'for a people no bank fits (a non-human folk, an invented culture) add a group of its own under '
+                  f'"names.groups", with at least {OWN_GIVEN} given and {OWN_FAMILY} family names that sound like real '
+                  'names, and weigh it in the mix. The banks and their groups (a few names each):\n'
+                  + names.prompt_text(done['outline']['era']) +
+                  '\nAlso give 10 to 16 careers the towns hire for (common trades and the world\'s own; "eras" holds '
                   f'"{done["outline"]["era"]}"), 8 to 14 everyday prices in the world\'s money (a meal, a bed, a drink, '
                   'a weapon, a horse or the like; each with id, item, low, high, per), and the climate by month.']
     elif part == 'play':
@@ -411,8 +416,29 @@ def written(part: str, pitch: str, done: dict, size: str) -> dict:
     raise DomainError(f'The model\'s {part} still had problems after a retry: ' + '; '.join(problems[:6]), 422)
 
 
+def name_problems(chosen: dict, era: str) -> list[str]:
+    """A world's names must draw on a real bank, weigh only groups there are, and keep own groups wide and real."""
+    bank = names.bank_of(chosen, era)
+    if bank not in names.banks():
+        return [f'names.bank {bank!r} is not one of the banks: {", ".join(sorted(names.banks()))}.']
+    own = chosen.get('groups') or {}
+    found = [f'names.mix weighs {key!r}, which is not a group of the {bank} bank or of names.groups.'
+             for key in chosen.get('mix') or {} if key not in names.banks()[bank] and key not in own]
+    for key, group in own.items():
+        given = [*group.get('feminine', []), *group.get('masculine', []), *group.get('neutral', [])]
+        if len(set(given)) < OWN_GIVEN or len(set(group.get('family', []))) < OWN_FAMILY:
+            found.append(f'names.groups.{key} needs at least {OWN_GIVEN} given and {OWN_FAMILY} family names.')
+        coined = names.invented_in(*given, *group.get('family', []))
+        if coined:
+            found.append(f'names.groups.{key} has names that read as made up: {", ".join(coined[:10])}. Use '
+                         'plainer ones.')
+    return found
+
+
 def extra_problems(part: str, answer: dict, done: dict) -> list[str]:
     """What the parts must agree on between them."""
+    if part == 'people':
+        return name_problems(answer['names'], done['outline']['era'])
     if part == 'play':
         stops = {stop['id'] for stop in done['outline']['stops']}
         factions = {faction['id'] for faction in answer['factions']}

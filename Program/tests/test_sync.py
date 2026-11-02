@@ -16,6 +16,8 @@ def fake_checkout(root: Path) -> Path:
         'Program/dungeon/errors.py': 'class DomainError(Exception):\n    pass\n',
         'Program/dungeon/packages.py': 'from dungeon.errors import DomainError\n\nFORMAT = 1\n',
         'Program/dungeon/world/schema.py': 'from pydantic import BaseModel\n',
+        'Program/dungeon/world/data/names.json': '{"banks": {}}\n',
+        'Program/dungeon/world/data/given_names.json': '{"cultures": {}}\n',
     }
     for name, text in files.items():
         (root / name).parent.mkdir(parents=True, exist_ok=True)
@@ -30,6 +32,7 @@ def test_sync_copies_and_rewires_imports(tmp_path):
     assert 'from worldsmith.dungeon_format.errors import DomainError' in text
     assert text.startswith('# Vendored from prosperos-dungeon Program/dungeon/packages.py')
     assert json.loads((target / 'SOURCE.json').read_text(encoding='utf-8'))['repo'] == 'vantaloomin/prosperos-dungeon'
+    assert (target / 'data' / 'names.json').read_text(encoding='utf-8') == '{"banks": {}}\n'
 
 
 def test_check_reports_drift_and_changes_nothing(tmp_path):
@@ -50,6 +53,6 @@ def test_an_import_of_an_unvendored_module_stops_the_sync(tmp_path):
 
 def test_the_vendored_files_match_their_source_list():
     source = json.loads((sync.TARGET / 'SOURCE.json').read_text(encoding='utf-8'))
-    assert source['files'] == sync.FILES
-    for name in sync.FILES.values():
+    assert source['files'] == sync.FILES | sync.DATA
+    for name in [*sync.FILES.values(), *sync.DATA.values()]:
         assert (sync.TARGET / name).is_file()

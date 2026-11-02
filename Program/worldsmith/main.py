@@ -16,6 +16,7 @@ from worldsmith import (
     maps,
     mermaid,
     models,
+    names,
     package_files,
     settings,
     towns,
@@ -81,6 +82,12 @@ class NewTownBody(OpenBody):
     hours: float = 8
     terrain: str = 'the road'
     danger: str = 'low'
+
+
+class NamesBody(BaseModel):
+    era: str = 'modern'
+    names: dict | None = None
+    seed: str = 'worldsmith'
 
 
 class NewWorldBody(BaseModel):
@@ -288,6 +295,10 @@ def town_api() -> APIRouter:
     @router.put('/towns/part')
     def save_part(body: PartBody):
         return towns.save(opened_from(body), body.town, body.kind, body.data)
+
+    @router.post('/names/view')
+    def names_view(body: NamesBody):
+        return names.view({'era': body.era, 'names': body.names}, body.seed)
 
     @router.post('/towns/undo')
     def undo_town(body: TownBody):

@@ -19,7 +19,7 @@ import uuid
 from datetime import date
 from pathlib import Path
 
-from worldsmith import drafts, models, settings, towns, worlds
+from worldsmith import drafts, models, names, settings, towns, worlds
 from worldsmith.dungeon_format import packages
 from worldsmith.dungeon_format.errors import DomainError, require
 from worldsmith.dungeon_format.schema import City
@@ -115,6 +115,10 @@ def assembled(written: dict, sibling: dict, shared: set[str], borrowable: dict[s
 
 def problems_of(city: dict, found: dict) -> list[str]:
     problems = towns.problems_in('cities', city)
+    coined = names.invented_in(*(person.get('name', '') for person in city.get('notables') or []))
+    if coined:
+        problems.append(f'These notables\' names read as made up by a model: {", ".join(coined[:10])}. Give them '
+                        'names a person from this town would have (the town\'s name groups show the sort).')
     if ('cities', city.get('id')) in found['engine']:
         problems.append(f"There is already a town with the id {city.get('id')}; pick another.")
     return problems
@@ -128,6 +132,8 @@ def prompt_for(found: dict, sibling: dict, careers: list[str], pitch: str, name:
              f"Near: {sibling.get('name')}, {sibling.get('summary', '')}",
              f"Other towns: {', '.join(others)}",
              f"Careers employers may hire for (or add the town's own under \"careers\"): {', '.join(careers)}",
+             'People here are named like this (from the world\'s name banks; name notables the same way): '
+             + ', '.join(item['name'] for item in names.sample(sibling, 16, pitch)),
              '\nWrite a whole new town as one JSON object matching this schema (Dungeon refuses anything else; leave '
              'out "source" fields, they are filled in for you):', json.dumps(town_schema()),
              f'\nThe author\'s pitch: {pitch.strip()}']
