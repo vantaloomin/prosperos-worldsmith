@@ -7,7 +7,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-from worldsmith import NAME, VERSION, settings, towns, worlds
+from worldsmith import NAME, VERSION, drafts, models, settings, towns, worlds
 from worldsmith.dungeon_format import packages
 from worldsmith.dungeon_format.errors import DomainError, require
 
@@ -39,6 +39,23 @@ class TownBody(OpenBody):
 class PartBody(TownBody):
     kind: str
     data: dict
+
+
+class ModelBody(BaseModel):
+    provider: str
+    model: str = ''
+    base_url: str = ''
+    key: str | None = None
+
+
+class DraftBody(TownBody):
+    target: str
+    ask: str = ''
+
+
+class DecideBody(OpenBody):
+    approve: bool
+    entries: list | None = None
 
 
 def worlds_listing() -> dict:
@@ -103,6 +120,33 @@ def api() -> APIRouter:
         return worlds.overview(opened_from(body))
 
     router.include_router(town_api())
+    router.include_router(draft_api())
+    return router
+
+
+def draft_api() -> APIRouter:
+    router = APIRouter()
+
+    @router.get('/models')
+    def read_models():
+        return models.config()
+
+    @router.put('/models')
+    def write_models(body: ModelBody):
+        return models.configure(body.provider, body.model, body.base_url, body.key)
+
+    @router.post('/drafts')
+    def make_draft(body: DraftBody):
+        return drafts.draft(opened_from(body), body.town, body.target, body.ask)
+
+    @router.post('/drafts/pending')
+    def pending_drafts(body: OpenBody):
+        return drafts.pending(opened_from(body))
+
+    @router.post('/drafts/{draft_id}/decide')
+    def decide_draft(draft_id: int, body: DecideBody):
+        return drafts.decide(opened_from(body), draft_id, body.approve, body.entries)
+
     return router
 
 

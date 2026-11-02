@@ -41,3 +41,14 @@ export interface TownFiles {
   problems: Record<string, string[]>
   undo: { id: number; at: string; kind: string }[]
 }
+export interface ModelConfig { provider: 'anthropic' | 'openai' | 'claude-cli'; model: string; base_url: string; has_key: boolean }
+export interface Draft {
+  id: number
+  at: string
+  town: string
+  target: string
+  ask: string
+  status: 'pending' | 'approved' | 'rejected'
+  entries: Record<string, unknown>[]
+  hidden: number
+}
