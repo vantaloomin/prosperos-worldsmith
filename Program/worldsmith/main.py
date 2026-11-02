@@ -105,6 +105,16 @@ class MapSaveBody(MapBody):
     graph: dict
 
 
+class NewInteriorBody(OpenBody):
+    name: str
+    id: str | None = None
+    style: str = 'other'
+    summary: str = ''
+    node: str | None = None
+    city: str | None = None
+    place: str | None = None
+
+
 class MapTextBody(BaseModel):
     graph: dict
     direction: str = 'LR'
@@ -272,6 +282,14 @@ def map_api() -> APIRouter:
     @router.post('/maps/undo')
     def undo_map(body: MapBody):
         return maps.undo(opened_from(body), body.map, body.town)
+
+    @router.post('/interiors/list')
+    def list_interiors(body: OpenBody):
+        return {'interiors': maps.interiors(opened_from(body)), 'styles': list(maps.STYLES)}
+
+    @router.post('/interiors/new')
+    def new_interior(body: NewInteriorBody):
+        return maps.new_interior(opened_from(body), body.model_dump(exclude={'builtin', 'folder'}))
 
     @router.post('/maps/text')
     def map_text(body: MapTextBody):

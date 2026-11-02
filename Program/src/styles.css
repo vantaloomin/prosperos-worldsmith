@@ -162,3 +162,23 @@ fieldset input[type='radio'] { flex: none; }
 .legend li { display: flex; align-items: center; gap: 0.4rem; }
 .swatch { width: 0.8rem; height: 0.8rem; border-radius: 50%; display: inline-block; }
 .map-text textarea { width: 100%; }
+
+/* Rooms maps (interiors) */
+.map-room { cursor: pointer; }
+.map-room rect:first-child { fill: var(--panel); stroke-width: 2px; }
+.map-room.hidden rect:first-child { stroke-dasharray: 6 4; opacity: 0.8; }
+.map-room.picked rect:first-child, .map-room.linking rect:first-child { stroke: var(--ink) !important; stroke-width: 3px; }
+.map-room text { pointer-events: none; }
+.map-room .room-name { fill: var(--ink); font-size: 13px; font-weight: 600; }
+.map-room .room-kind { fill: var(--muted); font-size: 10px; }
+.map-link.passage-secret line:not(.hit) { stroke-dasharray: 3 4; }
+.map-link.passage-door line:not(.hit), .map-link.passage-stairs line:not(.hit) { stroke: var(--ink); }
+.map-link.passage-water line:not(.hit) { stroke: #2e5c8a; }
+.map-link.flag-hidden line:not(.hit) { opacity: 0.45; }
+.map-link.flag-locked line:not(.hit) { stroke: #9a6b1f; }
+.map-link.flag-trapped line:not(.hit) { stroke: #a1261b; }
+.map-link.picked line:not(.hit) { stroke: var(--accent); opacity: 1; }
+.arrow { fill: var(--muted); }
+label.check input { flex: none; }
+label.check { display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; margin: 0.25rem 0; }
+.interior-list { display: grid; gap: 0.4rem; }

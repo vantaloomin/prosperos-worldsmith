@@ -33,6 +33,11 @@ in Windows Credential Manager (the system keyring), not in a file.
   (this moves them on the world map), draw roads between them, and set each road's hours, terrain and danger. On a
   town's map, drag places between neighborhoods, and move neighborhoods (their lat/lon, which also anchors Dungeon's
   street map).
+- **Interiors** (left pane) are the insides of keeps, caves, crypts and mines as rooms maps: rooms are boxes coloured
+  by level, passages are links (open, door, stairs, ladder, shaft, crawl, water or secret, and locked, hidden or one
+  way). Draw passages, drag rooms, add rooms and levels, pick the way in, or start a new interior at a travel-map
+  stop. A save is checked with Dungeon's own interior schema first, so a room no passage reaches is refused. A
+  room's summary, foes, hazard, loot and lore, and a passage's trap, are written in the file and kept by the map.
 - Under each map is the same thing as **Mermaid text**, kept in step: paste it into any Mermaid viewer, or edit it
   and apply it back to the map.
 - Saves keep the layout of Dungeon's files (the travel files keep one stop or road per line), so a Dungeon pull

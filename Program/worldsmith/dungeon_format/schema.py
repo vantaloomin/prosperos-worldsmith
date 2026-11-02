@@ -649,3 +649,176 @@ class Featured(Record):
     cities: list[Id] = Field(default_factory=list, max_length=4)
     # The featured cities that first shipped in this release; only these get the New badge.
     new_cities: list[Id] = Field(default_factory=list, max_length=4)
+
+
+# Interiors (requirements "### Interiors"): the inside of a keep, cave, crypt or mine as rooms joined by passages.
+
+Difficulty = Literal['easy', 'normal', 'hard', 'very_hard', 'extreme']
+RoomSize = Literal['cramped', 'room', 'hall', 'cavern']
+Light = Literal['lit', 'dim', 'dark']
+PassageKind = Literal['open', 'door', 'stairs', 'ladder', 'shaft', 'crawl', 'water', 'secret']
+InteriorStyle = Literal['cave', 'keep', 'crypt', 'mine', 'tower', 'sewer', 'ruin', 'building', 'other']
+
+
+class Foe(Record):
+    """A foe in the shape road encounters use (dungeon/travel.py, dungeon/combat.py)."""
+    name: Text
+    count: int = Field(default=1, ge=1, le=12)
+    vitality: int = Field(ge=1, le=60)
+    resolve: int = Field(ge=1, le=60)
+    weapon: int = Field(default=0, ge=0, le=4)
+    wants: Id = 'kill'
+    horror: bool = False
+
+
+class Threat(Record):
+    text: Text
+    foe: Foe | None = None
+
+
+class Hazard(Record):
+    """Something to roll against: what the character tries, how hard, and what happens if it goes wrong."""
+    action: Text
+    difficulty: Difficulty = 'normal'
+    threat: Text | Threat
+
+
+class Lock(Record):
+    # The item that opens it, if any; without it, a roll to pick or force it at this difficulty.
+    key: Id | None = None
+    difficulty: Difficulty = 'normal'
+
+
+class InteriorLevel(Record):
+    id: Id
+    name: Text
+    summary: str = Field(default='', max_length=400)
+
+
+class MapAt(Record):
+    """Where a room sits on the drawn rooms map, from 0 to 1 across and down (left out, rooms are laid out by level)."""
+    x: float = Field(ge=0, le=1)
+    y: float = Field(ge=0, le=1)
+
+
+class Room(Record):
+    id: Id
+    name: Text
+    level: Id | None = None
+    kind: Id  # hall, cell, shrine, cavern, stair, vault... open, like place kinds
+    size: RoomSize = 'room'
+    light: Light = 'dark'
+    summary: Text
+    features: list[Text] = Field(default_factory=list, max_length=8)
+    # Found only by searching (or by a passage that is found).
+    hidden: bool = False
+    foes: list[Foe] = Field(default_factory=list, max_length=6)
+    hazard: Hazard | None = None
+    # Item ids (the world's items) lying here to be found.
+    loot: list[Id] = Field(default_factory=list, max_length=8)
+    # What the narrator may tell when the room is looked at closely.
+    lore: str = Field(default='', max_length=1000)
+    map: MapAt | None = None
+    source: Id
+
+
+class Passage(Record):
+    """A way between two rooms; `one_way` goes from the first to the second only."""
+    between: tuple[Id, Id]
+    kind: PassageKind = 'open'
+    summary: str = Field(default='', max_length=300)
+    lock: Lock | None = None
+    hidden: bool = False
+    one_way: bool = False
+    trap: Hazard | None = None
+
+
+class Wander(Record):
+    """An entry of the interior's own encounter table, like a region's road encounters: a moment, or a roll."""
+    weight: int = Field(default=1, ge=1, le=10)
+    text: str = Field(default='', max_length=400)
+    action: str = Field(default='', max_length=200)
+    difficulty: Difficulty | None = None
+    threat: Text | Threat | None = None
+
+    @model_validator(mode='after')
+    def check(self):
+        if not self.text and not (self.action and self.difficulty and self.threat):
+            raise ValueError('A wandering encounter is a text, or an action with a difficulty and a threat.')
+        return self
+
+
+class InteriorAt(Record):
+    """Where the way in is: a town's place, a travel-map stop, or an authored hex site."""
+    city: Id | None = None
+    place: Id | None = None
+    node: Id | None = None
+    site: Id | None = None
+
+    @model_validator(mode='after')
+    def check(self):
+        if not (self.place or self.node or self.site):
+            raise ValueError('An interior is entered from a place, a travel-map stop or a site.')
+        if self.place and not self.city:
+            raise ValueError('A place is named with its city.')
+        return self
+
+
+class Interior(Record):
+    schema_version: Literal[1]
+    id: Id
+    name: Text
+    world: Id
+    style: InteriorStyle
+    summary: Text
+    at: InteriorAt
+    entrance: Id
+    levels: list[InteriorLevel] = Field(default_factory=list, max_length=12)
+    rooms: list[Room] = Field(min_length=1, max_length=120)
+    passages: list[Passage] = Field(default_factory=list)
+    wanders: list[Wander] = Field(default_factory=list, max_length=20)
+    # A wandering encounter is rolled every this many moves.
+    wander_every: int = Field(default=3, ge=1, le=20)
+    sources: dict[Id, Source] = Field(min_length=1)
+
+    @model_validator(mode='after')
+    def check(self):
+        rooms = [room.id for room in self.rooms]
+        twice = sorted({room for room in rooms if rooms.count(room) > 1})
+        if twice:
+            raise ValueError(f'Room ids are used twice: {twice}.')
+        known = set(rooms)
+        if self.entrance not in known:
+            raise ValueError(f'The entrance {self.entrance} is not a room.')
+        levels = {level.id for level in self.levels}
+        stray = sorted({room.level for room in self.rooms if room.level and room.level not in levels})
+        if stray:
+            raise ValueError(f'Rooms name unknown levels: {stray}.')
+        ends = sorted({end for passage in self.passages for end in passage.between if end not in known})
+        if ends:
+            raise ValueError(f'Passages name unknown rooms: {ends}.')
+        if any(passage.between[0] == passage.between[1] for passage in self.passages):
+            raise ValueError('A passage joins two different rooms.')
+        unsourced = sorted({room.source for room in self.rooms} - set(self.sources))
+        if unsourced:
+            raise ValueError(f'Rooms cite sources the file does not list: {unsourced}.')
+        cut_off = sorted(known - self.reachable())
+        if cut_off:
+            raise ValueError(f'No passage reaches these rooms from the entrance: {cut_off}.')
+        return self
+
+    def reachable(self) -> set[str]:
+        """The rooms one can get to from the entrance (hidden and locked ways count: they can be found or opened)."""
+        ways: dict[str, set[str]] = {}
+        for passage in self.passages:
+            a, b = passage.between
+            ways.setdefault(a, set()).add(b)
+            if not passage.one_way:
+                ways.setdefault(b, set()).add(a)
+        seen, todo = {self.entrance}, [self.entrance]
+        while todo:
+            for room in ways.get(todo.pop(), ()):
+                if room not in seen:
+                    seen.add(room)
+                    todo.append(room)
+        return seen

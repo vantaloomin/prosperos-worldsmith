@@ -73,6 +73,10 @@ def engine_for(data: Path, world_id: str) -> dict:
             path = data / kind / f'{town}.json'
             if path.is_file():
                 found[(kind, town)] = packages.read_json(path)
+    for path in sorted((data / 'interiors').glob('*.json')):
+        interior = packages.read_json(path)
+        if isinstance(interior, dict) and interior.get('world') == world_id:
+            found[('interiors', path.stem)] = interior
     return found
 
 

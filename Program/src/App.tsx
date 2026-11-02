@@ -1,20 +1,22 @@
 import { useState } from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { Globe2, Hammer, Map as MapIcon, MessagesSquare, Plus, TriangleAlert, X } from 'lucide-react'
+import { Castle, Globe2, Hammer, Map as MapIcon, MessagesSquare, Plus, TriangleAlert, X } from 'lucide-react'
 
 const NEW = '__new__'
 const TRAVEL = '__travel__'
+const INTERIORS = '__interiors__'
 import { getJson, sendJson, type FormatSource, type Health, type Town, type WorldOverview, type WorldRef } from './api'
 import { ChatPane } from './ChatPane'
 import { DraftsPane } from './DraftsPane'
 import { ModelSettings } from './ModelSettings'
 import { NewTown } from './NewTown'
 import { MapEditor } from './MapEditor'
+import { Interiors } from './Interiors'
 import { ExportPackage } from './Packages'
 import { TownEditor } from './TownEditor'
 import { WorldPicker } from './WorldPicker'
 
-function TownList({ towns, chosen, onChoose, onNew, onTravel }: { towns: Town[]; chosen: string; onChoose: (id: string) => void; onNew: () => void; onTravel?: () => void }) {
+function TownList({ towns, chosen, onChoose, onNew, onTravel, onInteriors }: { towns: Town[]; chosen: string; onChoose: (id: string) => void; onNew: () => void; onTravel?: () => void; onInteriors: () => void }) {
   const [real, roads] = [towns.filter((town) => !town.road), towns.filter((town) => town.road)]
   return (
     <>
@@ -32,6 +34,7 @@ function TownList({ towns, chosen, onChoose, onNew, onTravel }: { towns: Town[];
       <div className="row tight">
         <button type="button" aria-pressed={chosen === NEW} onClick={onNew}><Plus size={14} aria-hidden /> New town</button>
         {onTravel && <button type="button" aria-pressed={chosen === TRAVEL} onClick={onTravel}><MapIcon size={14} aria-hidden /> Travel map</button>}
+        <button type="button" aria-pressed={chosen === INTERIORS} onClick={onInteriors}><Castle size={14} aria-hidden /> Interiors</button>
       </div>
       {!!roads.length && <p className="muted small">Roads and wilds: {roads.map((town) => town.name).join(', ')}</p>}
     </>
@@ -94,12 +97,12 @@ export function App() {
           {overview && <button type="button" className="icon" aria-label="Close world" onClick={() => open.reset()}><X size={14} /></button>}
         </h2>
         {overview ? <TownList towns={overview.towns} chosen={town} onChoose={(id) => setTown(id === town ? '' : id)} onNew={() => setTown(town === NEW ? '' : NEW)}
-          onTravel={overview.stops.length ? () => setTown(town === TRAVEL ? '' : TRAVEL) : undefined} />
+          onTravel={overview.stops.length ? () => setTown(town === TRAVEL ? '' : TRAVEL) : undefined} onInteriors={() => setTown(town === INTERIORS ? '' : INTERIORS)} />
           : <WorldPicker onOpen={(ref) => open.mutate(ref)} busy={open.isPending} />}
         {open.isError && <p className="error">{open.error.message}</p>}
       </aside>
       <main className="pane work">
-        {town === NEW && ref && overview ? <NewTown world={ref} overview={overview} /> : town === TRAVEL && ref ? <><h2>Travel map</h2><MapEditor world={ref} kind="travel" /></> : chosen && ref ? <TownEditor world={ref} town={chosen.id} /> : overview ? <Overview overview={overview} world={ref!} />
+        {town === NEW && ref && overview ? <NewTown world={ref} overview={overview} /> : town === TRAVEL && ref ? <><h2>Travel map</h2><MapEditor world={ref} kind="travel" /></> : town === INTERIORS && ref && overview ? <Interiors world={ref} overview={overview} /> : chosen && ref ? <TownEditor world={ref} town={chosen.id} /> : overview ? <Overview overview={overview} world={ref!} />
           : <><h2>Town builder</h2><p className="muted">Open a built-in world from your Dungeon checkout, or a world folder, to start.</p></>}
       </main>
       <aside className="pane side" aria-label="Brainstorm and drafts">
