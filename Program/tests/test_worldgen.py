@@ -147,3 +147,40 @@ def test_the_screen_makes_a_world_folder_and_drafts_it(monkeypatch, tmp_path):
     stops = client.post('/api/worlds/town-stops', json={'folder': folder}).json()
     assert [stop['name'] for stop in stops] == ['Brinemouth', 'Crake Hollow']
     assert client.post('/api/worlds/draft', json={'folder': folder, 'size': 'huge'}).status_code == 422
+
+
+def test_a_drafts_progress_names_each_step_and_the_retry(monkeypatch):
+    opened = worldgen.new_world('Saltmarch', 'Salt pans.')
+    parts = answers()
+    broken = copy.deepcopy(parts['outline'])
+    broken['routes'] = broken['routes'][:1]
+    parts['outline'] = [broken, parts['outline']]
+    seen = []
+    fake_model(monkeypatch, parts)
+    complete = models.complete
+
+    def watched(system, prompt):
+        now = worldgen.draft_progress(opened)
+        seen.append((now['step'], now['index'], now['attempt']))
+        return complete(system, prompt)
+    monkeypatch.setattr(models, 'complete', watched)
+    assert worldgen.draft_progress(opened) == {'running': False}
+    worldgen.draft_world(opened)
+    assert seen == [('outline', 1, 1), ('outline', 1, 2), ('people', 2, 1), ('play', 3, 1), ('story', 4, 1)]
+    done = worldgen.draft_progress(opened)
+    assert not done['running'] and done['error'] is None and done['step'] == 'check' and done['of'] == 5
+    client = TestClient(create_app())
+    assert client.post('/api/worlds/draft/progress', json={'folder': str(opened.folder)}).json()['running'] is False
+
+
+def test_a_failed_draft_says_so_in_its_progress(monkeypatch):
+    opened = worldgen.new_world('Saltmarch', 'Salt pans.')
+    parts = answers()
+    stray = copy.deepcopy(parts['play'])
+    stray['factions'][0]['holds'] = ['atlantis']
+    parts['play'] = [stray, copy.deepcopy(stray)]
+    fake_model(monkeypatch, parts)
+    with pytest.raises(DomainError):
+        worldgen.draft_world(opened)
+    failed = worldgen.draft_progress(opened)
+    assert not failed['running'] and 'holds unknown stops' in failed['error'] and failed['step'] == 'play'

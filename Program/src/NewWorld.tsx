@@ -1,9 +1,46 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Hammer, Plus, Sparkles } from 'lucide-react'
 import { sendJson, type Draft, type WorldOverview, type WorldRef } from './api'
 
 interface TownStop { id: string; name: string; pitch: string }
+interface DraftProgress {
+  running: boolean; step?: string; index?: number; of?: number; label?: string; attempt?: number
+  started?: string; step_started?: string; problems?: string[]
+}
+
+function since(start: string | undefined, now: number): string {
+  if (!start) return ''
+  const seconds = Math.max(0, Math.round((now - Date.parse(start)) / 1000))
+  return seconds < 60 ? `${seconds}s` : `${Math.floor(seconds / 60)}m ${String(seconds % 60).padStart(2, '0')}s`
+}
+
+/** While a world is drafted: the step it is on out of all of them, which try at it, and how long it has taken. */
+function DraftSteps({ world }: { world: WorldRef }) {
+  const progress = useQuery({
+    queryKey: ['draft-progress', JSON.stringify(world)], refetchInterval: 1500,
+    queryFn: () => sendJson<DraftProgress>('/api/worlds/draft/progress', 'POST', world),
+  })
+  const [now, setNow] = useState(() => Date.now())
+  useEffect(() => { const timer = window.setInterval(() => setNow(Date.now()), 1000); return () => window.clearInterval(timer) }, [])
+  const step = progress.data
+  if (!step?.running || !step.index || !step.of) return <p className="muted small" role="status">Starting…</p>
+  return (
+    <div className="draft-steps" role="status" aria-live="polite">
+      <div className="draft-bar" role="progressbar" aria-valuemin={0} aria-valuemax={step.of} aria-valuenow={step.index - 1}
+        aria-label="Drafting the world">
+        <span style={{ width: `${((step.index - 0.5) / step.of) * 100}%` }} />
+      </div>
+      <p className="small">
+        Step {step.index} of {step.of}: {step.label}{step.attempt && step.attempt > 1 ? ' (second try)' : ''}…
+        <span className="muted"> {since(step.step_started, now)} on this step, {since(step.started, now)} in all.</span>
+      </p>
+      {step.attempt && step.attempt > 1 && !!step.problems?.length &&
+        <p className="muted small">The first try was sent back: {step.problems.join('; ')}</p>}
+      <p className="muted small">Each step is one call to the model and can take a minute or two. The timer keeps counting while it works.</p>
+    </div>
+  )
+}
 
 /** Starting a world of one's own: a name and a pitch make its folder, and the wizard drafts the rest. */
 export function NewWorldForm({ onMade, busy }: { onMade: (folder: string) => void; busy: boolean }) {
@@ -58,9 +95,10 @@ export function WorldWizard({ world, overview }: { world: WorldRef; overview: Wo
           <option value="large">Large (8 to 12 towns)</option>
         </select>
         <button type="submit" disabled={draft.isPending || !pitch.trim()}>
-          <Sparkles size={14} aria-hidden /> {draft.isPending ? 'Drafting the world… (several minutes)' : 'Draft the world'}
+          <Sparkles size={14} aria-hidden /> {draft.isPending ? 'Drafting the world…' : 'Draft the world'}
         </button>
       </div>
+      {draft.isPending && <DraftSteps world={world} />}
       {draft.isSuccess && <p className="note">Drafted {String(draft.data.entries[0]?.name)}. Review it in the queue on the right, then approve it.</p>}
       {draft.isError && <p className="error">{draft.error.message}</p>}
     </form>
