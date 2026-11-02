@@ -12,7 +12,7 @@ import sqlite3
 from contextlib import closing
 from datetime import datetime, timezone
 
-from worldsmith import models, towns, worlds
+from worldsmith import models, progress, towns, worlds
 from worldsmith.dungeon_format import packages
 from worldsmith.dungeon_format.errors import DomainError, require
 from worldsmith.dungeon_format.schema import City
@@ -145,15 +145,18 @@ def draft(opened: worlds.Opened, town: str, target: str, ask: str) -> dict:
     current = list((files['parts'][kind] or {}).get(key) or [])
     shape = current or example_from(found, kind, key)
     problems: list[str] = []
-    for _ in range(2):
-        entries = parsed(models.complete(SYSTEM, prompt_for(found, files['parts']['cities'], target, current, ask,
-                                                            problems, shape)))
-        _, _, problems = merged(files, target, entries)
-        if not problems:
-            break
-    else:
-        raise DomainError('The model\'s draft still had problems after a retry: ' + '; '.join(problems[:6]), 422)
-    return queue(opened, town, target, ask, entries)
+    with progress.tracked(opened, 'draft', target):
+        for attempt in (1, 2):
+            progress.report(opened, 'draft', 'write', attempt, problems)
+            entries = parsed(models.complete(SYSTEM, prompt_for(found, files['parts']['cities'], target, current, ask,
+                                                                problems, shape)))
+            progress.report(opened, 'draft', 'check', attempt)
+            _, _, problems = merged(files, target, entries)
+            if not problems:
+                break
+        else:
+            raise DomainError('The model\'s draft still had problems after a retry: ' + '; '.join(problems[:6]), 422)
+        return queue(opened, town, target, ask, entries)
 
 
 def queue(opened: worlds.Opened, town: str, target: str, ask: str, entries: list) -> dict:

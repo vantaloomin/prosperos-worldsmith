@@ -27,7 +27,7 @@ from typing import Annotated, Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, model_validator
 
-from worldsmith import drafts, models, names, settings, towns, worlds
+from worldsmith import drafts, models, names, progress, settings, towns, worlds
 from worldsmith.dungeon_format import packages
 from worldsmith.dungeon_format.errors import DomainError, require
 from worldsmith.dungeon_format.schema import Career, CityNames, Currency, Era, Month, Price
@@ -407,45 +407,16 @@ def ask_for(part: str, pitch: str, done: dict, size: str, problems: list[str]) -
     return '\n'.join(lines)
 
 
-# How far each world's draft has got, by its folder, for the screen to show while it waits (draft_progress).
-PROGRESS: dict[str, dict] = {}
-STEPS = {'outline': 'Writing the outline: regions, towns and roads',
-         'people': 'Writing the people: names, careers, prices and climate',
-         'play': 'Writing the factions and their jobs',
-         'story': 'Writing the story: arcs, encounters, sites, truths and lore',
-         'check': "Checking the world against Dungeon's format"}
-
-
-def now_text() -> str:
-    return datetime.now().astimezone().isoformat(timespec='seconds')
-
-
-def report(opened: worlds.Opened | None, step: str, attempt: int = 1, problems: list[str] | None = None):
-    """Note the step a world's draft is on (and which try at it, with what was wrong with the last one)."""
-    if opened is None:
-        return
-    key = str(opened.folder)
-    was = PROGRESS.get(key) or {'started': now_text()}
-    PROGRESS[key] = {'started': was['started'], 'running': True, 'step': step, 'index': list(STEPS).index(step) + 1,
-                     'of': len(STEPS), 'label': STEPS[step], 'attempt': attempt, 'step_started': now_text(),
-                     'problems': (problems or [])[:3]}
-
-
-def finish(opened: worlds.Opened, error: str | None = None):
-    was = PROGRESS.get(str(opened.folder)) or {}
-    PROGRESS[str(opened.folder)] = {**was, 'running': False, 'error': error, 'ended': now_text()}
-
-
 def draft_progress(opened: worlds.Opened) -> dict:
-    """Where the world's draft is: {running, step, index, of, label, attempt, started, step_started, problems}."""
-    return PROGRESS.get(str(opened.folder)) or {'running': False}
+    """Where the world's draft is (see progress.of)."""
+    return progress.of(opened, 'world')
 
 
 def written(part: str, pitch: str, done: dict, size: str, opened: worlds.Opened | None = None) -> dict:
     problems: list[str] = []
     wanted = {'outline': 'stops', 'people': 'careers', 'play': 'factions', 'story': 'arcs'}[part]
     for attempt in (1, 2):
-        report(opened, part, attempt, problems)
+        progress.report(opened, 'world', part, attempt, problems)
         answer = parsed_object(models.complete(SYSTEM, ask_for(part, pitch, done, size, problems)), wanted)
         try:
             PARTS[part].model_validate(answer)
@@ -747,23 +718,17 @@ def draft_world(opened: worlds.Opened, pitch: str = '', size: str = 'medium') ->
     pitch = pitch.strip() or found['world'].get('pitch') or ''
     require(bool(pitch), 'Give the world a pitch: what it is, who holds power, what is going wrong.', 422)
     name = found['world'].get('name')
-    require(not draft_progress(opened).get('running'), 'This world is already being drafted.', 409)
-    PROGRESS.pop(str(opened.folder), None)
-    try:
+    require(not progress.running(opened, 'world'), 'This world is already being drafted.', 409)
+    with progress.tracked(opened, 'world', name or ''):
         done: dict[str, dict] = {}
         for part in PARTS:
             done[part] = written(part, pitch + (f' The world is called {name}.' if name else ''), done, size, opened)
-        report(opened, 'check')
+        progress.report(opened, 'world', 'check')
         world = assembled(opened, done)
         problems = problems_in(world['files'])
         if problems:
             raise DomainError('Dungeon would refuse the drafted world: ' + '; '.join(problems[:6]), 422)
-        queued = drafts.queue(opened, world['id'], 'world', pitch, [world])
-    except Exception as error:
-        finish(opened, getattr(error, 'message', None) or str(error))
-        raise
-    finish(opened)
-    return queued
+        return drafts.queue(opened, world['id'], 'world', pitch, [world])
 
 
 def approve_world(opened: worlds.Opened, entry: dict) -> dict:

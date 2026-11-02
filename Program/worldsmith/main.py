@@ -19,6 +19,7 @@ from worldsmith import (
     models,
     names,
     package_files,
+    progress,
     settings,
     towns,
     wizard,
@@ -47,6 +48,10 @@ class SettingsBody(BaseModel):
 class OpenBody(BaseModel):
     builtin: str | None = None
     folder: str | None = None
+
+
+class ProgressBody(OpenBody):
+    job: str = 'world'
 
 
 class TownBody(OpenBody):
@@ -300,6 +305,11 @@ def world_api() -> APIRouter:
     @router.post('/worlds/draft/progress')
     def draft_progress(body: OpenBody):
         return worldgen.draft_progress(opened_from(body))
+
+    @router.post('/progress')
+    def job_progress(body: ProgressBody):
+        """How far a world, town or list draft has got (worldsmith/progress.py)."""
+        return progress.of(opened_from(body), body.job)
 
     @router.post('/worlds/town-stops')
     def town_stops(body: OpenBody):

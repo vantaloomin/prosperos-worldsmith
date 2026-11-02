@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Send, Sparkles, Trash2 } from 'lucide-react'
 import { sendJson, type ChatTurn, type Draft, type WorldRef } from './api'
+import { JobProgress } from './JobProgress'
 
 /** The brainstorm chat for the open world. It only proposes drafts; "Draft it" sends one to the approval queue. */
 export function ChatPane({ world, town }: { world: WorldRef; town: string }) {
@@ -39,6 +40,7 @@ export function ChatPane({ world, town }: { world: WorldRef; town: string }) {
                   <button type="button" disabled={draft.isPending || drafted[id]} onClick={() => draft.mutate(proposal)}>
                     <Sparkles size={13} aria-hidden /> {drafted[id] ? 'Drafted' : draft.isPending && draft.variables === proposal ? 'Drafting…' : 'Draft it'}
                   </button>
+                  {draft.isPending && draft.variables === proposal && <JobProgress world={world} job="draft" compact />}
                 </div>
               )
             })}
