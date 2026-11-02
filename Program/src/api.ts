@@ -52,3 +52,10 @@ export interface Draft {
   entries: Record<string, unknown>[]
   hidden: number
 }
+export interface ChatTurn {
+  id: number
+  at: string
+  role: 'user' | 'assistant'
+  text: string
+  proposals: { town: string; target: string; ask: string }[]
+}
