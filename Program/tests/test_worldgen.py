@@ -89,6 +89,20 @@ def test_a_part_the_format_refuses_is_asked_for_again_with_its_problems(monkeypa
     assert 'These stops have no road to the rest: the-gibbet-stone' in asked[1]
 
 
+def test_a_text_too_long_for_dungeon_is_refused_in_its_part_and_asked_for_again(monkeypatch):
+    parts = answers()
+    wordy = copy.deepcopy(parts['people'])
+    wordy['climate']['summary'] = 'Cold winds off the peaks. ' * 20  # over Dungeon's 400 characters
+    parts['people'] = [wordy, parts['people']]
+    asked = []
+    fake_model(monkeypatch, parts, asked)
+    opened = worldgen.new_world('Saltmarch', 'Salt pans.')
+    drafts.decide(opened, worldgen.draft_world(opened)['id'], True)
+    refused = asked[2].split('Your last answer was refused')[1]
+    assert 'climate' in refused and '400 characters' in refused
+    assert worlds.overview(opened)['problems'] == []
+
+
 def test_factions_must_hold_the_worlds_own_stops(monkeypatch):
     parts = answers()
     stray = copy.deepcopy(parts['play'])
