@@ -20,6 +20,7 @@ from worldsmith import (
     settings,
     towns,
     wizard,
+    worldgen,
     worlds,
 )
 from worldsmith.dungeon_format import packages
@@ -80,6 +81,17 @@ class NewTownBody(OpenBody):
     hours: float = 8
     terrain: str = 'the road'
     danger: str = 'low'
+
+
+class NewWorldBody(BaseModel):
+    name: str
+    pitch: str = ''
+    parent: str | None = None
+
+
+class WorldDraftBody(OpenBody):
+    pitch: str = ''
+    size: str = 'medium'
 
 
 class CheckBody(TownBody):
@@ -195,6 +207,7 @@ def api() -> APIRouter:
     router.include_router(package_api())
     router.include_router(map_api())
     router.include_router(draft_api())
+    router.include_router(world_api())
     return router
 
 
@@ -237,6 +250,26 @@ def draft_api() -> APIRouter:
     @router.post('/drafts/{draft_id}/decide')
     def decide_draft(draft_id: int, body: DecideBody):
         return drafts.decide(opened_from(body), draft_id, body.approve, body.entries)
+
+    return router
+
+
+def world_api() -> APIRouter:
+    """The new world wizard (worldsmith/worldgen.py)."""
+    router = APIRouter()
+
+    @router.post('/worlds/new')
+    def new_world(body: NewWorldBody):
+        opened = worldgen.new_world(body.name, body.pitch, body.parent)
+        return {'folder': str(opened.folder), 'overview': worlds.overview(opened)}
+
+    @router.post('/worlds/draft')
+    def draft_world(body: WorldDraftBody):
+        return worldgen.draft_world(opened_from(body), body.pitch, body.size)
+
+    @router.post('/worlds/town-stops')
+    def town_stops(body: OpenBody):
+        return worldgen.town_stops(opened_from(body))
 
     return router
 

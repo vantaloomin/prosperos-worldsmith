@@ -10,6 +10,7 @@ import { ChatPane } from './ChatPane'
 import { DraftsPane } from './DraftsPane'
 import { ModelSettings } from './ModelSettings'
 import { NewTown } from './NewTown'
+import { WorldWizard } from './NewWorld'
 import { MapEditor } from './MapEditor'
 import { Interiors } from './Interiors'
 import { ExportPackage } from './Packages'
@@ -53,6 +54,7 @@ function Overview({ overview, world }: { overview: WorldOverview; world: WorldRe
           <ul>{overview.problems.slice(0, 30).map((problem) => <li key={problem}>{problem}</li>)}</ul>
         </div>
       )}
+      <WorldWizard world={world} overview={overview} />
       <h3>What it holds</h3>
       <table className="counts">
         <tbody>
