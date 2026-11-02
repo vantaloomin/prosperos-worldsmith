@@ -133,3 +133,8 @@ def test_the_api_drafts_lists_and_decides(tmp_path, monkeypatch):
     decided = client.post(f"/api/drafts/{made['id']}/decide", json={'builtin': 'testland', 'approve': True}).json()
     assert decided['draft']['status'] == 'approved'
     assert client.get('/api/models').json()['provider'] == 'anthropic'
+
+
+def test_the_list_is_found_among_prose_and_trailing_text():
+    text = 'Here you go [notes]:\n```json\n[{"id": "a"}, {"id": "b"}]\n```\nThey fit [the town].'
+    assert [entry['id'] for entry in drafts.parsed(text)] == ['a', 'b']

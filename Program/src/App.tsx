@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { Globe2, Hammer, MessagesSquare, TriangleAlert, X } from 'lucide-react'
 import { getJson, sendJson, type FormatSource, type Health, type Town, type WorldOverview, type WorldRef } from './api'
+import { ChatPane } from './ChatPane'
 import { DraftsPane } from './DraftsPane'
 import { ModelSettings } from './ModelSettings'
 import { TownEditor } from './TownEditor'
@@ -92,6 +93,7 @@ export function App() {
       <aside className="pane side" aria-label="Brainstorm and drafts">
         <h2><MessagesSquare size={16} aria-hidden /> Brainstorm and drafts</h2>
         <ModelSettings />
+        {ref && overview && <ChatPane world={ref} town={chosen?.id ?? ''} />}
         <h3>Waiting for approval</h3>
         {ref && overview ? <DraftsPane world={ref} /> : <p className="muted small">Open a world to see its drafts.</p>}
       </aside>

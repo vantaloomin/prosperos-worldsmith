@@ -98,16 +98,18 @@ def prompt_for(found: dict, city: dict, target: str, current: list, ask: str, pr
 
 
 def parsed(text: str) -> list:
-    text = re.sub(r'^```(?:json)?\s*|\s*```$', '', text.strip())
-    start, end = text.find('['), text.rfind(']')
-    require(start >= 0 and end > start, 'The model did not answer with a JSON list.', 502)
-    try:
-        entries = json.loads(text[start:end + 1])
-    except ValueError as error:
-        raise DomainError(f'The model\'s answer was not valid JSON: {error}', 502) from error
-    require(isinstance(entries, list) and all(isinstance(entry, dict) for entry in entries),
-            'The model\'s answer was not a list of entries.', 502)
-    return entries[:MOST_ENTRIES]
+    """The first JSON list of objects in the model's answer, whatever prose or fences surround it."""
+    decoder, error = json.JSONDecoder(), None
+    for start in [match.start() for match in re.finditer(r'\[', text)]:
+        try:
+            entries, _ = decoder.raw_decode(text, start)
+        except ValueError as failure:
+            error = error or failure
+            continue
+        if isinstance(entries, list) and entries and all(isinstance(entry, dict) for entry in entries):
+            return entries[:MOST_ENTRIES]
+    require(error is None, f'The model\'s answer was not valid JSON: {error}', 502)
+    raise DomainError('The model did not answer with a JSON list of entries.', 502)
 
 
 def merged(files: dict, target: str, entries: list) -> tuple[str, dict, list[str]]:

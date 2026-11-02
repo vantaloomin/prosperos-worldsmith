@@ -76,3 +76,14 @@ button.link { border: none; background: none; color: var(--accent); padding: 0 0
 .draft ul { padding-left: 1.1rem; margin: 0.4rem 0; font-size: 0.9rem; display: grid; gap: 0.25rem; }
 .draft pre { white-space: pre-wrap; font-size: 0.75rem; max-height: 16rem; overflow: auto; }
 .hidden-note { color: var(--accent); display: flex; gap: 0.3rem; align-items: center; margin: 0.3rem 0; }
+.side { display: flex; flex-direction: column; }
+.chat { display: flex; flex-direction: column; gap: 0.5rem; min-height: 0; }
+.turns { max-height: 45vh; overflow: auto; display: grid; gap: 0.5rem; padding-right: 0.2rem; }
+.turn p { margin: 0; white-space: pre-wrap; font-size: 0.92rem; }
+.turn { padding: 0.45rem 0.6rem; border-radius: 8px; }
+.turn.user { background: var(--bg); justify-self: end; max-width: 90%; }
+.turn.assistant { border: 1px solid var(--line); }
+.proposal { display: flex; gap: 0.5rem; align-items: center; justify-content: space-between; margin-top: 0.4rem; padding-top: 0.4rem; border-top: 1px dashed var(--line); }
+.proposal button { flex: none; }
+.chat form { align-items: flex-end; }
+.chat-buttons { display: grid; gap: 0.3rem; }

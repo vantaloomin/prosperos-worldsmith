@@ -2,15 +2,18 @@ import { useState } from 'react'
 import { fieldKind, resolve, type JsonSchema } from './schema'
 
 type Value = Record<string, unknown>
+// Fields the schema allows long text in that are a line in practice.
+const ONE_LINE = new Set(['name', 'title', 'region', 'country', 'timezone', 'given', 'pronouns', 'role', 'item', 'basis_short'])
 
 function JsonField({ value, onChange, label }: { value: unknown; onChange: (next: unknown) => void; label: string }) {
-  const [text, setText] = useState(() => JSON.stringify(value ?? null, null, 2))
+  const [text, setText] = useState(() => (value === undefined ? '' : JSON.stringify(value, null, 2)))
   const [bad, setBad] = useState(false)
   return (
     <>
-      <textarea aria-label={label} className={`code${bad ? ' bad' : ''}`} rows={Math.min(12, text.split('\n').length + 1)} value={text}
+      <textarea aria-label={label} className={`code${bad ? ' bad' : ''}`} rows={Math.min(12, text.split('\n').length + 1)} value={text} placeholder="(not set)"
         onChange={(event) => {
           setText(event.target.value)
+          if (!event.target.value.trim()) { onChange(undefined); setBad(false); return }
           try { onChange(JSON.parse(event.target.value)); setBad(false) } catch { setBad(true) }
         }} />
       {bad && <span className="error small">Not valid JSON yet; the last valid value is kept.</span>}
@@ -22,7 +25,8 @@ function JsonField({ value, onChange, label }: { value: unknown; onChange: (next
 function Field({ name, schema, root, value, onChange, choices }: {
   name: string; schema: JsonSchema; root: JsonSchema; value: unknown; onChange: (next: unknown) => void; choices?: string[]
 }) {
-  const kind = fieldKind(schema, root)
+  const found = fieldKind(schema, root)
+  const kind = found === 'long' && ONE_LINE.has(name) ? 'text' : found
   const resolved = resolve(schema, root)
   const label = resolved.title ?? name
   if (choices && (kind === 'text' || kind === 'long')) {
@@ -71,7 +75,7 @@ function Field({ name, schema, root, value, onChange, choices }: {
       return <input aria-label={label} type="number" step="any" value={value === undefined || value === null ? '' : String(value)}
         onChange={(event) => onChange(event.target.value === '' ? undefined : Number(event.target.value))} />
     case 'boolean':
-      return <input aria-label={label} type="checkbox" checked={Boolean(value)} onChange={(event) => onChange(event.target.checked)} />
+      return <input aria-label={label} type="checkbox" checked={Boolean(value ?? resolved.default)} onChange={(event) => onChange(event.target.checked)} />
     case 'long':
       return <textarea aria-label={label} rows={3} value={String(value ?? '')} onChange={(event) => onChange(event.target.value)} />
     case 'text':
