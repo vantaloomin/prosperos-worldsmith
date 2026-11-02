@@ -13,6 +13,21 @@ Drafts come from the model you pick under "Brainstorm and drafts": Claude throug
 OpenAI-compatible server (LM Studio, Ollama, OpenRouter), or the `claude` command line on your PC. API keys are kept
 in Windows Credential Manager (the system keyring), not in a file.
 
+## New worlds
+
+"New world" on the opening screen makes a world of your own from a name and a pitch (in Worldsmith's `worlds`
+folder unless you pick another). "Draft the world" then has the model write the whole world in four parts: its
+outline (regions, towns and other stops, the roads between them), its people (name banks, careers, prices,
+climate), its factions with their clocks and jobs, and its story (the director's arcs, road and camp encounters, the
+wild sites a hex crawl finds, hidden truths and lore). Each part is checked before the next is asked for, and a
+part that fails is asked for again with its problems. It comes back as one draft; approving it writes Dungeon's own
+files: world.json, the package sections, and the engine data (the world's Road city, a hex crawl travel map whose
+land is generated around the stops, tiers, factions and arcs).
+
+Every town starts as a stop on the Road. "Towns to build" drafts each one into a whole town with the town wizard: it
+keeps the stop's id and place on the map, and takes the world's money, era, name banks and careers from the Road.
+Install into Dungeon when you want to play it.
+
 ## Checking with Dungeon, street maps and packages
 
 - **Check with Dungeon** (a town's Town tab) runs the saved city file through Dungeon's own strict loader, and

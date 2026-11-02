@@ -1,0 +1,521 @@
+{
+ "outline": {
+  "id": "saltmarch",
+  "name": "Saltmarch",
+  "genre": "grim low fantasy of salt flats and debt",
+  "pitch": "A coast of salt pans where the brine guilds own the water and everyone owes them.",
+  "era": "medieval",
+  "timezone": "Europe/Lisbon",
+  "start": "0412-03-02T08:00",
+  "currency": {
+   "code": "groat",
+   "symbol": "gr.",
+   "name": "brine groats"
+  },
+  "rent_period": "week",
+  "speeds": {
+   "walk": 4.5,
+   "mule": 6
+  },
+  "preset": "unflinching",
+  "voice": "dry, salt-cracked and unsentimental",
+  "drama": "eventful",
+  "tiers": {
+   "track": "renown",
+   "name": "Renown",
+   "words": [
+    "known on one pan",
+    "a name along the coast road",
+    "a name the guilds watch",
+    "a name across the March",
+    "a name in the old songs"
+   ]
+  },
+  "regions": [
+   {
+    "id": "the-pans",
+    "name": "the Pans",
+    "summary": "Flat white salt pans and the towns that work them.",
+    "danger": "low",
+    "tier": 1
+   },
+   {
+    "id": "the-scarp",
+    "name": "the Scarp",
+    "summary": "Broken cliffs above the coast, where the outlaws live.",
+    "danger": "high",
+    "tier": 2
+   }
+  ],
+  "stops": [
+   {
+    "id": "brinemouth",
+    "name": "Brinemouth",
+    "region": "the-pans",
+    "kind": "town",
+    "summary": "The guild port, all warehouses and debt.",
+    "spots": [
+     "the weighhouse"
+    ],
+    "safe": true,
+    "x": 0.3,
+    "y": 0.6
+   },
+   {
+    "id": "crake-hollow",
+    "name": "Crake Hollow",
+    "region": "the-pans",
+    "kind": "town",
+    "summary": "A pan village grown fat on smuggling.",
+    "spots": [
+     "the dyke"
+    ],
+    "safe": true,
+    "x": 0.45,
+    "y": 0.55
+   },
+   {
+    "id": "the-gibbet-stone",
+    "name": "the Gibbet Stone",
+    "region": "the-scarp",
+    "kind": "ruin",
+    "summary": "An old hanging place on the cliff road.",
+    "spots": [
+     "the stone"
+    ],
+    "safe": false,
+    "x": 0.6,
+    "y": 0.4
+   }
+  ],
+  "routes": [
+   {
+    "from": "brinemouth",
+    "to": "crake-hollow",
+    "hours": 9,
+    "terrain": "the dyke road",
+    "danger": "low"
+   },
+   {
+    "from": "crake-hollow",
+    "to": "the-gibbet-stone",
+    "hours": 12,
+    "terrain": "the cliff path",
+    "danger": "medium"
+   }
+  ],
+  "starting_stop": "brinemouth"
+ },
+ "people": {
+  "names": {
+   "groups": {
+    "pan-folk": {
+     "feminine": [
+      "Ysolde",
+      "Brin"
+     ],
+     "masculine": [
+      "Odo",
+      "Tam"
+     ],
+     "family": [
+      "Saltar",
+      "Weir"
+     ]
+    }
+   }
+  },
+  "careers": [
+   {
+    "id": "pan-raker",
+    "name": "pan raker",
+    "sector": "trade",
+    "schedule": "shift-day",
+    "pay": "$",
+    "summary": "Works as a pan raker.",
+    "themes": [
+     "debt"
+    ],
+    "eras": [
+     "medieval"
+    ]
+   },
+   {
+    "id": "salt-carter",
+    "name": "salt carter",
+    "sector": "trade",
+    "schedule": "shift-day",
+    "pay": "$",
+    "summary": "Works as a salt carter.",
+    "themes": [
+     "debt"
+    ],
+    "eras": [
+     "medieval"
+    ]
+   },
+   {
+    "id": "weighman",
+    "name": "weighman",
+    "sector": "trade",
+    "schedule": "shift-day",
+    "pay": "$",
+    "summary": "Works as a weighman.",
+    "themes": [
+     "debt"
+    ],
+    "eras": [
+     "medieval"
+    ]
+   },
+   {
+    "id": "smuggler",
+    "name": "smuggler",
+    "sector": "trade",
+    "schedule": "shift-day",
+    "pay": "$",
+    "summary": "Works as a smuggler.",
+    "themes": [
+     "debt"
+    ],
+    "eras": [
+     "medieval"
+    ]
+   },
+   {
+    "id": "dyke-warden",
+    "name": "dyke warden",
+    "sector": "trade",
+    "schedule": "shift-day",
+    "pay": "$",
+    "summary": "Works as a dyke warden.",
+    "themes": [
+     "debt"
+    ],
+    "eras": [
+     "medieval"
+    ]
+   },
+   {
+    "id": "netmaker",
+    "name": "netmaker",
+    "sector": "trade",
+    "schedule": "shift-day",
+    "pay": "$",
+    "summary": "Works as a netmaker.",
+    "themes": [
+     "debt"
+    ],
+    "eras": [
+     "medieval"
+    ]
+   }
+  ],
+  "prices": [
+   {
+    "id": "a-meal",
+    "item": "a bowl of fish stew",
+    "low": 1,
+    "high": 2
+   },
+   {
+    "id": "a-bed",
+    "item": "a bed",
+    "low": 2,
+    "high": 4,
+    "per": "a night"
+   },
+   {
+    "id": "ale",
+    "item": "a mug of ale",
+    "low": 0.5,
+    "high": 1
+   },
+   {
+    "id": "knife",
+    "item": "a knife",
+    "low": 5,
+    "high": 9
+   }
+  ],
+  "climate": {
+   "summary": "Dry and windy.",
+   "months": [
+    {
+     "high_f": 55,
+     "low_f": 40,
+     "rain_days": 4
+    },
+    {
+     "high_f": 56,
+     "low_f": 41,
+     "rain_days": 4
+    },
+    {
+     "high_f": 57,
+     "low_f": 42,
+     "rain_days": 4
+    },
+    {
+     "high_f": 58,
+     "low_f": 43,
+     "rain_days": 4
+    },
+    {
+     "high_f": 59,
+     "low_f": 44,
+     "rain_days": 4
+    },
+    {
+     "high_f": 60,
+     "low_f": 45,
+     "rain_days": 4
+    },
+    {
+     "high_f": 61,
+     "low_f": 46,
+     "rain_days": 4
+    },
+    {
+     "high_f": 62,
+     "low_f": 47,
+     "rain_days": 4
+    },
+    {
+     "high_f": 63,
+     "low_f": 48,
+     "rain_days": 4
+    },
+    {
+     "high_f": 64,
+     "low_f": 49,
+     "rain_days": 4
+    },
+    {
+     "high_f": 65,
+     "low_f": 50,
+     "rain_days": 4
+    },
+    {
+     "high_f": 66,
+     "low_f": 51,
+     "rain_days": 4
+    }
+   ]
+  }
+ },
+ "play": {
+  "factions": [
+   {
+    "id": "brine-guild",
+    "name": "The Brine Guild",
+    "kind": "guild",
+    "tier": 2,
+    "summary": "Owns the water.",
+    "goals": [
+     "Keep every pan in debt"
+    ],
+    "holds": [
+     "brinemouth"
+    ],
+    "rivals": [
+     "scarp-men"
+    ],
+    "clocks": [
+     {
+      "id": "the-squeeze",
+      "name": "The squeeze",
+      "segments": 4,
+      "done": "The guild doubles the water rate."
+     }
+    ],
+    "jobs": [
+     {
+      "id": "lost-cart",
+      "title": "A lost salt cart",
+      "days": 4,
+      "wages": 3,
+      "standing": 1,
+      "giver": "the weighmaster",
+      "hook": "A cart went missing on the dyke road.",
+      "truth": "The carter sold it to smugglers.",
+      "missed": "The carter's family is fined into ruin.",
+      "ties": [
+       {
+        "kind": "npc",
+        "ref": "the carter"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "id": "scarp-men",
+    "name": "The Scarp Men",
+    "kind": "outlaws",
+    "tier": 1,
+    "summary": "Cliff outlaws.",
+    "goals": [
+     "Rob the salt road"
+    ],
+    "holds": [
+     "the-gibbet-stone"
+    ],
+    "rivals": [
+     "brine-guild"
+    ]
+   }
+  ]
+ },
+ "story": {
+  "default_spine": "the-sweet-water",
+  "arcs": [
+   {
+    "id": "the-sweet-water",
+    "name": "The Sweet Water",
+    "seen": "The guild's wells are running dry.",
+    "words": [
+     "well",
+     "water",
+     "guild"
+    ],
+    "antagonist": {
+     "name": "the Guild's water-reeve",
+     "agenda": "to own the last well",
+     "where": [
+      "brinemouth"
+     ]
+    },
+    "stages": [
+     {
+      "tier": 1,
+      "truth": "The wells are poisoned.",
+      "seed": "A dead dog by the well.",
+      "word": "Folk say the water tastes of iron."
+     },
+     {
+      "tier": 2,
+      "truth": "The reeve poisoned them.",
+      "seed": "A vial in the reeve's coat.",
+      "word": "The reeve bought a lot of lye."
+     }
+    ]
+   }
+  ],
+  "encounters": {
+   "the-pans": [
+    {
+     "text": "A salt carter with news."
+    },
+    {
+     "action": "keep the purse from a cutpurse",
+     "difficulty": "normal",
+     "threat": "A cutpurse in the crowd at the weighhouse."
+    }
+   ],
+   "the-scarp": [
+    {
+     "weight": 2,
+     "action": "see the outlaws first",
+     "difficulty": "hard",
+     "threat": {
+      "text": "Scarp men drop from the rocks.",
+      "foe": {
+       "name": "Scarp man",
+       "count": 2,
+       "vitality": 10,
+       "resolve": 10
+      }
+     }
+    }
+   ],
+   "wilds": [
+    {
+     "where": "wild",
+     "text": "Gulls over something dead."
+    }
+   ]
+  },
+  "camp": {
+   "the-pans": [
+    {
+     "text": "Wind all night."
+    }
+   ],
+   "the-scarp": [
+    {
+     "text": "Rocks fall in the dark."
+    }
+   ],
+   "wilds": [
+    {
+     "text": "Nothing but the sea."
+    }
+   ]
+  },
+  "owners": [
+   "Odo",
+   "Brin",
+   "Tam",
+   "Weir"
+  ],
+  "sites": [
+   {
+    "kind": "ruin",
+    "visible": true,
+    "names": [
+     "{owner}'s pan house"
+    ],
+    "text": "A drowned pan house."
+   },
+   {
+    "kind": "hamlet",
+    "visible": true,
+    "names": [
+     "{owner}'s End"
+    ],
+    "text": "Three huts and a well."
+   },
+   {
+    "kind": "lair",
+    "visible": false,
+    "names": [
+     "the gull caves"
+    ],
+    "text": "Caves full of bones."
+   }
+  ],
+  "truths": [
+   {
+    "id": "the-poison",
+    "truth": "The water-reeve poisons wells to sell guild water.",
+    "believed": "The wells are going bad by themselves.",
+    "surfaces": [
+     "Lye bought in bulk"
+    ],
+    "stakes": "Who drinks."
+   }
+  ],
+  "lore": [
+   {
+    "id": "the-pans",
+    "title": "The Pans",
+    "category": "place",
+    "keywords": [
+     "pans",
+     "salt"
+    ],
+    "text": "The salt pans of the March."
+   },
+   {
+    "id": "brine-guild-lore",
+    "title": "The Brine Guild",
+    "category": "people",
+    "keywords": [
+     "guild"
+    ],
+    "text": "The guild that owns the water."
+   }
+  ]
+ }
+}

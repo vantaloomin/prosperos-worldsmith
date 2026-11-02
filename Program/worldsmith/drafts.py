@@ -174,7 +174,9 @@ def shown(draft_id: int) -> dict:
     require(row is not None, 'That draft is gone.', 404)
     entries = json.loads(row['entries'])
     hidden = sum(1 for entry in entries if packages.hidden('cast', entry))
-    if row['target'] == 'town' and entries:
+    if row['target'] == 'world' and entries:
+        hidden = len(entries[0]['files'].get('hidden-truths.json', {}).get('truths', []))
+    elif row['target'] == 'town' and entries:
         hidden = sum(1 for person in entries[0].get('notables') or [] if packages.hidden('cast', person))
     return {'id': row['id'], 'at': row['at'], 'town': row['town'], 'target': row['target'], 'ask': row['ask'],
             'status': row['status'], 'entries': entries, 'hidden': hidden}
@@ -195,6 +197,9 @@ def decide(opened: worlds.Opened, draft_id: int, approve: bool, entries: list | 
     if approve and item['target'] == 'town':
         from worldsmith import wizard
         town = wizard.approve_town(opened, (entries or item['entries'])[0])
+    elif approve and item['target'] == 'world':
+        from worldsmith import worldgen
+        worldgen.approve_world(opened, item['entries'][0])
     elif approve:
         files = towns.read(opened, item['town'])
         kind, data, problems = merged(files, item['target'], entries if entries is not None else item['entries'])

@@ -8,7 +8,9 @@ town: the shared catalogue for its era (careers.json), its own, or a sibling tow
 into the new town, since Dungeon refuses any other.
 
 Approving writes the city file and puts the town on the world's travel map, either as a new stop joined to a
-neighbor by a road, or in place of an existing roadside stop (a village on the road becomes a full town).
+neighbor by a road, or in place of an existing roadside stop (a village on the road becomes a full town, keeping the
+stop's id). In a world with no town yet (one the new world wizard just made) the shared settings come from its Road
+city.
 """
 import copy
 import json
@@ -35,16 +37,20 @@ SYSTEM = drafts.SYSTEM.replace('Answer with only a JSON array of the new entries
 
 
 def sibling_of(found: dict, near: str | None) -> dict:
-    """The town whose shared settings the new one copies: the one it is near, else the world's first real town."""
+    """The town whose shared settings the new one copies: the one it is near, else the world's first real town, else
+    (in a world with no town yet) its Road city."""
     cities = {key: city for (kind, key), city in found['engine'].items() if kind == 'cities' and isinstance(city, dict)}
     real = [key for key, city in sorted(cities.items()) if (city.get('town_map') or {}).get('style') != 'none']
+    if not real:
+        # A new world's first towns copy its Road city, which holds the world's shared settings (worldgen.py).
+        real = sorted(cities)
     require(bool(real), 'This world has no town to copy shared settings from yet.', 409)
     return cities[near] if near in real else cities[real[0]]
 
 
 def shared_careers(opened: worlds.Opened, era: str | None) -> set[str]:
     """Dungeon's shared careers for an era, from the checkout this world lives in (or the one in Settings)."""
-    places = [opened.data / 'careers.json']
+    places = [opened.data / 'careers.json'] if opened.data else []
     checkout = settings.load().get('dungeon_checkout')
     if checkout:
         places.append(Path(checkout) / worlds.DATA / 'careers.json')
@@ -155,10 +161,14 @@ def draft_town(opened: worlds.Opened, pitch: str, name: str = '', near: str | No
     sibling = sibling_of(found, near)
     shared, borrowable = shared_careers(opened, sibling.get('era')), borrowable_careers(found)
     careers = sorted(shared | borrowable.keys())
+    # A roadside stop grown into a town keeps the stop's id, so the world's starting place and factions still name it.
+    keep_id = replaces if replaces and ('cities', replaces) not in found['engine'] else None
     problems: list[str] = []
     for _ in range(2):
         city = assembled(parsed_object(models.complete(SYSTEM, prompt_for(found, sibling, careers, pitch, name,
                                                                          problems))), sibling, shared, borrowable)
+        if keep_id:
+            city['id'] = keep_id
         problems = problems_of(city, found)
         if not problems:
             break

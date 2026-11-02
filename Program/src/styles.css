@@ -182,3 +182,5 @@ fieldset input[type='radio'] { flex: none; }
 label.check input { flex: none; }
 label.check { display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; margin: 0.25rem 0; }
 .interior-list { display: grid; gap: 0.4rem; }
+.wizard { margin: 0.8rem 0; padding: 0.8rem; border: 1px solid var(--line); border-radius: 8px; }
+.wizard .choices li.row { justify-content: space-between; align-items: center; gap: 0.6rem; }

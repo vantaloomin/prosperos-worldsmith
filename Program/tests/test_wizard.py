@@ -67,7 +67,9 @@ def test_a_roadside_stop_can_become_the_new_town(checkout, monkeypatch):
     draft = wizard.draft_town(opened, 'the mile post grows into a village', replaces='mile-post')
     drafts.decide(opened, draft['id'], True)
     nodes = json.loads((checkout / worlds.DATA / 'travel' / 'testland.json').read_text(encoding='utf-8'))['nodes']
-    assert next(node for node in nodes if node['id'] == 'mile-post')['city'] == 'oakhollow'
+    # The town keeps the stop's id, so whatever names the stop (factions' holds, a starting place) still finds it.
+    assert next(node for node in nodes if node['id'] == 'mile-post')['city'] == 'mile-post'
+    assert (checkout / worlds.DATA / 'cities' / 'mile-post.json').is_file()
 
 
 def test_a_town_id_that_is_taken_is_retried_then_refused(checkout, monkeypatch):

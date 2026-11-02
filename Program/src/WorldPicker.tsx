@@ -3,8 +3,9 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { FolderOpen } from 'lucide-react'
 import { getJson, sendJson, type Settings, type WorldRef, type WorldsListing } from './api'
 import { ImportPackage } from './Packages'
+import { NewWorldForm } from './NewWorld'
 
-/** Choosing a world: the Dungeon checkout's built-in worlds, recent world folders, or any folder by its path. */
+/** Choosing a world: the Dungeon checkout's built-in worlds, recent world folders, any folder by its path, or a new one. */
 export function WorldPicker({ onOpen, busy }: { onOpen: (ref: WorldRef) => void; busy: boolean }) {
   const client = useQueryClient()
   const listing = useQuery({ queryKey: ['worlds'], queryFn: () => getJson<WorldsListing>('/api/worlds') })
@@ -61,6 +62,7 @@ export function WorldPicker({ onOpen, busy }: { onOpen: (ref: WorldRef) => void;
           </ul>
         )}
       </section>
+      <NewWorldForm busy={busy} onMade={(path) => { void client.invalidateQueries({ queryKey: ['worlds'] }); onOpen({ folder: path }) }} />
       <ImportPackage onOpened={(path) => onOpen({ folder: path })} />
     </div>
   )
