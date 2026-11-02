@@ -373,6 +373,11 @@ def ask_for(part: str, pitch: str, done: dict, size: str, problems: list[str]) -
                   f'"names.groups", with at least {OWN_GIVEN} given and {OWN_FAMILY} family names that sound like real '
                   'names, and weigh it in the mix. The banks and their groups (a few names each):\n'
                   + names.prompt_text(done['outline']['era']) +
+                  '\nIf people other than humans live in the world, give "kinds": the share of the townsfolk each '
+                  'people is, from 0 to 1, humans the rest ({"dwarf": {"share": 0.08}, "wolf-kin": {"share": 0.03}}). '
+                  'Each takes its names from its own naming scheme, so it needs no group in "names". Pick from these '
+                  'peoples; only for one none fits, add your own with "label", "lifespan" (years) and "words":\n'
+                  + names.peoples_text() +
                   '\nAlso give 10 to 16 careers the towns hire for (common trades and the world\'s own; "eras" holds '
                   f'"{done["outline"]["era"]}"), 8 to 14 everyday prices in the world\'s money (a meal, a bed, a drink, '
                   'a weapon, a horse or the like; each with id, item, low, high, per), and the climate by month.']
@@ -435,10 +440,31 @@ def name_problems(chosen: dict, era: str) -> list[str]:
     return found
 
 
+def kind_problems(kinds) -> list[str]:
+    """A world's peoples must be Dungeon's (or fully described), each with a share from 0 to 1, together at most 1."""
+    if kinds in (None, {}):
+        return []
+    if not isinstance(kinds, dict):
+        return ['"kinds" must be an object of peoples, each with its share: {"dwarf": {"share": 0.08}}.']
+    known, found, total = {item['id'] for item in names.peoples()}, [], 0.0
+    for key, value in kinds.items():
+        share = value.get('share') if isinstance(value, dict) else None
+        if isinstance(share, bool) or not isinstance(share, (int, float)) or not 0 <= share <= 1:
+            found.append(f'kinds.{key} needs a "share" from 0 to 1.')
+            continue
+        total += share
+        if key not in known and not (value.get('label') and value.get('words') and 'lifespan' in value):
+            found.append(f'kinds.{key} is not one of the peoples; give it "label", "lifespan" and "words", or use one '
+                         'of the listed ids.')
+    if total > 1:
+        found.append(f'The shares in "kinds" add up to {total:g}; they must leave room for humans (at most 1).')
+    return found
+
+
 def extra_problems(part: str, answer: dict, done: dict) -> list[str]:
     """What the parts must agree on between them."""
     if part == 'people':
-        return name_problems(answer['names'], done['outline']['era'])
+        return name_problems(answer['names'], done['outline']['era']) + kind_problems(answer.get('kinds'))
     if part == 'play':
         stops = {stop['id'] for stop in done['outline']['stops']}
         factions = {faction['id'] for faction in answer['factions']}

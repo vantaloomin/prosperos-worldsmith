@@ -86,3 +86,42 @@ def test_the_names_tab_previews_a_towns_spread(tmp_path):
     assert body['spread']['bank'] == 'victorian' and len(body['samples']) == 12
     other = client.post('/api/names/view', json={'era': 'victorian', 'names': {'bank': 'ottoman'}}).json()
     assert other['spread']['bank'] == 'ottoman' and {group['id'] for group in other['spread']['groups']} >= {'turkish'}
+
+
+def test_a_towns_peoples_live_there_by_their_share_and_take_their_own_names():
+    city = {'era': 'medieval', 'kinds': {'dwarf': {'share': 0.3}, 'wolf-kin': {'share': 0.2}}}
+    assert names.shares(city) == {'dwarf': 0.3, 'wolf-kin': 0.2}
+    drawn = names.sample(city, 40, 'p')
+    kinds = {item['kind'] for item in drawn}
+    assert kinds == {None, 'Dwarf', 'Wolf-kin'}
+    dwarf_names = names.banks()['peoples']['dwarf']['family']
+    assert all(item['name'].split(' ', 1)[1] in dwarf_names for item in drawn if item['kind'] == 'Dwarf')
+    # A people listed with share 0 (Haven's hidden folk) brings nobody; with no shares anywhere, Dungeon's default.
+    assert names.shares({'era': 'modern', 'kinds': {'fae': {'lifespan': 700, 'share': 0}}}) == {}
+    assert names.shares({'era': 'modern', 'kinds': {'gnome': {}}}) == {'gnome': names.DEFAULT_SHARE}
+
+
+def test_the_names_tab_lists_the_peoples_and_the_towns_shares(tmp_path):
+    client = TestClient(create_app(tmp_path / 'no-dist'))
+    body = client.post('/api/names/view', json={'era': 'fantasy', 'kinds': {'oni': {'share': 0.5}}}).json()
+    ids = {item['id'] for item in body['peoples']}
+    assert {'wolf-kin', 'high-elf', 'dwarf', 'orc', 'oni', 'mind-eater', 'clockwork-folk'} <= ids and len(ids) >= 75
+    assert body['shares'] == {'oni': 0.5} and 'peoples' not in body['banks']
+    assert {item['folk'] for item in body['peoples']} == {'Beastkin', 'Fantasy humanoids', 'Other peoples'}
+
+
+def test_the_world_wizard_offers_the_peoples_and_refuses_a_bad_share(monkeypatch):
+    parts = answers()
+    bad = copy.deepcopy(parts['people'])
+    bad['kinds'] = {'dwarf': {'share': 0.9}, 'wolf-kin': {'share': 0.4}, 'gloop': {'share': 0.1}}
+    good = copy.deepcopy(parts['people'])
+    good['kinds'] = {'dwarf': {'share': 0.1}, 'fox-kin': {'share': 0.05}}
+    parts['people'] = [bad, good]
+    asked = []
+    fake_model(monkeypatch, parts, asked)
+    draft = worldgen.draft_world(worldgen.new_world('Saltmarch', 'Salt pans.'))
+    people_asks = [prompt for prompt in asked if 'Write the people' in prompt]
+    assert 'Beastkin, Canids: wolf-kin (70y)' in people_asks[0]
+    assert 'kinds.gloop is not one of the peoples' in people_asks[1] and 'add up to 1.4' in people_asks[1]
+    road = draft['entries'][0]['files']['engine/cities/saltmarch-road.json']
+    assert road['kinds'] == {'dwarf': {'share': 0.1}, 'fox-kin': {'share': 0.05}}

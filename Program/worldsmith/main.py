@@ -87,6 +87,7 @@ class NewTownBody(OpenBody):
 class NamesBody(BaseModel):
     era: str = 'modern'
     names: dict | None = None
+    kinds: dict | None = None
     seed: str = 'worldsmith'
 
 
@@ -298,7 +299,7 @@ def town_api() -> APIRouter:
 
     @router.post('/names/view')
     def names_view(body: NamesBody):
-        return names.view({'era': body.era, 'names': body.names}, body.seed)
+        return names.view({'era': body.era, 'names': body.names, 'kinds': body.kinds}, body.seed)
 
     @router.post('/towns/undo')
     def undo_town(body: TownBody):

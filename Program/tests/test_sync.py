@@ -18,6 +18,7 @@ def fake_checkout(root: Path) -> Path:
         'Program/dungeon/world/schema.py': 'from pydantic import BaseModel\n',
         'Program/dungeon/world/data/names.json': '{"banks": {}}\n',
         'Program/dungeon/world/data/given_names.json': '{"cultures": {}}\n',
+        'Program/dungeon/world/data/lifespans.json': '{"kinds": {}}\n',
     }
     for name, text in files.items():
         (root / name).parent.mkdir(parents=True, exist_ok=True)

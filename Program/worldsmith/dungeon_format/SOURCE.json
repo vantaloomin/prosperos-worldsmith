@@ -1,11 +1,12 @@
 {
   "repo": "vantaloomin/prosperos-dungeon",
-  "commit": "11bfe82d5b806e84ccc1431aa746c75a5c82b729",
+  "commit": "308a02e637806d1e02d5bac824a5e8775b627033",
   "files": {
     "Program/dungeon/errors.py": "errors.py",
     "Program/dungeon/packages.py": "packages.py",
     "Program/dungeon/world/schema.py": "schema.py",
     "Program/dungeon/world/data/names.json": "data/names.json",
-    "Program/dungeon/world/data/given_names.json": "data/given_names.json"
+    "Program/dungeon/world/data/given_names.json": "data/given_names.json",
+    "Program/dungeon/world/data/lifespans.json": "data/lifespans.json"
   }
 }
