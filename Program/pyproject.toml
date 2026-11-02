@@ -1,0 +1,32 @@
+[project]
+name = "prospero-worldsmith"
+version = "0.1.0"
+requires-python = ">=3.12"
+license = "AGPL-3.0-only"
+dependencies = ["fastapi>=0.115,<1", "uvicorn>=0.34,<1", "httpx>=0.28,<1", "pydantic>=2.12,<3"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<10", "ruff>=0.11,<1"]
+
+[tool.setuptools.packages.find]
+include = ["worldsmith*"]
+
+[tool.setuptools.package-data]
+worldsmith = ["dungeon_format/SOURCE.json"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 120
+include = ["worldsmith/**/*.py", "tests/**/*.py", "scripts/**/*.py"]
+# Vendored as Dungeon wrote it; Dungeon's own CI lints it.
+extend-exclude = ["worldsmith/dungeon_format"]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I", "C901"]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
