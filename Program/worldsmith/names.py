@@ -199,7 +199,22 @@ def view(city: dict, seed: str = 'worldsmith') -> dict:
     return {'banks': {bank: sorted(groups) for bank, groups in banks().items() if bank != 'peoples'},
             'era_bank': eras().get(city.get('era', 'modern'), eras()['modern'])['bank'],
             'spread': spread(city), 'samples': sample(city, 12, seed), 'peoples': peoples(),
-            'shares': shares(city)}
+            'shares': shares(city), 'present': present(city)}
+
+
+def present(city: dict) -> dict[str, float]:
+    """The share of the town's people of each kind other than human, however it comes about: the `kinds` block's
+    shares, else the weight of the mix's groups tied to a kind (Kingswood's halflings)."""
+    found = shares(city)
+    if found:
+        return found
+    groups, mix = groups_for(city)
+    total = sum(mix.values()) or 1
+    for key, weight in mix.items():
+        kind = groups[key].get('kind')
+        if kind and kind != HUMAN:
+            found[kind] = found.get(kind, 0) + weight / total
+    return found
 
 
 def prompt_text(era: str) -> str:

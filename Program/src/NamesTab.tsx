@@ -11,6 +11,7 @@ interface NamesView {
   samples: { name: string; group: string; kind: string | null }[]
   peoples: People[]
   shares: Record<string, number>
+  present: Record<string, number>
 }
 interface People { id: string; label: string; lifespan: number | null; folk: string; type: string }
 
@@ -67,15 +68,15 @@ export function NamesTab({ city, onChange }: { city: Value; onChange: (next: Val
       <ul className="samples">
         {samples.map((item, at) => <li key={at}>{item.name} <span className="muted small">{item.kind ?? item.group}</span></li>)}
       </ul>
-      <PeoplesPicker city={city} kinds={kinds} peoples={view.data.peoples} shares={view.data.shares} onChange={onChange} />
+      <PeoplesPicker city={city} kinds={kinds} peoples={view.data.peoples} shares={view.data.shares} present={view.data.present} onChange={onChange} />
     </div>
   )
 }
 
 /** Which peoples live in the town and what share of its folk each is (a city's `kinds` block, as Dungeon reads it):
  * humans are the rest. Each people takes its names from its own naming scheme in Dungeon's peoples bank. */
-function PeoplesPicker({ city, kinds, peoples, shares, onChange }: {
-  city: Value; kinds: Record<string, Value>; peoples: People[]; shares: Record<string, number>; onChange: (next: Value) => void
+function PeoplesPicker({ city, kinds, peoples, shares, present, onChange }: {
+  city: Value; kinds: Record<string, Value>; peoples: People[]; shares: Record<string, number>; present: Record<string, number>; onChange: (next: Value) => void
 }) {
   const [filter, setFilter] = useState('')
   const labels = Object.fromEntries(peoples.map((item) => [item.id, item.label]))
@@ -83,7 +84,7 @@ function PeoplesPicker({ city, kinds, peoples, shares, onChange }: {
     id, label: String(kinds[id]?.label ?? id), lifespan: (kinds[id]?.lifespan as number | null | undefined) ?? null,
     folk: "The town's own", type: "The town's own" }))
   const all = [...peoples, ...own]
-  const humans = Math.max(0, 1 - Object.values(shares).reduce((a, b) => a + b, 0))
+  const humans = Math.max(0, 1 - Object.values(present).reduce((a, b) => a + b, 0))
   const setShare = (id: string, percent: number) => {
     const next: Record<string, Value> = { ...kinds }
     const entry = { ...(next[id] ?? {}) }
@@ -104,10 +105,12 @@ function PeoplesPicker({ city, kinds, peoples, shares, onChange }: {
       <p className="muted small">Who lives here besides humans, and what share of the townsfolk each people is. Humans are the
         rest. Each people has its own lifespan and its own naming scheme, so a dwarf is never a Baker.</p>
       <p className="small">
-        {Object.keys(shares).length === 0 ? 'Everyone here is human.' : <>
+        {Object.keys(present).length === 0 ? 'Everyone here is human.' : <>
           Humans {Math.round(humans * 100)}%
-          {Object.entries(shares).map(([id, share]) => <span key={id}>, {labels[id] ?? String(kinds[id]?.label ?? id)} {Math.round(share * 1000) / 10}%</span>)}
+          {Object.entries(present).map(([id, share]) => <span key={id}>, {labels[id] ?? String(kinds[id]?.label ?? id)} {Math.round(share * 1000) / 10}%</span>)}
         </>}
+        {Object.keys(shares).length === 0 && Object.keys(present).length > 0 &&
+          <span className="muted"> (from the name groups tied to a kind)</span>}
       </p>
       <input aria-label="Find a people" placeholder="Find a people (elf, canid, oni…)" value={filter} onChange={(event) => setFilter(event.target.value)} />
       {folks.map((folk) => (
