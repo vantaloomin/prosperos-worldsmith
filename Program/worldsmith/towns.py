@@ -16,7 +16,7 @@ from pathlib import Path
 
 from pydantic import ValidationError
 
-from worldsmith import settings
+from worldsmith import jsonstyle, settings
 from worldsmith.dungeon_format import packages
 from worldsmith.dungeon_format.errors import DomainError, require
 from worldsmith.dungeon_format.schema import City
@@ -89,8 +89,9 @@ def kept_floats(before: object, after: object) -> object:
     return after
 
 
-def dumped(data: object, indent: int) -> str:
-    return json.dumps(data, indent=indent, ensure_ascii=False) + '\n'
+def dumped(data: object, indent: int, before: str | None = None) -> str:
+    """The file's new text, laid out like the old one so the diff shows only what changed (jsonstyle.py)."""
+    return jsonstyle.rewritten(data, before, indent)
 
 
 def history() -> sqlite3.Connection:
@@ -122,7 +123,7 @@ def save(opened: Opened, town: str, kind: str, data: object, batch: str | None =
     before = path.read_text(encoding='utf-8') if path.is_file() else None
     if before:
         data = kept_floats(json.loads(before), data)
-    text = dumped(data, indent_of(before) if before else 1 if kind == 'cities' else 2)
+    text = dumped(data, indent_of(before) if before else 1 if kind == 'cities' else 2, before)
     write_tracked(path, text, before, town, batch)
     return read(opened, town)
 
