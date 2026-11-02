@@ -82,6 +82,8 @@ made up by a model (Elara, Voss, Ravencrest), using Dungeon's own list.
 1. Install Python 3.12+ and Node 22+.
 2. Double-click `Windows\install.bat` once (and again after updating).
 3. Double-click `Windows\launch.bat`. Worldsmith opens at http://127.0.0.1:8795.
+4. `Windows\stop.bat` stops it (or close the launch window). `Windows\update.bat` stops it, pulls the latest
+   version from GitHub and installs again.
 
 It runs alongside Dungeon (port 8785) without clashing.
 
