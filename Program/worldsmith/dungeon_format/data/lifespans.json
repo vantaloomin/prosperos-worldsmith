@@ -1,0 +1,868 @@
+{
+ "kinds": {
+  "human": {
+   "label": "Human",
+   "lifespan": 80,
+   "words": []
+  },
+  "elf": {
+   "label": "Elf",
+   "lifespan": 600,
+   "words": [
+    "elf",
+    "elven",
+    "elvish"
+   ],
+   "folk": "Fantasy humanoids",
+   "type": "Elves"
+  },
+  "half-elf": {
+   "label": "Half-elf",
+   "lifespan": 180,
+   "words": [
+    "half-elf",
+    "half elf",
+    "half-elven"
+   ],
+   "folk": "Fantasy humanoids",
+   "type": "Elves"
+  },
+  "wolf-kin": {
+   "label": "Wolf-kin",
+   "lifespan": 70,
+   "words": [
+    "wolf-kin",
+    "wolfkin",
+    "wolf-folk",
+    "wolffolk"
+   ],
+   "folk": "Beastkin",
+   "type": "Canids"
+  },
+  "dog-kin": {
+   "label": "Dog-kin",
+   "lifespan": 65,
+   "words": [
+    "dog-kin",
+    "dogkin",
+    "dog-folk",
+    "dogfolk"
+   ],
+   "folk": "Beastkin",
+   "type": "Canids"
+  },
+  "fox-kin": {
+   "label": "Fox-kin",
+   "lifespan": 90,
+   "words": [
+    "fox-kin",
+    "foxkin",
+    "fox-folk",
+    "foxfolk",
+    "kitsune"
+   ],
+   "folk": "Beastkin",
+   "type": "Canids"
+  },
+  "coyote-kin": {
+   "label": "Coyote-kin",
+   "lifespan": 65,
+   "words": [
+    "coyote-kin",
+    "coyote-folk"
+   ],
+   "folk": "Beastkin",
+   "type": "Canids"
+  },
+  "jackal-kin": {
+   "label": "Jackal-kin",
+   "lifespan": 65,
+   "words": [
+    "jackal-kin",
+    "jackal-folk",
+    "jackalfolk"
+   ],
+   "folk": "Beastkin",
+   "type": "Canids"
+  },
+  "cat-kin": {
+   "label": "Cat-kin",
+   "lifespan": 75,
+   "words": [
+    "cat-kin",
+    "cat-folk",
+    "catfolk"
+   ],
+   "folk": "Beastkin",
+   "type": "Felines"
+  },
+  "lynx-kin": {
+   "label": "Lynx-kin",
+   "lifespan": 75,
+   "words": [
+    "lynx-kin",
+    "lynx-folk"
+   ],
+   "folk": "Beastkin",
+   "type": "Felines"
+  },
+  "lion-kin": {
+   "label": "Lion-kin",
+   "lifespan": 80,
+   "words": [
+    "lion-kin",
+    "lion-folk",
+    "lionfolk"
+   ],
+   "folk": "Beastkin",
+   "type": "Felines"
+  },
+  "tiger-kin": {
+   "label": "Tiger-kin",
+   "lifespan": 80,
+   "words": [
+    "tiger-kin",
+    "tiger-folk",
+    "tigerfolk"
+   ],
+   "folk": "Beastkin",
+   "type": "Felines"
+  },
+  "leopard-kin": {
+   "label": "Leopard-kin",
+   "lifespan": 75,
+   "words": [
+    "leopard-kin",
+    "leopard-folk"
+   ],
+   "folk": "Beastkin",
+   "type": "Felines"
+  },
+  "panther-kin": {
+   "label": "Panther-kin",
+   "lifespan": 75,
+   "words": [
+    "panther-kin",
+    "panther-folk"
+   ],
+   "folk": "Beastkin",
+   "type": "Felines"
+  },
+  "naga": {
+   "label": "Naga",
+   "lifespan": 300,
+   "words": [
+    "naga",
+    "nagas"
+   ],
+   "folk": "Beastkin",
+   "type": "Serpents"
+  },
+  "lamia": {
+   "label": "Lamia",
+   "lifespan": 300,
+   "words": [
+    "lamia",
+    "lamiae"
+   ],
+   "folk": "Beastkin",
+   "type": "Serpents"
+  },
+  "viper-kin": {
+   "label": "Viper-kin",
+   "lifespan": 110,
+   "words": [
+    "viper-kin",
+    "viper-folk",
+    "snake-kin",
+    "snakefolk"
+   ],
+   "folk": "Beastkin",
+   "type": "Serpents"
+  },
+  "constrictor-kin": {
+   "label": "Constrictor-kin",
+   "lifespan": 130,
+   "words": [
+    "constrictor-kin",
+    "python-kin",
+    "boa-kin"
+   ],
+   "folk": "Beastkin",
+   "type": "Serpents"
+  },
+  "horse-kin": {
+   "label": "Horse-kin",
+   "lifespan": 85,
+   "words": [
+    "horse-kin",
+    "horse-folk",
+    "horsefolk"
+   ],
+   "folk": "Beastkin",
+   "type": "Equines"
+  },
+  "zebra-kin": {
+   "label": "Zebra-kin",
+   "lifespan": 80,
+   "words": [
+    "zebra-kin",
+    "zebra-folk"
+   ],
+   "folk": "Beastkin",
+   "type": "Equines"
+  },
+  "donkey-kin": {
+   "label": "Donkey-kin",
+   "lifespan": 95,
+   "words": [
+    "donkey-kin",
+    "donkey-folk",
+    "mule-kin"
+   ],
+   "folk": "Beastkin",
+   "type": "Equines"
+  },
+  "unicorn-kin": {
+   "label": "Unicorn-kin",
+   "lifespan": 400,
+   "words": [
+    "unicorn-kin",
+    "unicorn-folk"
+   ],
+   "folk": "Beastkin",
+   "type": "Equines"
+  },
+  "cow-kin": {
+   "label": "Cow-kin",
+   "lifespan": 85,
+   "words": [
+    "cow-kin",
+    "cow-folk",
+    "cowfolk"
+   ],
+   "folk": "Beastkin",
+   "type": "Bovines"
+  },
+  "bull-kin": {
+   "label": "Bull-kin",
+   "lifespan": 85,
+   "words": [
+    "bull-kin",
+    "bull-folk",
+    "bullfolk"
+   ],
+   "folk": "Beastkin",
+   "type": "Bovines"
+  },
+  "minotaur": {
+   "label": "Minotaur",
+   "lifespan": 120,
+   "words": [
+    "minotaur",
+    "minotaurs"
+   ],
+   "folk": "Beastkin",
+   "type": "Bovines"
+  },
+  "buffalo-kin": {
+   "label": "Buffalo-kin",
+   "lifespan": 90,
+   "words": [
+    "buffalo-kin",
+    "bison-kin",
+    "buffalo-folk"
+   ],
+   "folk": "Beastkin",
+   "type": "Bovines"
+  },
+  "rabbit-kin": {
+   "label": "Rabbit-kin",
+   "lifespan": 60,
+   "words": [
+    "rabbit-kin",
+    "rabbit-folk",
+    "rabbitfolk",
+    "bunnyfolk"
+   ],
+   "folk": "Beastkin",
+   "type": "Lagomorphs"
+  },
+  "hare-kin": {
+   "label": "Hare-kin",
+   "lifespan": 65,
+   "words": [
+    "hare-kin",
+    "hare-folk",
+    "harefolk"
+   ],
+   "folk": "Beastkin",
+   "type": "Lagomorphs"
+  },
+  "deer-kin": {
+   "label": "Deer-kin",
+   "lifespan": 80,
+   "words": [
+    "deer-kin",
+    "deer-folk",
+    "deerfolk"
+   ],
+   "folk": "Beastkin",
+   "type": "Cervids"
+  },
+  "elk-kin": {
+   "label": "Elk-kin",
+   "lifespan": 85,
+   "words": [
+    "elk-kin",
+    "elk-folk"
+   ],
+   "folk": "Beastkin",
+   "type": "Cervids"
+  },
+  "stag-kin": {
+   "label": "Stag-kin",
+   "lifespan": 85,
+   "words": [
+    "stag-kin",
+    "stag-folk"
+   ],
+   "folk": "Beastkin",
+   "type": "Cervids"
+  },
+  "moose-kin": {
+   "label": "Moose-kin",
+   "lifespan": 90,
+   "words": [
+    "moose-kin",
+    "moose-folk"
+   ],
+   "folk": "Beastkin",
+   "type": "Cervids"
+  },
+  "bear-kin": {
+   "label": "Bear-kin",
+   "lifespan": 100,
+   "words": [
+    "bear-kin",
+    "bearkin",
+    "bear-folk",
+    "bearfolk"
+   ],
+   "folk": "Beastkin",
+   "type": "Ursines"
+  },
+  "hawk-kin": {
+   "label": "Hawk-kin",
+   "lifespan": 70,
+   "words": [
+    "hawk-kin",
+    "hawk-folk",
+    "hawkfolk"
+   ],
+   "folk": "Beastkin",
+   "type": "Avians"
+  },
+  "owl-kin": {
+   "label": "Owl-kin",
+   "lifespan": 90,
+   "words": [
+    "owl-kin",
+    "owl-folk",
+    "owlfolk"
+   ],
+   "folk": "Beastkin",
+   "type": "Avians"
+  },
+  "corvid-kin": {
+   "label": "Corvid-kin",
+   "lifespan": 80,
+   "words": [
+    "corvid-kin",
+    "crow-kin",
+    "raven-kin",
+    "crowfolk"
+   ],
+   "folk": "Beastkin",
+   "type": "Avians"
+  },
+  "songbird-kin": {
+   "label": "Songbird-kin",
+   "lifespan": 60,
+   "words": [
+    "songbird-kin",
+    "bird-folk",
+    "birdfolk"
+   ],
+   "folk": "Beastkin",
+   "type": "Avians"
+  },
+  "waterfowl-kin": {
+   "label": "Waterfowl-kin",
+   "lifespan": 70,
+   "words": [
+    "waterfowl-kin",
+    "duck-kin",
+    "swan-kin",
+    "goose-kin"
+   ],
+   "folk": "Beastkin",
+   "type": "Avians"
+  },
+  "dragon-kin": {
+   "label": "Dragon-kin",
+   "lifespan": 300,
+   "words": [
+    "dragon-kin",
+    "dragonkin",
+    "dragonborn"
+   ],
+   "folk": "Beastkin",
+   "type": "Draconic"
+  },
+  "wyrm-kin": {
+   "label": "Wyrm-kin",
+   "lifespan": 500,
+   "words": [
+    "wyrm-kin",
+    "wyrmkin"
+   ],
+   "folk": "Beastkin",
+   "type": "Draconic"
+  },
+  "high-elf": {
+   "label": "High elf",
+   "lifespan": 750,
+   "words": [
+    "high elf",
+    "high-elf",
+    "high elven"
+   ],
+   "folk": "Fantasy humanoids",
+   "type": "Elves"
+  },
+  "wood-elf": {
+   "label": "Wood elf",
+   "lifespan": 500,
+   "words": [
+    "wood elf",
+    "wood-elf",
+    "wood elven"
+   ],
+   "folk": "Fantasy humanoids",
+   "type": "Elves"
+  },
+  "dark-elf": {
+   "label": "Dark elf",
+   "lifespan": 600,
+   "words": [
+    "dark elf",
+    "dark-elf",
+    "dark elven",
+    "drow"
+   ],
+   "folk": "Fantasy humanoids",
+   "type": "Elves"
+  },
+  "sea-elf": {
+   "label": "Sea elf",
+   "lifespan": 600,
+   "words": [
+    "sea elf",
+    "sea-elf",
+    "sea elven"
+   ],
+   "folk": "Fantasy humanoids",
+   "type": "Elves"
+  },
+  "dwarf": {
+   "label": "Dwarf",
+   "lifespan": 300,
+   "words": [
+    "dwarf",
+    "dwarven",
+    "dwarvish"
+   ],
+   "folk": "Fantasy humanoids",
+   "type": "Dwarves"
+  },
+  "orc": {
+   "label": "Orc",
+   "lifespan": 55,
+   "words": [
+    "orc",
+    "orcish"
+   ],
+   "folk": "Fantasy humanoids",
+   "type": "Orcs"
+  },
+  "half-orc": {
+   "label": "Half-orc",
+   "lifespan": 75,
+   "words": [
+    "half-orc",
+    "half orc"
+   ],
+   "folk": "Fantasy humanoids",
+   "type": "Orcs"
+  },
+  "goblin": {
+   "label": "Goblin",
+   "lifespan": 50,
+   "words": [
+    "goblin",
+    "goblins"
+   ],
+   "folk": "Fantasy humanoids",
+   "type": "Goblins"
+  },
+  "hobgoblin": {
+   "label": "Hobgoblin",
+   "lifespan": 70,
+   "words": [
+    "hobgoblin",
+    "hobgoblins"
+   ],
+   "folk": "Fantasy humanoids",
+   "type": "Goblins"
+  },
+  "halfling": {
+   "label": "Halfling",
+   "lifespan": 110,
+   "words": [
+    "halfling",
+    "hobbit"
+   ],
+   "folk": "Fantasy humanoids",
+   "type": "Halflings and gnomes"
+  },
+  "gnome": {
+   "label": "Gnome",
+   "lifespan": 400,
+   "words": [
+    "gnome",
+    "gnomish"
+   ],
+   "folk": "Fantasy humanoids",
+   "type": "Halflings and gnomes"
+  },
+  "ogre": {
+   "label": "Ogre",
+   "lifespan": 60,
+   "words": [
+    "ogre",
+    "ogress",
+    "ogrish"
+   ],
+   "folk": "Fantasy humanoids",
+   "type": "Giant-kin"
+  },
+  "troll": {
+   "label": "Troll",
+   "lifespan": 200,
+   "words": [
+    "troll",
+    "trollish"
+   ],
+   "folk": "Fantasy humanoids",
+   "type": "Giant-kin"
+  },
+  "giant": {
+   "label": "Giant",
+   "lifespan": 400,
+   "words": [
+    "giant-kin",
+    "giantess",
+    "true giant"
+   ],
+   "folk": "Fantasy humanoids",
+   "type": "Giant-kin"
+  },
+  "half-giant": {
+   "label": "Half-giant",
+   "lifespan": 120,
+   "words": [
+    "half-giant",
+    "half giant"
+   ],
+   "folk": "Fantasy humanoids",
+   "type": "Giant-kin"
+  },
+  "tiefling": {
+   "label": "Tiefling",
+   "lifespan": 100,
+   "words": [
+    "tiefling",
+    "tieflings"
+   ],
+   "folk": "Fantasy humanoids",
+   "type": "Fiends"
+  },
+  "succubus": {
+   "label": "Succubus or incubus",
+   "lifespan": 1000,
+   "words": [
+    "succubus",
+    "incubus",
+    "succubi",
+    "incubi"
+   ],
+   "folk": "Fantasy humanoids",
+   "type": "Fiends"
+  },
+  "demon-blooded": {
+   "label": "Demon-blooded",
+   "lifespan": 120,
+   "words": [
+    "demon-blooded",
+    "demonblooded",
+    "cambion"
+   ],
+   "folk": "Fantasy humanoids",
+   "type": "Fiends"
+  },
+  "merfolk": {
+   "label": "Merfolk",
+   "lifespan": 250,
+   "words": [
+    "merfolk",
+    "mermaid",
+    "merman",
+    "merrow"
+   ],
+   "folk": "Fantasy humanoids",
+   "type": "Merfolk and sea-kin"
+  },
+  "sea-kin": {
+   "label": "Sea-kin",
+   "lifespan": 150,
+   "words": [
+    "sea-kin",
+    "seafolk",
+    "selkie"
+   ],
+   "folk": "Fantasy humanoids",
+   "type": "Merfolk and sea-kin"
+  },
+  "oni": {
+   "label": "Oni",
+   "lifespan": 500,
+   "words": [
+    "oni"
+   ],
+   "folk": "Other peoples",
+   "type": "Yokai"
+  },
+  "tengu": {
+   "label": "Tengu",
+   "lifespan": 400,
+   "words": [
+    "tengu"
+   ],
+   "folk": "Other peoples",
+   "type": "Yokai"
+  },
+  "kappa": {
+   "label": "Kappa",
+   "lifespan": 200,
+   "words": [
+    "kappa"
+   ],
+   "folk": "Other peoples",
+   "type": "Yokai"
+  },
+  "mind-eater": {
+   "label": "Mind-eater",
+   "lifespan": 250,
+   "words": [
+    "mind-eater",
+    "mind eater",
+    "mind-eaters"
+   ],
+   "folk": "Other peoples",
+   "type": "Aberrations"
+  },
+  "centaur": {
+   "label": "Centaur",
+   "lifespan": 120,
+   "words": [
+    "centaur",
+    "centaurs"
+   ],
+   "folk": "Other peoples",
+   "type": "Fey and wild folk"
+  },
+  "satyr": {
+   "label": "Satyr",
+   "lifespan": 150,
+   "words": [
+    "satyr",
+    "faun"
+   ],
+   "folk": "Other peoples",
+   "type": "Fey and wild folk"
+  },
+  "dryad": {
+   "label": "Dryad",
+   "lifespan": 1000,
+   "words": [
+    "dryad",
+    "dryads"
+   ],
+   "folk": "Other peoples",
+   "type": "Fey and wild folk"
+  },
+  "fae": {
+   "label": "Fae",
+   "lifespan": null,
+   "words": [
+    "fae",
+    "faerie",
+    "fairy",
+    "pixie"
+   ],
+   "folk": "Other peoples",
+   "type": "Fey and wild folk"
+  },
+  "lizardfolk": {
+   "label": "Lizardfolk",
+   "lifespan": 60,
+   "words": [
+    "lizardfolk",
+    "lizard-folk",
+    "lizardman",
+    "lizard-kin"
+   ],
+   "folk": "Other peoples",
+   "type": "Scaled folk"
+  },
+  "kobold": {
+   "label": "Kobold",
+   "lifespan": 120,
+   "words": [
+    "kobold",
+    "kobolds"
+   ],
+   "folk": "Other peoples",
+   "type": "Scaled folk"
+  },
+  "gnoll": {
+   "label": "Gnoll",
+   "lifespan": 45,
+   "words": [
+    "gnoll",
+    "gnolls"
+   ],
+   "folk": "Other peoples",
+   "type": "Beast-headed folk"
+  },
+  "celestial-blooded": {
+   "label": "Celestial-blooded",
+   "lifespan": 160,
+   "words": [
+    "celestial-blooded",
+    "angel-blooded"
+   ],
+   "folk": "Other peoples",
+   "type": "Planetouched"
+  },
+  "dhampir": {
+   "label": "Dhampir",
+   "lifespan": 300,
+   "words": [
+    "dhampir",
+    "dhampyr"
+   ],
+   "folk": "Other peoples",
+   "type": "Planetouched"
+  },
+  "djinn-blooded": {
+   "label": "Djinn-blooded",
+   "lifespan": 200,
+   "words": [
+    "djinn-blooded",
+    "jinn-blooded",
+    "genie-blooded"
+   ],
+   "folk": "Other peoples",
+   "type": "Planetouched"
+  },
+  "insectfolk": {
+   "label": "Insectfolk",
+   "lifespan": 40,
+   "words": [
+    "insectfolk",
+    "insect-kin",
+    "antfolk",
+    "beetle-kin"
+   ],
+   "folk": "Other peoples",
+   "type": "Crawling folk"
+  },
+  "spider-kin": {
+   "label": "Spider-kin",
+   "lifespan": 80,
+   "words": [
+    "spider-kin",
+    "spiderfolk",
+    "spider-folk"
+   ],
+   "folk": "Other peoples",
+   "type": "Crawling folk"
+  },
+  "fungal-folk": {
+   "label": "Fungal folk",
+   "lifespan": 60,
+   "words": [
+    "fungal folk",
+    "fungus folk",
+    "mushroom folk"
+   ],
+   "folk": "Other peoples",
+   "type": "Crawling folk"
+  },
+  "clockwork-folk": {
+   "label": "Clockwork folk",
+   "lifespan": null,
+   "words": [
+    "clockwork folk",
+    "clockwork person",
+    "automaton"
+   ],
+   "folk": "Other peoples",
+   "type": "Made folk"
+  },
+  "ageless": {
+   "label": "Doesn't age",
+   "lifespan": null,
+   "words": [
+    "immortal",
+    "ageless",
+    "vampire"
+   ]
+  }
+ },
+ "blends": [
+  {
+   "parents": [
+    "elf",
+    "human"
+   ],
+   "child": "half-elf"
+  },
+  {
+   "parents": [
+    "human",
+    "orc"
+   ],
+   "child": "half-orc"
+  },
+  {
+   "parents": [
+    "giant",
+    "human"
+   ],
+   "child": "half-giant"
+  }
+ ]
+}

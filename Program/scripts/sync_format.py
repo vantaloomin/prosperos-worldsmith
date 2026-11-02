@@ -1,7 +1,7 @@
 """Copy Dungeon's world format into worldsmith/dungeon_format: `python scripts/sync_format.py DUNGEON_CHECKOUT`.
 
 Worldsmith writes worlds Dungeon must load unchanged, so it uses Dungeon's own package code and city schema rather
-than a rewrite, and Dungeon's own name tables (names.json, given_names.json) so towns draw names from the same banks. This script copies those files from a Dungeon checkout, points their `dungeon.` imports at the
+than a rewrite, and Dungeon's own name tables (names.json, given_names.json) and kinds of people (lifespans.json) so towns draw names from the same banks. This script copies those files from a Dungeon checkout, points their `dungeon.` imports at the
 vendored copies, and stamps SOURCE.json with the commit they came from.
 
 `--check` changes nothing and exits 1 when the vendored files differ from the checkout's (CI runs it against
@@ -26,6 +26,7 @@ FILES = {
 DATA = {
     'Program/dungeon/world/data/names.json': 'data/names.json',
     'Program/dungeon/world/data/given_names.json': 'data/given_names.json',
+    'Program/dungeon/world/data/lifespans.json': 'data/lifespans.json',
 }
 # Dungeon module -> vendored module, for imports inside the copied files.
 MODULES = {'dungeon.errors': 'errors', 'dungeon.packages': 'packages', 'dungeon.world.schema': 'schema'}
