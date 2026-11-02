@@ -2,9 +2,8 @@ import { useState } from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { Globe2, Hammer, MessagesSquare, TriangleAlert, X } from 'lucide-react'
 import { getJson, sendJson, type FormatSource, type Health, type Town, type WorldOverview, type WorldRef } from './api'
+import { TownEditor } from './TownEditor'
 import { WorldPicker } from './WorldPicker'
-
-const PART_NAMES: Record<string, string> = { cities: 'town', adventures: 'quest', items: 'shops', finds: 'finds', premades: 'premades' }
 
 function TownList({ towns, chosen, onChoose }: { towns: Town[]; chosen: string; onChoose: (id: string) => void }) {
   const [real, roads] = [towns.filter((town) => !town.road), towns.filter((town) => town.road)]
@@ -54,25 +53,15 @@ function Overview({ overview }: { overview: WorldOverview }) {
   )
 }
 
-function TownSummary({ town }: { town: Town }) {
-  return (
-    <>
-      <h2>{town.name}</h2>
-      <p>{town.summary}</p>
-      <p className="muted">Has: {town.parts.map((part) => PART_NAMES[part] ?? part).join(', ') || 'nothing yet'}.</p>
-      <p className="note">Editing a town's places, shops, quest and people as forms comes in the next step.</p>
-    </>
-  )
-}
-
 /** The three panes from the build plan: the world on the left, the open thing in the middle, chat and drafts on the right. */
 export function App() {
   const health = useQuery({ queryKey: ['health'], queryFn: () => getJson<Health>('/api/health') })
   const format = useQuery({ queryKey: ['format'], queryFn: () => getJson<FormatSource>('/api/format') })
   const [town, setTown] = useState('')
+  const [ref, setRef] = useState<WorldRef | null>(null)
   const open = useMutation({
-    mutationFn: (ref: WorldRef) => sendJson<WorldOverview>('/api/worlds/open', 'POST', ref),
-    onSuccess: () => setTown(''),
+    mutationFn: (next: WorldRef) => sendJson<WorldOverview>('/api/worlds/open', 'POST', next),
+    onSuccess: (_, next) => { setTown(''); setRef(next) },
   })
   const overview = open.data
   const chosen = overview?.towns.find((item) => item.id === town)
@@ -95,7 +84,7 @@ export function App() {
         {open.isError && <p className="error">{open.error.message}</p>}
       </aside>
       <main className="pane work">
-        {chosen ? <TownSummary town={chosen} /> : overview ? <Overview overview={overview} />
+        {chosen && ref ? <TownEditor world={ref} town={chosen.id} /> : overview ? <Overview overview={overview} />
           : <><h2>Town builder</h2><p className="muted">Open a built-in world from your Dungeon checkout, or a world folder, to start.</p></>}
       </main>
       <aside className="pane side" aria-label="Brainstorm and drafts">

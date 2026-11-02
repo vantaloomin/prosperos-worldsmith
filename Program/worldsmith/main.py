@@ -7,7 +7,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-from worldsmith import NAME, VERSION, settings, worlds
+from worldsmith import NAME, VERSION, settings, towns, worlds
 from worldsmith.dungeon_format import packages
 from worldsmith.dungeon_format.errors import DomainError, require
 
@@ -30,6 +30,15 @@ class SettingsBody(BaseModel):
 class OpenBody(BaseModel):
     builtin: str | None = None
     folder: str | None = None
+
+
+class TownBody(OpenBody):
+    town: str
+
+
+class PartBody(TownBody):
+    kind: str
+    data: dict
 
 
 def worlds_listing() -> dict:
@@ -92,6 +101,29 @@ def api() -> APIRouter:
     @router.post('/worlds/open')
     def open_world(body: OpenBody):
         return worlds.overview(opened_from(body))
+
+    router.include_router(town_api())
+    return router
+
+
+def town_api() -> APIRouter:
+    router = APIRouter()
+
+    @router.get('/schema/city')
+    def city_schema():
+        return towns.city_schema()
+
+    @router.post('/towns/read')
+    def read_town(body: TownBody):
+        return towns.read(opened_from(body), body.town)
+
+    @router.put('/towns/part')
+    def save_part(body: PartBody):
+        return towns.save(opened_from(body), body.town, body.kind, body.data)
+
+    @router.post('/towns/undo')
+    def undo_town(body: TownBody):
+        return towns.undo(opened_from(body), body.town)
 
     return router
 

@@ -35,3 +35,9 @@ export interface WorldOverview {
   engine: Record<string, number>
   problems: string[]
 }
+export interface TownFiles {
+  id: string
+  parts: Record<string, Record<string, unknown> | null>
+  problems: Record<string, string[]>
+  undo: { id: number; at: string; kind: string }[]
+}
