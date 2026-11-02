@@ -13,6 +13,20 @@ Drafts come from the model you pick under "Brainstorm and drafts": Claude throug
 OpenAI-compatible server (LM Studio, Ollama, OpenRouter), or the `claude` command line on your PC. API keys are kept
 in Windows Credential Manager (the system keyring), not in a file.
 
+## Checking with Dungeon, street maps and packages
+
+- **Check with Dungeon** (a town's Town tab) runs the saved city file through Dungeon's own strict loader, and
+  **Street map** draws it with Dungeon's map engine. Both run the code in your Dungeon checkout with its own Python
+  (`Program\.venv`, made by Dungeon's `Windows\install.bat`). They use a scratch data folder, so your Dungeon saves
+  are never touched.
+- **Install into Dungeon** (an own world's overview) writes the world as one package into Dungeon's data folder
+  (`packages\<id>.sqlite`), and Dungeon lists it under Worlds > World packages. It finds that folder the way Dungeon
+  does: `%LOCALAPPDATA%\ProsperoDungeon`, or a portable `Data` folder in the checkout. `dungeon_data` in
+  Worldsmith's settings.json overrides it. Built-in worlds are not installed: their changes are already in the
+  checkout and ship with a Dungeon pull request.
+- **Export .sqlite** writes the same package anywhere, to share. **World package** on the start screen unpacks one
+  into a folder Worldsmith can open.
+
 ## Running it on Windows
 
 1. Install Python 3.12+ and Node 22+.

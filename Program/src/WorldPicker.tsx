@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { FolderOpen } from 'lucide-react'
 import { getJson, sendJson, type Settings, type WorldRef, type WorldsListing } from './api'
+import { ImportPackage } from './Packages'
 
 /** Choosing a world: the Dungeon checkout's built-in worlds, recent world folders, or any folder by its path. */
 export function WorldPicker({ onOpen, busy }: { onOpen: (ref: WorldRef) => void; busy: boolean }) {
@@ -60,6 +61,7 @@ export function WorldPicker({ onOpen, busy }: { onOpen: (ref: WorldRef) => void;
           </ul>
         )}
       </section>
+      <ImportPackage onOpened={(path) => onOpen({ folder: path })} />
     </div>
   )
 }

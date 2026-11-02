@@ -32,12 +32,15 @@ def load() -> dict:
     recent = [item for item in saved.get('recent_folders') or [] if isinstance(item, str)]
     checkout = saved.get('dungeon_checkout')
     model = saved.get('model') if isinstance(saved.get('model'), dict) else {}
+    data = saved.get('dungeon_data')
     return {'dungeon_checkout': checkout if isinstance(checkout, str) and checkout else None,
-            'recent_folders': recent[:MOST_RECENT], 'model': model}
+            'recent_folders': recent[:MOST_RECENT], 'model': model,
+            # Dungeon's data folder, only when it is not where Dungeon keeps it by default (package_files.dungeon_data).
+            'dungeon_data': data if isinstance(data, str) and data else None}
 
 
 def save(settings: dict) -> dict:
-    kept = load() | {key: settings[key] for key in ('dungeon_checkout', 'recent_folders', 'model') if key in settings}
+    kept = load() | {key: settings[key] for key in ('dungeon_checkout', 'recent_folders', 'model', 'dungeon_data') if key in settings}
     path().parent.mkdir(parents=True, exist_ok=True)
     path().write_text(json.dumps(kept, indent=2) + '\n', encoding='utf-8')
     return load()
