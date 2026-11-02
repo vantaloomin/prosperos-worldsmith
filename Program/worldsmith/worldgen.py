@@ -34,7 +34,8 @@ from worldsmith.dungeon_format.schema import Career, CityNames, Currency, Era, M
 
 SOURCE = 'worldsmith'
 Id = Annotated[str, Field(pattern=r'^[a-z0-9]+(-[a-z0-9]+)*$', max_length=80)]
-Text = Annotated[str, Field(min_length=1, max_length=600)]
+# Dungeon's records hold texts of up to 400 characters (its schema Text), so every part is held to the same.
+Text = Annotated[str, Field(min_length=1, max_length=400)]
 Danger = Literal['none', 'low', 'medium', 'high']
 Difficulty = Literal['easy', 'normal', 'hard', 'very_hard', 'extreme']
 STOP_KINDS = ('town', 'village', 'ruin', 'landmark')
@@ -400,6 +401,7 @@ def ask_for(part: str, pitch: str, done: dict, size: str, problems: list[str]) -
                   'threat may bring a foe with vitality and resolve around 8 to 14). "owners" are local names for '
                   'wild sites ("{owner}\'s Tower"); "sites" are what a hex crawl finds off the roads, at least one a '
                   'hamlet. Add 2 to 5 hidden truths and 4 to 10 lore entries.']
+    lines.append('\nKeep every text field to at most 400 characters (lore "text" may run to 1500).')
     if problems:
         lines += ['\nYour last answer was refused for these problems; fix them:', *problems]
     return '\n'.join(lines)
