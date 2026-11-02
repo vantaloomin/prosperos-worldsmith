@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Plus, Save, Trash2, Undo2 } from 'lucide-react'
 import { getJson, sendJson, type TownFiles, type WorldRef } from './api'
+import { DraftButton } from './DraftButton'
 import { RecordForm } from './RecordForm'
 import { blankFor, CITY_SECTIONS, REFERENCES, type JsonSchema } from './schema'
 
@@ -136,9 +137,12 @@ export function TownEditor({ world, town }: { world: WorldRef; town: string }) {
       {CITY_SECTIONS.map((section) => tab === section.key && (
         <div key={section.key}>
           <p className="muted small">{section.label}.</p>
+          <DraftButton world={world} town={town} target={section.key} what={section.name.toLowerCase()} />
           <Section city={city} root={root} section={section.key} choicesFor={choicesFor} onChange={(next) => setDraft('cities', next)} />
         </div>
       ))}
+      {part?.kind === 'adventures' && current && <DraftButton world={world} town={town} target="quests" what="quests" />}
+      {part?.kind === 'premades' && current && <DraftButton world={world} town={town} target="premades" what="premade characters" />}
       {part && (current ? <JsonPart key={`${part.kind}-${files.dataUpdatedAt}`} value={current} onChange={(next) => setDraft(part.kind, next)} />
         : (
           <div>

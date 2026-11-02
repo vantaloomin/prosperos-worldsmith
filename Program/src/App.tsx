@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { Globe2, Hammer, MessagesSquare, TriangleAlert, X } from 'lucide-react'
 import { getJson, sendJson, type FormatSource, type Health, type Town, type WorldOverview, type WorldRef } from './api'
+import { DraftsPane } from './DraftsPane'
+import { ModelSettings } from './ModelSettings'
 import { TownEditor } from './TownEditor'
 import { WorldPicker } from './WorldPicker'
 
@@ -89,7 +91,9 @@ export function App() {
       </main>
       <aside className="pane side" aria-label="Brainstorm and drafts">
         <h2><MessagesSquare size={16} aria-hidden /> Brainstorm and drafts</h2>
-        <p className="muted">The world-aware chat and the queue of drafts waiting for your approval will live here.</p>
+        <ModelSettings />
+        <h3>Waiting for approval</h3>
+        {ref && overview ? <DraftsPane world={ref} /> : <p className="muted small">Open a world to see its drafts.</p>}
       </aside>
     </div>
   )

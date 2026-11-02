@@ -4,7 +4,14 @@ A companion app to [Prospero's Dungeon](https://github.com/vantaloomin/prosperos
 towns, factions, people, quests and lore, drafted with AI help and approved by you, written in the exact world
 format Dungeon loads.
 
-Work in progress: this is the skeleton. The town builder comes next.
+Work in progress. Today it opens Dungeon's built-in worlds or any world folder, edits a town's files as forms
+with Dungeon's own checks and undo, and drafts new places, people, quests and more with AI for you to approve.
+
+## Models
+
+Drafts come from the model you pick under "Brainstorm and drafts": Claude through Anthropic's API, any
+OpenAI-compatible server (LM Studio, Ollama, OpenRouter), or the `claude` command line on your PC. API keys are kept
+in Windows Credential Manager (the system keyring), not in a file.
 
 ## Running it on Windows
 
