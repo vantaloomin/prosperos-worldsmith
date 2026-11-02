@@ -1,14 +1,17 @@
 import { useState } from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { Globe2, Hammer, MessagesSquare, TriangleAlert, X } from 'lucide-react'
+import { Globe2, Hammer, MessagesSquare, Plus, TriangleAlert, X } from 'lucide-react'
+
+const NEW = '__new__'
 import { getJson, sendJson, type FormatSource, type Health, type Town, type WorldOverview, type WorldRef } from './api'
 import { ChatPane } from './ChatPane'
 import { DraftsPane } from './DraftsPane'
 import { ModelSettings } from './ModelSettings'
+import { NewTown } from './NewTown'
 import { TownEditor } from './TownEditor'
 import { WorldPicker } from './WorldPicker'
 
-function TownList({ towns, chosen, onChoose }: { towns: Town[]; chosen: string; onChoose: (id: string) => void }) {
+function TownList({ towns, chosen, onChoose, onNew }: { towns: Town[]; chosen: string; onChoose: (id: string) => void; onNew: () => void }) {
   const [real, roads] = [towns.filter((town) => !town.road), towns.filter((town) => town.road)]
   return (
     <>
@@ -23,6 +26,7 @@ function TownList({ towns, chosen, onChoose }: { towns: Town[]; chosen: string; 
           </li>
         ))}
       </ul>
+      <button type="button" aria-pressed={chosen === NEW} onClick={onNew}><Plus size={14} aria-hidden /> New town</button>
       {!!roads.length && <p className="muted small">Roads and wilds: {roads.map((town) => town.name).join(', ')}</p>}
     </>
   )
@@ -82,12 +86,12 @@ export function App() {
         <h2><Globe2 size={16} aria-hidden /> {overview ? overview.world.name : 'Open a world'}
           {overview && <button type="button" className="icon" aria-label="Close world" onClick={() => open.reset()}><X size={14} /></button>}
         </h2>
-        {overview ? <TownList towns={overview.towns} chosen={town} onChoose={(id) => setTown(id === town ? '' : id)} />
+        {overview ? <TownList towns={overview.towns} chosen={town} onChoose={(id) => setTown(id === town ? '' : id)} onNew={() => setTown(town === NEW ? '' : NEW)} />
           : <WorldPicker onOpen={(ref) => open.mutate(ref)} busy={open.isPending} />}
         {open.isError && <p className="error">{open.error.message}</p>}
       </aside>
       <main className="pane work">
-        {chosen && ref ? <TownEditor world={ref} town={chosen.id} /> : overview ? <Overview overview={overview} />
+        {town === NEW && ref && overview ? <NewTown world={ref} overview={overview} /> : chosen && ref ? <TownEditor world={ref} town={chosen.id} /> : overview ? <Overview overview={overview} />
           : <><h2>Town builder</h2><p className="muted">Open a built-in world from your Dungeon checkout, or a world folder, to start.</p></>}
       </main>
       <aside className="pane side" aria-label="Brainstorm and drafts">
@@ -95,7 +99,7 @@ export function App() {
         <ModelSettings />
         {ref && overview && <ChatPane world={ref} town={chosen?.id ?? ''} />}
         <h3>Waiting for approval</h3>
-        {ref && overview ? <DraftsPane world={ref} /> : <p className="muted small">Open a world to see its drafts.</p>}
+        {ref && overview ? <DraftsPane world={ref} onTownAdded={() => open.mutate(ref)} /> : <p className="muted small">Open a world to see its drafts.</p>}
       </aside>
     </div>
   )

@@ -46,6 +46,8 @@ def connect() -> sqlite3.Connection:
 
 
 def part_of(target: str) -> tuple[str, str]:
+    if target == 'town':
+        return 'cities', 'town'
     if target in CITY_TARGETS:
         return 'cities', target
     require(target in OTHER_TARGETS, f'{target} cannot be drafted.', 404)
@@ -74,7 +76,8 @@ def brief(entry: dict) -> str:
     return f"- {entry.get('id', '')}: {named}" + (f' ({about[:140]})' if about else '')
 
 
-def prompt_for(found: dict, city: dict, target: str, current: list, ask: str, problems: list[str]) -> str:
+def prompt_for(found: dict, city: dict, target: str, current: list, ask: str, problems: list[str],
+               shape: list | None = None) -> str:
     world = found['world']
     lines = [f"World: {world.get('name')} ({world.get('genre', '')}). {world.get('pitch', '')}",
              f"Town: {city.get('name')} ({city.get('era')}, money in {(city.get('currency') or {}).get('name', '')}). "
@@ -87,14 +90,22 @@ def prompt_for(found: dict, city: dict, target: str, current: list, ask: str, pr
     schema = entry_schema(target)
     if schema:
         lines += ['\nEach new entry must match this JSON schema (Dungeon refuses anything else):', json.dumps(schema)]
-    elif current:
-        lines += ['\nMatch the shape of this existing entry exactly:', json.dumps(current[0], ensure_ascii=False)]
+    elif shape or current:
+        lines += ['\nMatch the shape of this existing entry exactly:', json.dumps((shape or current)[0], ensure_ascii=False)]
     lines += [f'\nWrite new {target} for this town. The author asks: {ask.strip() or "a few more that fit"}',
               f'At most {MOST_ENTRIES}. Use new ids that are not taken. Reference only neighborhoods and places '
               'listed above.']
     if problems:
         lines += ['\nYour last answer was refused for these problems; fix them:', *problems[:20]]
     return '\n'.join(lines)
+
+
+def example_from(found: dict, kind: str, key: str) -> list:
+    """Entries of the same kind from another town in the world, as the shape for a town that has none yet."""
+    for (each, _), data in sorted(found['engine'].items()):
+        if each == kind and isinstance(data, dict) and data.get(key):
+            return list(data[key])
+    return []
 
 
 def parsed(text: str) -> list:
@@ -132,15 +143,20 @@ def draft(opened: worlds.Opened, town: str, target: str, ask: str) -> dict:
     files = towns.read(opened, town)
     found, _ = worlds.contents(opened)
     current = list((files['parts'][kind] or {}).get(key) or [])
+    shape = current or example_from(found, kind, key)
     problems: list[str] = []
     for _ in range(2):
         entries = parsed(models.complete(SYSTEM, prompt_for(found, files['parts']['cities'], target, current, ask,
-                                                            problems)))
+                                                            problems, shape)))
         _, _, problems = merged(files, target, entries)
         if not problems:
             break
     else:
         raise DomainError('The model\'s draft still had problems after a retry: ' + '; '.join(problems[:6]), 422)
+    return queue(opened, town, target, ask, entries)
+
+
+def queue(opened: worlds.Opened, town: str, target: str, ask: str, entries: list) -> dict:
     with closing(connect()) as connection, connection:
         cursor = connection.execute(
             'INSERT INTO drafts (at, folder, town, target, ask, entries) VALUES (?, ?, ?, ?, ?, ?)',
@@ -157,9 +173,11 @@ def shown(draft_id: int) -> dict:
         row = connection.execute('SELECT * FROM drafts WHERE id = ?', (draft_id,)).fetchone()
     require(row is not None, 'That draft is gone.', 404)
     entries = json.loads(row['entries'])
+    hidden = sum(1 for entry in entries if packages.hidden('cast', entry))
+    if row['target'] == 'town' and entries:
+        hidden = sum(1 for person in entries[0].get('notables') or [] if packages.hidden('cast', person))
     return {'id': row['id'], 'at': row['at'], 'town': row['town'], 'target': row['target'], 'ask': row['ask'],
-            'status': row['status'], 'entries': entries,
-            'hidden': sum(1 for entry in entries if packages.hidden('cast', entry))}
+            'status': row['status'], 'entries': entries, 'hidden': hidden}
 
 
 def pending(opened: worlds.Opened) -> list[dict]:
@@ -174,7 +192,10 @@ def decide(opened: worlds.Opened, draft_id: int, approve: bool, entries: list | 
     item = shown(draft_id)
     require(item['status'] == 'pending', 'That draft was already decided.', 409)
     town = None
-    if approve:
+    if approve and item['target'] == 'town':
+        from worldsmith import wizard
+        town = wizard.approve_town(opened, (entries or item['entries'])[0])
+    elif approve:
         files = towns.read(opened, item['town'])
         kind, data, problems = merged(files, item['target'], entries if entries is not None else item['entries'])
         if problems:

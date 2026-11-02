@@ -30,6 +30,7 @@ export interface WorldOverview {
   kind: 'builtin' | 'folder'
   folder: string
   towns: Town[]
+  stops: { id: string; name: string | null; city: string; road: boolean }[]
   sections: Record<string, { entries: number; hidden: number }>
   documents: number
   engine: Record<string, number>

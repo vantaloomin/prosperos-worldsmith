@@ -128,6 +128,11 @@ def overview(opened: Opened) -> dict:
     engine = {}
     for kind, _ in found['engine']:
         engine[kind] = engine.get(kind, 0) + 1
+    travel = found['engine'].get(('travel', world.get('id'))) or {}
+    stops = [{'id': node.get('id'), 'name': node.get('name'), 'city': node.get('city'),
+              'road': ((found['engine'].get(('cities', node.get('city'))) or {}).get('town_map') or {}).get('style') == 'none'}
+             for node in travel.get('nodes') or [] if isinstance(node, dict)]
     return {'world': {key: world.get(key) for key in ('id', 'name', 'genre', 'pitch', 'default_ruleset', 'status')},
+            'stops': stops,
             'kind': opened.kind, 'folder': str(opened.folder), 'towns': towns(found), 'sections': sections,
             'documents': len(found['documents']), 'engine': engine, 'problems': problems}
