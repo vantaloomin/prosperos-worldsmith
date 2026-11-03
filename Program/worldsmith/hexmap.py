@@ -80,6 +80,29 @@ def stops(travel: dict, data: dict, columns: int, rows: int) -> list[dict]:
     return found
 
 
+def ashore(on_map: list[dict], terrain_rows: list[str]) -> list[dict]:
+    """Move any stop that sits on water (sea or lake) to the nearest free land hex, marked `moved` with where it was.
+
+    Stops come from the travel map's spots or an earlier save, and the land is worked out from the paint, so a town can
+    end up in the sea after the paint changes. A town on land stays where it is."""
+    if not terrain_rows:
+        return on_map
+    rows, columns = len(terrain_rows), len(terrain_rows[0])
+    land = [(column, row) for row in range(rows) for column in range(columns) if terrain_rows[row][column] != '~']
+    taken = {(stop['column'], stop['row']) for stop in on_map}
+    for stop in on_map:
+        here = (stop['column'], stop['row'])
+        if not land or terrain_rows[stop['row']][stop['column']] != '~':
+            continue
+        free = [cell for cell in land if cell not in taken] or land
+        column, row = min(free, key=lambda cell: (terrain.hex_distance(here, cell), cell[1], cell[0]))
+        taken.discard(here)
+        taken.add((column, row))
+        q, r = terrain.axial(column, row)
+        stop.update(column=column, row=row, q=q, r=r, moved={'column': here[0], 'row': here[1]})
+    return on_map
+
+
 def read(opened: worlds.Opened, size: str = 'medium') -> dict:
     """The map to paint: the saved paint (or the authored terrain, all of it counted as painted), or a blank map."""
     found, _, travel = travel_of(opened)
@@ -94,7 +117,7 @@ def read(opened: worlds.Opened, size: str = 'medium') -> dict:
         'miles': data.get('miles', 6), 'legend': terrain.LEGEND, 'paint': paint, 'terrain': terrain_rows,
         'rivers': data.get('rivers') or [], 'lakes': data.get('lakes') or [],
         'roads': [{'name': road.get('name', ''), 'cells': road.get('cells', [])} for road in data.get('roads') or []],
-        'stops': stops(travel, data, columns, rows),
+        'stops': ashore(stops(travel, data, columns, rows), terrain_rows),
         'settings': {'seed': painter.get('seed') or key, 'wind': painter.get('wind', 'west'),
                      'rivers': painter.get('rivers', 'some')},
         'can_add_towns': road_city(opened, world_id_of(opened, found)) is not None,
@@ -128,6 +151,10 @@ def generate(opened: worlds.Opened, body: dict) -> dict:
     settings = settings_of(body)
     on_map = stops(travel, data, columns, rows)
     made = terrain.generate(columns, rows, paint, places=[(stop['q'], stop['r']) for stop in on_map], **settings)
+    on_map = ashore(on_map, made['terrain'])
+    moved = {(stop['column'], stop['row']) for stop in on_map if stop.get('moved')}
+    made['towns'] = [site for site in made['towns'] if all(
+        terrain.hex_distance((site['column'], site['row']), cell) >= terrain.TOWN_SPACING for cell in moved)]
     made['rivers'] = named(made['rivers'], data.get('rivers') or [])
     made.pop('height', None)
     return {**made, 'paint': paint, 'settings': settings, 'stops': on_map}
@@ -177,8 +204,8 @@ def save(opened: worlds.Opened, body: dict) -> dict:
     on_map = made['stops']
     regions, region_legend = regions_for(made, data, on_map)
     places = dict(data.get('places') or {})
-    for stop in on_map:
-        places.setdefault(stop['id'], [stop['q'], stop['r']])
+    for stop in on_map:  # where each stop is now, after any move off the water
+        places[stop['id']] = [stop['q'], stop['r']]
     name = found['world'].get('name') or key
     data = {
         'about': data.get('about') or f"{name}'s hexes, painted in Prospero's Worldsmith: the land, its rivers and lakes "

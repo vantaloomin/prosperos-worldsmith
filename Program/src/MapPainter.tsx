@@ -5,7 +5,8 @@ import { sendJson, type WorldRef } from './api'
 
 type Cell = [number, number]
 interface River { id: string; name: string; cells: Cell[]; flow?: number[] }
-interface Stop { id: string; label: string; q: number; r: number; column: number; row: number; placed: boolean }
+interface Stop { id: string; label: string; q: number; r: number; column: number; row: number; placed: boolean
+  moved?: { column: number; row: number } }
 interface Site { q: number; r: number; column: number; row: number; kind: string; score: number; why: string[]; terrain: string }
 interface Settings { seed: string; wind: string; rivers: string }
 interface HexMap {
@@ -188,6 +189,7 @@ export function MapPainter({ world, onTownAdded }: { world: WorldRef; onTownAdde
   const run = useCallback((nextPaint: string[], nextSettings: Settings) => generate.mutate({ paint: nextPaint, settings: nextSettings }), [generate])
 
   const sites = useMemo(() => made?.towns ?? [], [made])
+  const movedStops = (made?.stops ?? map?.stops ?? []).filter((stop) => stop.moved)
   useEffect(() => {
     if (canvas.current && map && paint) {
       draw(canvas.current, hexSize, map, made?.terrain ?? [], paint, made?.rivers ?? [], map.roads, made?.stops ?? map.stops, sites, chosen, showPaint || !made)
@@ -263,7 +265,7 @@ export function MapPainter({ world, onTownAdded }: { world: WorldRef; onTownAdde
         <button type="button" onClick={() => setZoom(zoom - 1)} aria-label="Zoom out" disabled={hexSize <= 3}><ZoomOut size={14} /></button>
         <button type="button" onClick={() => setZoom(zoom + 1)} aria-label="Zoom in" disabled={hexSize >= 24}><ZoomIn size={14} /></button>
         <span className="spacer" />
-        <button type="button" onClick={() => save.mutate()} disabled={save.isPending || (!dirty && map.exists)}><Save size={14} aria-hidden /> {save.isPending ? 'Saving…' : 'Save to the world'}</button>
+        <button type="button" onClick={() => save.mutate()} disabled={save.isPending || (!dirty && map.exists && !movedStops.length)}><Save size={14} aria-hidden /> {save.isPending ? 'Saving…' : 'Save to the world'}</button>
         <button type="button" onClick={() => undo.mutate()} disabled={!map.undo.length || undo.isPending}><RotateCcw size={14} aria-hidden /> Undo last save</button>
       </div>
       {[generate, save, undo, addTown].map((job, index) => job.isError && <p key={index} className="error">{job.error.message}</p>)}
@@ -277,6 +279,9 @@ export function MapPainter({ world, onTownAdded }: { world: WorldRef; onTownAdde
         {columns} by {rows} hexes of {map.miles} miles. {made ? `${made.rivers.length} rivers, ${made.lakes.length} lake hexes.` : 'Not worked out yet.'}
         {dirty ? ' Not saved yet.' : map.exists ? ' Saved.' : ''} Dungeon's hex crawl uses the rivers: crossing one off the road takes time, and a road over one is a bridge or a ford.
       </p>
+      {movedStops.length > 0 && <p className="note small">
+        {movedStops.map((stop) => stop.label).join(', ')} {movedStops.length === 1 ? 'was' : 'were'} on water, so {movedStops.length === 1 ? 'it was' : 'they were'} moved
+        to the nearest land. Save to the world to keep {movedStops.length === 1 ? 'it' : 'them'} there, or paint land under {movedStops.length === 1 ? 'it' : 'them'}.</p>}
       <h3><MapPin size={14} aria-hidden /> Suggested town sites</h3>
       {!sites.length && <p className="muted small">Generate the map to see where towns would grow.</p>}
       <ol className="sites">
