@@ -197,3 +197,31 @@ def test_the_api_paints_and_saves(opened):
     assert client.post('/api/hexes/generate', json=body).json()['terrain']
     assert client.put('/api/hexes/save', json=body).json()['exists'] is True
     assert client.post('/api/hexes/undo', json={'builtin': 'testland'}).json()['exists'] is False
+
+
+def test_a_stop_on_water_is_moved_to_the_nearest_land_and_saved_there(opened):
+    # Kingswood's travel spot is mid-map; paint everything but a western strip as sea.
+    body = painted_body() | {'paint': ['.' * 10 + '~' * 30 for _ in range(30)]}
+    made = hexmap.generate(opened, body)
+    grid = cells_of(made['terrain'])
+    stop = made['stops'][0]
+    assert stop['moved'] and grid[(stop['column'], stop['row'])] != '~'
+    assert stop['column'] <= 10 and (stop['q'], stop['r']) == terrain.axial(stop['column'], stop['row'])
+    saved = hexmap.save(opened, body)
+    data = json.loads((opened.data / 'hexes/testland.json').read_text())
+    assert data['places']['kingswood'] == [stop['q'], stop['r']] and not saved['stops'][0].get('moved')
+    # A town saved on land that is later painted over with sea moves off it too, on read and on the next save.
+    sunk = painted_body() | {'paint': ['~' * 40 for _ in range(15)] + ['.' * 40 for _ in range(15)]}
+    data['terrain'] = sunk['paint']
+    (opened.data / 'hexes/testland.json').write_text(json.dumps(data))
+    shown = hexmap.read(opened)['stops'][0]
+    assert shown['moved'] and shown['row'] >= 15
+    hexmap.save(opened, sunk)
+    q, r = json.loads((opened.data / 'hexes/testland.json').read_text())['places']['kingswood']
+    assert terrain.offset(q, r)[1] >= 15
+
+
+def test_a_stop_on_land_stays_put(opened):
+    body = painted_body() | {'paint': ['.' * 40 for _ in range(30)]}
+    stop = hexmap.generate(opened, body)['stops'][0]
+    assert 'moved' not in stop and (stop['column'], stop['row']) == (20, 14)
