@@ -1,4 +1,5 @@
-"""How far a long model job has got, for the screen to show while it waits: drafting a world, a town, or one list.
+"""How far a long model job has got, for the screen to show while it waits: drafting a world, a town, one list, or a
+cast's factions.
 
 Each job is kept by its world folder and kind, in memory only; the screen polls /api/progress while its request runs.
 """
@@ -19,6 +20,8 @@ STEPS: dict[str, dict[str, str]] = {
              'check': "Checking the town against Dungeon's format"},
     'draft': {'write': 'Writing the draft',
               'check': "Checking the draft against Dungeon's format"},
+    'cast': {'write': "Writing the cast's sides as factions",
+             'check': "Checking the factions against Dungeon's format"},
 }
 JOBS: dict[str, dict] = {}
 

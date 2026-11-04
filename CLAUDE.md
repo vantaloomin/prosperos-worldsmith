@@ -8,5 +8,7 @@ writes Dungeon's world folders and `.sqlite` world packages, so everything it ma
 - `worldsmith/dungeon_format/` is Dungeon's own code, vendored. Never edit it here: change it in Dungeon, then run
   `python scripts/sync_format.py <dungeon checkout>`. CI's `dungeon-format` job fails when Dungeon's main has moved on.
 - The model never writes into a world directly: AI output becomes a draft the author approves.
+- `worldsmith/cast_import.py` reads Dramatis's `prospero-cast` file (vantaloomin/prosperos-dramatis, `dramatis/casts.py`
+  `export`): each side of the cast's outer square becomes one faction in a single `factions` draft.
 - Before pushing, from `Program/`: `python -m ruff check .`, `python -m pytest -q`, `npm run build`.
 - `main` takes changes through pull requests.

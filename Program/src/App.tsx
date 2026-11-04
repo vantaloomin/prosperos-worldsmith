@@ -8,6 +8,7 @@ const INTERIORS = '__interiors__'
 const PAINTER = '__painter__'
 import { getJson, sendJson, type FormatSource, type Health, type Town, type WorldOverview, type WorldRef } from './api'
 import { ChatPane } from './ChatPane'
+import { CastImport } from './CastImport'
 import { DraftsPane } from './DraftsPane'
 import { ModelSettings } from './ModelSettings'
 import { NewTown } from './NewTown'
@@ -45,7 +46,7 @@ function TownList({ towns, chosen, onChoose, onNew, onTravel, onPainter, onInter
   )
 }
 
-function Overview({ overview, world }: { overview: WorldOverview; world: WorldRef }) {
+function Overview({ overview, world, onChanged }: { overview: WorldOverview; world: WorldRef; onChanged: () => void }) {
   return (
     <>
       <h2>{overview.world.name}</h2>
@@ -70,6 +71,7 @@ function Overview({ overview, world }: { overview: WorldOverview; world: WorldRe
           <tr><th>documents</th><td>{overview.documents}</td><td /></tr>
         </tbody>
       </table>
+      <CastImport world={world} onChanged={onChanged} />
       <ExportPackage world={world} />
     </>
   )
@@ -108,7 +110,7 @@ export function App() {
         {open.isError && <p className="error">{open.error.message}</p>}
       </aside>
       <main className="pane work">
-        {town === NEW && ref && overview ? <NewTown world={ref} overview={overview} /> : town === TRAVEL && ref ? <><h2>Travel map</h2><MapEditor world={ref} kind="travel" /></> : town === PAINTER && ref ? <><h2>World map</h2><MapPainter world={ref} onTownAdded={() => open.mutate(ref, { onSuccess: () => setTown(PAINTER) })} /></> : town === INTERIORS && ref && overview ? <Interiors world={ref} overview={overview} /> : chosen && ref ? <TownEditor world={ref} town={chosen.id} /> : overview ? <Overview overview={overview} world={ref!} />
+        {town === NEW && ref && overview ? <NewTown world={ref} overview={overview} /> : town === TRAVEL && ref ? <><h2>Travel map</h2><MapEditor world={ref} kind="travel" /></> : town === PAINTER && ref ? <><h2>World map</h2><MapPainter world={ref} onTownAdded={() => open.mutate(ref, { onSuccess: () => setTown(PAINTER) })} /></> : town === INTERIORS && ref && overview ? <Interiors world={ref} overview={overview} /> : chosen && ref ? <TownEditor world={ref} town={chosen.id} /> : overview ? <Overview overview={overview} world={ref!} onChanged={() => open.mutate(ref!)} />
           : <><h2>Town builder</h2><p className="muted">Open a built-in world from your Dungeon checkout, or a world folder, to start.</p></>}
       </main>
       <aside className="pane side" aria-label="Brainstorm and drafts">
@@ -116,7 +118,7 @@ export function App() {
         <ModelSettings />
         {ref && overview && <ChatPane world={ref} town={chosen?.id ?? ''} />}
         <h3>Waiting for approval</h3>
-        {ref && overview ? <DraftsPane world={ref} onTownAdded={() => open.mutate(ref)} /> : <p className="muted small">Open a world to see its drafts.</p>}
+        {ref && overview ? <DraftsPane world={ref} onWorldChanged={() => open.mutate(ref)} /> : <p className="muted small">Open a world to see its drafts.</p>}
       </aside>
     </div>
   )

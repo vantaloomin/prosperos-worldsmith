@@ -10,6 +10,7 @@ from pydantic import BaseModel
 from worldsmith import (
     NAME,
     VERSION,
+    cast_import,
     chat,
     drafts,
     dungeon_run,
@@ -171,6 +172,10 @@ class MapParseBody(BaseModel):
     graph: dict
 
 
+class CastImportBody(OpenBody):
+    cast: dict  # a Dramatis `prospero-cast` file, read by cast_import.read
+
+
 class DecideBody(OpenBody):
     approve: bool
     entries: list | None = None
@@ -243,6 +248,7 @@ def api() -> APIRouter:
     router.include_router(hex_api())
     router.include_router(draft_api())
     router.include_router(world_api())
+    router.include_router(cast_api())
     return router
 
 
@@ -406,6 +412,25 @@ def hex_api() -> APIRouter:
     @router.post('/hexes/town')
     def town_from_site(body: HexTownBody):
         return hexmap.add_town(opened_from(body), body.model_dump(exclude={'builtin', 'folder'}))
+
+    return router
+
+
+def cast_api() -> APIRouter:
+    """A Dramatis cast's sides brought in as the world's factions (worldsmith/cast_import.py)."""
+    router = APIRouter()
+
+    @router.post('/factions/import')
+    def import_cast(body: CastImportBody):
+        return cast_import.draft(opened_from(body), body.cast)
+
+    @router.post('/factions/imports')
+    def cast_imports(body: OpenBody):
+        return cast_import.imports(opened_from(body))
+
+    @router.post('/factions/undo')
+    def undo_cast(body: OpenBody):
+        return cast_import.undo(opened_from(body))
 
     return router
 

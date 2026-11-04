@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { sendJson, type WorldRef } from './api'
 
-export type Job = 'world' | 'town' | 'draft'
+export type Job = 'world' | 'town' | 'draft' | 'cast'
 interface Progress {
   running: boolean; step?: string; index?: number; of?: number; label?: string; attempt?: number; about?: string
   started?: string; step_started?: string; problems?: string[]
