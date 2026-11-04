@@ -352,6 +352,13 @@ def outline_text(outline: dict) -> str:
             f"Regions: {regions}\nStops: {stops}")
 
 
+# How a faction is written, for the world wizard and for a cast's sides brought in as factions (cast_import.py).
+FACTION_RULES = ('"holds" lists the stop ids each one runs or leans on; "rivals" and "allies" name other faction ids. '
+                 'Give each 1 or 2 clocks (what happens when they get their way) and 1 to 3 jobs: work they pay for '
+                 'in the towns they hold, with the truth behind it, what happens if it is missed, and the loose ends '
+                 'it leaves.')
+
+
 def ask_for(part: str, pitch: str, done: dict, size: str, problems: list[str]) -> str:
     low, high = SIZES[size]
     lines = [f"The author's pitch for a new world: {pitch.strip()}"]
@@ -384,10 +391,7 @@ def ask_for(part: str, pitch: str, done: dict, size: str, problems: list[str]) -
                   'a weapon, a horse or the like; each with id, item, low, high, per), and the climate by month.']
     elif part == 'play':
         lines += ['\nWrite the factions in play as one JSON object matching this schema:', schema_of(part),
-                  '\nGive 3 to 6 factions with clear goals that pull against each other. "holds" lists the stop ids '
-                  'each one runs or leans on; "rivals" and "allies" name other faction ids. Give each 1 or 2 clocks '
-                  '(what happens when they get their way) and 1 to 3 jobs: work they pay for in the towns they hold, '
-                  'with the truth behind it, what happens if it is missed, and the loose ends it leaves.']
+                  '\nGive 3 to 6 factions with clear goals that pull against each other. ' + FACTION_RULES]
     else:
         regions = ', '.join(region['id'] for region in done['outline']['regions'])
         factions = ', '.join(f"{faction['name']} ({faction['id']})" for faction in done['play']['factions'])
@@ -469,18 +473,22 @@ def kind_problems(kinds) -> list[str]:
     return found
 
 
+def faction_problems(factions: list[dict], stops: set[str], known: set[str]) -> list[str]:
+    """Factions must hold only the world's stops and name only factions there are as rivals and allies."""
+    found = [f"{faction['id']} holds unknown stops {sorted(set(faction.get('holds') or []) - stops)}"
+             for faction in factions if not set(faction.get('holds') or []) <= stops]
+    found += [f"{faction['id']} names unknown factions" for faction in factions
+              if not set((faction.get('rivals') or []) + (faction.get('allies') or [])) <= known]
+    return found
+
+
 def extra_problems(part: str, answer: dict, done: dict) -> list[str]:
     """What the parts must agree on between them."""
     if part == 'people':
         return name_problems(answer['names'], done['outline']['era']) + kind_problems(answer.get('kinds'))
     if part == 'play':
-        stops = {stop['id'] for stop in done['outline']['stops']}
-        factions = {faction['id'] for faction in answer['factions']}
-        found = [f"{faction['id']} holds unknown stops {sorted(set(faction.get('holds') or []) - stops)}"
-                 for faction in answer['factions'] if not set(faction.get('holds') or []) <= stops]
-        found += [f"{faction['id']} names unknown factions" for faction in answer['factions']
-                  if not set((faction.get('rivals') or []) + (faction.get('allies') or [])) <= factions]
-        return found
+        return faction_problems(answer['factions'], {stop['id'] for stop in done['outline']['stops']},
+                                {faction['id'] for faction in answer['factions']})
     if part == 'story':
         regions = {region['id'] for region in done['outline']['regions']} | {'wilds'}
         found = [f'encounters for unknown region {key}' for key in answer['encounters'] if key not in regions]

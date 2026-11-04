@@ -28,6 +28,16 @@ Every town starts as a stop on the Road. "Towns to build" drafts each one into a
 keeps the stop's id and place on the map, and takes the world's money, era, name banks and careers from the Road.
 Install into Dungeon when you want to play it.
 
+## Factions from a Dramatis cast
+
+**Import a Dramatis cast** (a world's overview) takes a cast exported from
+[Prospero's Dramatis](https://github.com/vantaloomin/prosperos-dramatis) as `cast.json` and drafts each side of its
+outer square as one of the world's factions. The cast's own words stay as they are: the side's label is the name,
+its stance and note the summary, its stance and each inner corner's how the goals, the other sides its rivals, its
+linked characters the people who give its jobs, and a confirmed resonance the secret behind one job. The model writes
+the rest (kind, tier, the stops it holds, two clocks, its jobs), checked like the world wizard's factions. Approving
+adds them to the factions section and the factions in play together; **Undo the last cast import** takes both back.
+
 ## Names
 
 Townsfolk and NPC names come from Dungeon's own name tables, synced into `worldsmith/dungeon_format/data` with the

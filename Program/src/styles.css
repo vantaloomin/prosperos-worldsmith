@@ -97,7 +97,7 @@ fieldset input[type='radio'] { flex: none; }
 .row.tight { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; margin: 0.4rem 0; }
 .ok { color: #3c7a3a; display: flex; gap: 0.3rem; align-items: center; }
 .dungeon-check { margin: 0.5rem 0 1rem; }
-.package { margin-top: 1.5rem; }
+.package, .cast-import { margin-top: 1.5rem; }
 .package form { display: flex; gap: 0.5rem; flex-wrap: wrap; }
 .package input { flex: 1; min-width: 14rem; }
 

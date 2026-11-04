@@ -5,6 +5,10 @@ its quests. The prompt carries the world's pitch and the town as it stands, Dung
 the house rules for names and tone. What comes back is checked the way Dungeon would check it, once more with the
 problems if it fails, and queued. Approving adds the entries to the town's file as it is then, through
 worldsmith.towns, so it is checked again and can be undone like any other save.
+
+Three drafts are whole things rather than entries: a new world (`world`, worldgen.py), a new town (`town`,
+wizard.py) and a Dramatis cast's sides as factions (`factions`, cast_import.py). Each is queued here as one entry and
+approved by its own module.
 """
 import json
 import re
@@ -203,6 +207,9 @@ def decide(opened: worlds.Opened, draft_id: int, approve: bool, entries: list | 
     elif approve and item['target'] == 'world':
         from worldsmith import worldgen
         worldgen.approve_world(opened, item['entries'][0])
+    elif approve and item['target'] == 'factions':
+        from worldsmith import cast_import
+        cast_import.approve(opened, item['entries'][0])
     elif approve:
         files = towns.read(opened, item['town'])
         kind, data, problems = merged(files, item['target'], entries if entries is not None else item['entries'])

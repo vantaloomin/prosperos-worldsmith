@@ -159,20 +159,25 @@ def undoable(opened: Opened, town: str) -> list[dict]:
     return [{'id': row['id'], 'at': row['at'], 'kind': Path(row['path']).parent.name} for row in rows]
 
 
+def put_back(connection: sqlite3.Connection, last: sqlite3.Row):
+    """Undo one save: every file written in the same batch as `last` goes back to what it held before."""
+    rows = connection.execute('SELECT * FROM history WHERE batch = ? ORDER BY id DESC', (last['batch'],)).fetchall() \
+        if last['batch'] else [last]
+    for row in rows:
+        path = Path(row['path'])
+        if row['before'] is None:
+            path.unlink(missing_ok=True)
+        else:
+            path.write_text(row['before'], encoding='utf-8', newline='\n')
+        connection.execute('DELETE FROM history WHERE id = ?', (row['id'],))
+
+
 def undo(opened: Opened, town: str) -> dict:
     """Put back the town's last save as it was before it (every file that save wrote)."""
     with closing(history()) as connection, connection:
         last = town_rows(connection, opened, town, 1)
         require(bool(last), 'There is nothing to undo for this town.', 409)
-        rows = connection.execute('SELECT * FROM history WHERE batch = ? ORDER BY id DESC', (last[0]['batch'],)).fetchall() \
-            if last[0]['batch'] else last
-        for row in rows:
-            path = Path(row['path'])
-            if row['before'] is None:
-                path.unlink(missing_ok=True)
-            else:
-                path.write_text(row['before'], encoding='utf-8', newline='\n')
-            connection.execute('DELETE FROM history WHERE id = ?', (row['id'],))
+        put_back(connection, last[0])
     if not path_of(opened, town, 'cities').is_file():
         return {'id': town, 'parts': {kind: None for kind in TOWN_KINDS}, 'problems': {}, 'undo': [], 'gone': True}
     return read(opened, town)
