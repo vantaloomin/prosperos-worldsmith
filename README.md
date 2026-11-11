@@ -38,6 +38,10 @@ linked characters the people who give its jobs, and a confirmed resonance the se
 the rest (kind, tier, the stops it holds, two clocks, its jobs), checked like the world wizard's factions. Approving
 adds them to the factions section and the factions in play together; **Undo the last cast import** takes both back.
 
+Pick a town beside the button (**People in Kingswood**, say) and the cast's people come too: each character linked to
+a corner is drafted as one of that town's notables, keeping their name, age, About and wants, with the side they
+stand with in their role. They wait as that town's notables draft, approved and undone like any other.
+
 ## Names
 
 Townsfolk and NPC names come from Dungeon's own name tables, synced into `worldsmith/dungeon_format/data` with the
