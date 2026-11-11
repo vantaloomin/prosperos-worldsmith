@@ -14,6 +14,10 @@ The model fills in what a cast has no word for (kind, tier, the stops it holds, 
 world wizard's faction rules, and what comes back is checked the way the wizard checks factions, once more with the
 problems if it fails. The factions are queued as one draft. Approving it adds them to the world's factions section and
 its factions in play together, and one undo takes both back.
+
+With a town named, the cast's people come too: each character linked to a corner becomes one of that town's notables,
+drafted like any notables draft (worldsmith/drafts.py) with their name, age, About and wants kept and their side as
+part of their role, and queued as a second draft for that town.
 """
 import json
 import re
@@ -243,9 +247,85 @@ def checked(seeds: list[dict], answer: dict, stops: set[str], standing: set[str]
     return factions, problems + worldgen.faction_problems(factions, stops, known)
 
 
-def draft(opened: worlds.Opened, raw: object) -> dict:
-    """Ask for the cast's sides as factions, and queue them as one draft. Nothing is written to the world."""
+# The cast's people as one town's notables ------------------------------------------------------------------------
+
+PRONOUNS = {'woman': 'she/her', 'man': 'he/him'}
+
+
+def people_of(bundle: CastFile) -> list[dict]:
+    """Each character linked to a corner, once, with the side they stand on and their own corner within it."""
+    found, seen = [], set()
+    for side in bundle.cast.outer.corners:
+        for corner in side.inner.corners if side.inner else [side]:
+            character = bundle.characters.get(corner.character_id or '')
+            if not character or corner.character_id in seen or not str(character.get('name') or '').strip():
+                continue
+            seen.add(corner.character_id)
+            found.append({'character': character, 'side': name_of(side),
+                          'corner': name_of(corner) if corner is not side else '', 'stance': corner.stance.strip()})
+    return found
+
+
+def person_line(person: dict) -> str:
+    character = person['character']
+    stands = person['side'] + (f", as {person['corner']}" if person['corner'] else '') + \
+        (f" ({person['stance']})" if person['stance'] else '')
+    parts = [f"- {character['name'].strip()}", f"pronouns {PRONOUNS.get(character.get('gender') or '', 'they/them')}",
+             f"age {character['age']}" if character.get('age') else 'age not given: choose an adult age',
+             f'stands with {stands}']
+    for key, label in (('about', 'about'), ('wants', 'wants')):
+        text = str(character.get(key) or '').strip()
+        if text:
+            parts.append(f'{label}: {text[:TEXT]}')
+    return '; '.join(parts)
+
+
+def people_ask(bundle: CastFile, people: list[dict]) -> str:
+    return '\n'.join([
+        f'Bring in the people of the cast "{bundle.cast.title or "untitled"}" as notables of this town, one each, '
+        'with no one else. Keep each name exactly as written, and the age when one is given. Their "about" keeps '
+        'what is written about them, cut to fit; their "wants" keeps their wants; their "role" is what they do in '
+        'this town, with the side they stand with in it. Pick each one\'s place from the places listed.',
+        *map(person_line, people)])
+
+
+def missing_people(entries: list, people: list[dict]) -> list[str]:
+    names = {str(entry.get('name') or '').strip().casefold() for entry in entries if isinstance(entry, dict)}
+    return [f"{person['character']['name'].strip()} is missing; keep their name exactly as written."
+            for person in people if person['character']['name'].strip().casefold() not in names]
+
+
+def people_draft(opened: worlds.Opened, town: str, bundle: CastFile) -> dict | None:
+    """The cast's people as notables of `town`, queued as that town's notables draft; None when it links no one."""
+    people = people_of(bundle)
+    if not people:
+        return None
+    files = towns.read(opened, town)
+    found, _ = worlds.contents(opened)
+    current = list((files['parts']['cities'] or {}).get('notables') or [])
+    ask = people_ask(bundle, people)
+    problems: list[str] = []
+    for attempt in (1, 2):
+        progress.report(opened, 'cast', 'write', attempt, problems)
+        entries = drafts.parsed(models.complete(drafts.SYSTEM, drafts.prompt_for(
+            found, files['parts']['cities'], 'notables', current, ask, problems)))
+        progress.report(opened, 'cast', 'check', attempt)
+        _, _, problems = drafts.merged(files, 'notables', entries)
+        problems += missing_people(entries, people)
+        if not problems:
+            break
+    else:
+        raise DomainError("The model's notables still had problems after a retry: " + '; '.join(problems[:6]), 422)
+    return drafts.queue(opened, town, 'notables', f'The people of {bundle.cast.title or "the cast"}', entries)
+
+
+def draft(opened: worlds.Opened, raw: object, town: str = '') -> dict:
+    """Ask for the cast's sides as factions, and queue them as one draft; with `town`, its people as that town's
+    notables too, as a second draft (`people`, or `people_problem` when that one could not be drafted: the factions
+    stay queued either way). Nothing is written to the world."""
     bundle = read(raw)
+    if town:
+        require(town in {item['id'] for item in worlds.overview(opened)['towns']}, 'That town is not in this world.', 404)
     found, _ = worlds.contents(opened)
     require('factions' in found['sections'], NO_SECTION, 409)
     world_id = found['world'].get('id') or opened.folder.name
@@ -265,8 +345,14 @@ def draft(opened: worlds.Opened, raw: object) -> dict:
                 break
         else:
             raise DomainError("The model's factions still had problems after a retry: " + '; '.join(problems[:6]), 422)
-    entry = {'cast': bundle.cast.title or 'Untitled cast', 'world': world_id, 'factions': factions}
-    return drafts.queue(opened, world_id, 'factions', bundle.cast.theme, [entry])
+        entry = {'cast': bundle.cast.title or 'Untitled cast', 'world': world_id, 'factions': factions}
+        queued = drafts.queue(opened, world_id, 'factions', bundle.cast.theme, [entry])
+        if not town:
+            return queued
+        try:
+            return queued | {'people': people_draft(opened, town, bundle)}
+        except DomainError as error:
+            return queued | {'people': None, 'people_problem': error.message}
 
 
 # Approving and undoing --------------------------------------------------------------------------------------------

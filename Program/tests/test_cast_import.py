@@ -191,3 +191,50 @@ def test_the_screen_imports_approves_and_undoes_a_cast(tmp_path, checkout, model
     overview = client.post('/api/factions/undo', json=world).json()
     assert overview['sections']['factions']['entries'] == 1
     assert client.post('/api/factions/imports', json=world).json() == []
+
+
+def notables_for(prompt: str, drop: str = '') -> str:
+    """The model's notables: one for each person the ask lists, at a Kingswood place."""
+    names = [line[2:].split(';')[0] for line in prompt.splitlines() if line.startswith('- ') and '; pronouns ' in line]
+    return json.dumps([{'id': re.sub(r'[^a-z]+', '-', name.lower()).strip('-'), 'name': name, 'pronouns': 'they/them',
+                        'age': 40, 'place': 'felled-oak', 'role': 'regular, with the Order', 'about': 'From the cast.',
+                        'source': 'curated-2026-10'} for name in names if name != drop])
+
+
+def test_with_a_town_the_casts_people_become_its_notables_in_a_second_draft(checkout, monkeypatch):
+    asked = []
+
+    def answer(system, prompt):
+        asked.append(prompt)
+        if system == drafts.SYSTEM:
+            return notables_for(prompt, drop='Ash' if len(asked) == 2 else '')
+        return written(prompt)
+
+    monkeypatch.setattr(models, 'complete', answer)
+    bundle = four_sides()
+    bundle['characters']['c-hale'] |= {'gender': 'man', 'age': 51, 'about': 'Hangs smugglers.', 'wants': 'A clean bridge.'}
+    opened = worlds.builtin(checkout, 'testland')
+    draft = cast_import.draft(opened, bundle, 'kingswood')
+    assert draft['target'] == 'factions'
+    people = draft['people']
+    assert people['target'] == 'notables' and people['town'] == 'kingswood'
+    assert [entry['name'] for entry in people['entries']] == ['Captain Hale', 'Wren Abbot', 'Ash']
+    ask = asked[1]
+    assert '- Captain Hale; pronouns he/him; age 51; stands with The Order, as Zealot (by the noose); about: Hangs ' \
+           'smugglers.; wants: A clean bridge.' in ask
+    assert '- Ash; pronouns they/them; age not given' in ask and 'stands with Free Towns (' in ask
+    assert 'Ash is missing; keep their name exactly as written.' in asked[2]  # The first answer left Ash out.
+    assert not (checkout / worlds.DATA / 'cities' / 'kingswood.json').read_text().count('Captain Hale')
+
+    without = cast_import.draft(opened, four_sides())
+    assert 'people' not in without
+    with pytest.raises(DomainError, match='That town is not in this world.'):
+        cast_import.draft(opened, four_sides(), 'atlantis')
+
+
+def test_people_that_cannot_be_drafted_leave_the_factions_queued(checkout, monkeypatch):
+    monkeypatch.setattr(models, 'complete', lambda system, prompt: notables_for(prompt, drop='Ash')
+                        if system == drafts.SYSTEM else written(prompt))
+    draft = cast_import.draft(worlds.builtin(checkout, 'testland'), four_sides(), 'kingswood')
+    assert draft['target'] == 'factions' and draft['people'] is None
+    assert 'Ash is missing' in draft['people_problem']

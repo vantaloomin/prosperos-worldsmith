@@ -71,7 +71,7 @@ function Overview({ overview, world, onChanged }: { overview: WorldOverview; wor
           <tr><th>documents</th><td>{overview.documents}</td><td /></tr>
         </tbody>
       </table>
-      <CastImport world={world} onChanged={onChanged} />
+      <CastImport world={world} towns={overview.towns} onChanged={onChanged} />
       <ExportPackage world={world} />
     </>
   )

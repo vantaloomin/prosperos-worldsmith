@@ -5,7 +5,7 @@ from pathlib import Path
 from fastapi import APIRouter, FastAPI, Request
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from worldsmith import (
     NAME,
@@ -174,6 +174,7 @@ class MapParseBody(BaseModel):
 
 class CastImportBody(OpenBody):
     cast: dict  # a Dramatis `prospero-cast` file, read by cast_import.read
+    town: str = Field(default='', max_length=80)  # where the cast's people live, as notables; '' leaves them out
 
 
 class DecideBody(OpenBody):
@@ -422,7 +423,7 @@ def cast_api() -> APIRouter:
 
     @router.post('/factions/import')
     def import_cast(body: CastImportBody):
-        return cast_import.draft(opened_from(body), body.cast)
+        return cast_import.draft(opened_from(body), body.cast, body.town)
 
     @router.post('/factions/imports')
     def cast_imports(body: OpenBody):
